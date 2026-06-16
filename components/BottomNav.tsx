@@ -9,8 +9,10 @@ const tabs = [
   { href: "/vaccinations", icon: Syringe,      label: "Vaccines" },
   { href: "/weight",       icon: Scale,        label: "Weight" },
   { href: "/vet-visits",   icon: Stethoscope,  label: "Vet" },
-  { href: "/profile",      icon: Ellipsis,     label: "More" },
+  { href: "/more",         icon: Ellipsis,     label: "More" },
 ];
+
+const morePaths = ["/more", "/food", "/medications", "/milestones", "/documents", "/profile"];
 
 export default function BottomNav() {
   const pathname = usePathname();
@@ -19,7 +21,10 @@ export default function BottomNav() {
     <div className="fixed bottom-6 left-4 right-4 z-50">
       <nav className="bg-white/70 backdrop-blur-xl rounded-pill h-14 flex items-center justify-between px-3 border border-white/60">
         {tabs.map(({ href, icon: Icon, label }) => {
-          const active = pathname === href || (href !== "/dashboard" && pathname.startsWith(href));
+          const active =
+            href === "/more"
+              ? morePaths.some((p) => pathname === p || pathname.startsWith(p + "/"))
+              : pathname === href || (href !== "/dashboard" && pathname.startsWith(href));
           return (
             <Link
               key={href}

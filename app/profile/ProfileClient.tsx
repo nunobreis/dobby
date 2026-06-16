@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { PawPrint, UserCircle2 } from "lucide-react";
+import { PawPrint, UserCircle2, ChevronLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 import imageCompression from "browser-image-compression";
 import { createClient } from "@/lib/supabase/client";
 import { invitePartner } from "./actions";
@@ -36,6 +37,7 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
   const [inviteMsg, setInviteMsg] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const router = useRouter();
   const supabase = createClient();
 
   function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -106,7 +108,14 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
   return (
     <div className="min-h-screen bg-background px-5 py-8 pb-24">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-[32px] font-bold text-text-primary">Profile</h1>
+        <div className="flex items-center gap-2">
+          {!editing && (
+            <button onClick={() => router.back()}>
+              <ChevronLeft size={26} className="text-text-primary" />
+            </button>
+          )}
+          <h1 className="text-[32px] font-bold text-text-primary">Profile</h1>
+        </div>
         <button
           onClick={() => (editing ? saveProfile() : setEditing(true))}
           disabled={saving}
