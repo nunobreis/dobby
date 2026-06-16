@@ -6,6 +6,7 @@ import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { toast } from "sonner";
 
 export default function NewMedicationPage() {
   const today = new Date().toISOString().split("T")[0];
@@ -27,6 +28,10 @@ export default function NewMedicationPage() {
     e.preventDefault();
     if (!name || !startDate) {
       setError("Name and start date are required.");
+      return;
+    }
+    if (endDate && endDate < startDate) {
+      setError("End date must be after the start date.");
       return;
     }
     setError(null);
@@ -61,6 +66,7 @@ export default function NewMedicationPage() {
 
       if (insertError) throw insertError;
 
+      toast.success("Medication saved!");
       router.push("/medications");
       router.refresh();
     } catch (err: unknown) {

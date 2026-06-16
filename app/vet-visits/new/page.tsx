@@ -6,6 +6,7 @@ import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { toast } from "sonner";
 
 export default function NewVetVisitPage() {
   const today = new Date().toISOString().split("T")[0];
@@ -27,6 +28,10 @@ export default function NewVetVisitPage() {
     e.preventDefault();
     if (!date || !reason) {
       setError("Date and reason are required.");
+      return;
+    }
+    if (nextAppointmentDate && nextAppointmentDate <= date) {
+      setError("Next appointment date must be after the visit date.");
       return;
     }
     setError(null);
@@ -63,6 +68,7 @@ export default function NewVetVisitPage() {
 
       if (insertError) throw insertError;
 
+      toast.success("Visit saved!");
       router.push("/vet-visits");
       router.refresh();
     } catch (err: unknown) {

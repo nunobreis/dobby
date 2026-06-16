@@ -6,6 +6,7 @@ import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { toast } from "sonner";
 
 export default function NewWeightPage() {
   const today = new Date().toISOString().split("T")[0];
@@ -52,6 +53,7 @@ export default function NewWeightPage() {
 
       if (insertError) throw insertError;
 
+      toast.success("Weight logged!");
       router.push("/weight");
       router.refresh();
     } catch (err: unknown) {

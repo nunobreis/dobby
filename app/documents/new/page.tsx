@@ -7,6 +7,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import DocumentUpload from "@/components/DocumentUpload";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { toast } from "sonner";
 
 export default function NewDocumentPage() {
   const today = new Date().toISOString().split("T")[0];
@@ -69,6 +70,7 @@ export default function NewDocumentPage() {
 
       if (insertError) throw insertError;
 
+      toast.success("Document saved!");
       router.push("/documents");
       router.refresh();
     } catch (err: unknown) {

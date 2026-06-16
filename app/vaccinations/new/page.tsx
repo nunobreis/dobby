@@ -6,6 +6,7 @@ import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { toast } from "sonner";
 
 export default function NewVaccinationPage() {
   const [vaccineName, setVaccineName] = useState("");
@@ -24,6 +25,10 @@ export default function NewVaccinationPage() {
     e.preventDefault();
     if (!vaccineName || !dateGiven) {
       setError("Vaccine name and date given are required.");
+      return;
+    }
+    if (nextDueDate && nextDueDate <= dateGiven) {
+      setError("Next due date must be after the date given.");
       return;
     }
     setError(null);
@@ -56,6 +61,7 @@ export default function NewVaccinationPage() {
 
       if (insertError) throw insertError;
 
+      toast.success("Vaccination saved!");
       router.push("/vaccinations");
       router.refresh();
     } catch (err: unknown) {

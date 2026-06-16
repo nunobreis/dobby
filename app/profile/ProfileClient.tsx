@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { PawPrint, UserCircle2, ChevronLeft } from "lucide-react";
+import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import imageCompression from "browser-image-compression";
 import { createClient } from "@/lib/supabase/client";
@@ -82,6 +83,7 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
         .eq("id", puppy.id);
 
       if (error) throw error;
+      toast.success("Profile saved!");
       setEditing(false);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to save.");

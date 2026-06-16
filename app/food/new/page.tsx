@@ -6,6 +6,7 @@ import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { toast } from "sonner";
 import type { FoodEntry } from "@/lib/types";
 
 export default function NewFoodPage() {
@@ -56,6 +57,10 @@ export default function NewFoodPage() {
       setError("Brand, product name, and start date are required.");
       return;
     }
+    if (endDate && endDate < startDate) {
+      setError("End date must be after the start date.");
+      return;
+    }
     setError(null);
     setLoading(true);
 
@@ -92,6 +97,7 @@ export default function NewFoodPage() {
       });
       if (insertError) throw insertError;
 
+      toast.success("Food saved!");
       router.push("/food");
       router.refresh();
     } catch (err: unknown) {

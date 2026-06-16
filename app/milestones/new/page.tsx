@@ -7,6 +7,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import ImageUpload from "@/components/ImageUpload";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { toast } from "sonner";
 
 export default function NewMilestonePage() {
   const today = new Date().toISOString().split("T")[0];
@@ -71,6 +72,7 @@ export default function NewMilestonePage() {
 
       if (insertError) throw insertError;
 
+      toast.success("Milestone added!");
       router.push("/milestones");
       router.refresh();
     } catch (err: unknown) {
