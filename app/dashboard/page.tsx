@@ -1,0 +1,233 @@
+import { redirect } from "next/navigation";
+import Link from "next/link";
+import { ArrowUpRight, Syringe, Stethoscope, Scale, UtensilsCrossed, PawPrint } from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
+import BottomNav from "@/components/BottomNav";
+import VaccinationBadge from "@/components/VaccinationBadge";
+import { formatDate, calculateAge, formatWeight, getVaccinationStatus } from "@/lib/utils";
+
+export default async function DashboardPage() {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  const { data: membership } = await supabase
+    .from("puppy_members")
+    .select("puppy_id")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (!membership) redirect("/profile/setup");
+
+  const puppyId = membership.puppy_id;
+  const today = new Date().toISOString().split("T")[0];
+
+  const [
+    { data: puppy },
+    { data: vaccinations },
+    { data: vetVisits },
+    { data: weightEntries },
+    { data: foodEntries },
+    { data: milestones },
+  ] = await Promise.all([
+    supabase.from("puppies").select("*").eq("id", puppyId).single(),
+    supabase.from("vaccinations").select("*").eq("puppy_id", puppyId).order("next_due_date", { ascending: true }),
+    supabase.from("vet_visits").select("*").eq("puppy_id", puppyId).not("next_appointment_date", "is", null).gte("next_appointment_date", today).order("next_appointment_date", { ascending: true }).limit(1),
+    supabase.from("weight_entries").select("*").eq("puppy_id", puppyId).order("date", { ascending: false }).limit(1),
+    supabase.from("food_entries").select("*").eq("puppy_id", puppyId).is("end_date", null).order("start_date", { ascending: false }).limit(1),
+    supabase.from("milestones").select("*").eq("puppy_id", puppyId).order("date", { ascending: false }).limit(3),
+  ]);
+
+  const nextVaccination = vaccinations?.find((v) => v.next_due_date) ?? null;
+  const vaccinationStatus = nextVaccination ? getVaccinationStatus(nextVaccination.next_due_date) : null;
+  const hasAlert = vaccinationStatus === "overdue" || vaccinationStatus === "due_soon";
+
+  const nextVetVisit = vetVisits?.[0] ?? null;
+  const latestWeight = weightEntries?.[0] ?? null;
+  const currentFood = foodEntries?.[0] ?? null;
+
+  const greeting = user.email?.split("@")[0] ?? "there";
+
+  return (
+    <div className="min-h-screen bg-background pb-24">
+      {/* Top bar */}
+      <div className="px-5 pt-4 pb-2 flex items-center justify-between">
+        <div className="flex flex-col gap-0.5">
+          <span className="text-[13px] text-text-secondary">Hello, {greeting}</span>
+          <span className="text-[24px] font-bold text-text-primary">
+            {puppy?.name ?? "Dobby"} 🐾
+          </span>
+        </div>
+        <Link href="/profile">
+          <div className="w-[50px] h-[50px] rounded-full bg-lavender overflow-hidden flex items-center justify-center">
+            {puppy?.photo_url ? (
+              <img src={puppy.photo_url} alt={puppy.name} className="w-full h-full object-cover" />
+            ) : (
+              <PawPrint size={20} className="text-accent opacity-70" />
+            )}
+          </div>
+        </Link>
+      </div>
+
+      <div className="px-5 flex flex-col gap-5">
+        {/* Hero card */}
+        <div className="bg-white rounded-card p-5 flex flex-col gap-2.5">
+          <span className="text-[13px] text-text-secondary">
+            {puppy?.breed ?? "Golden Retriever"} · {puppy?.date_of_birth ? calculateAge(puppy.date_of_birth) : "—"}
+          </span>
+          {nextVaccination && hasAlert ? (
+            <>
+              <span className="text-[16px] font-bold text-text-primary">
+                🐾 {nextVaccination.vaccine_name} {vaccinationStatus === "overdue" ? "is overdue" : "due soon"}
+              </span>
+              <VaccinationBadge nextDueDate={nextVaccination.next_due_date} />
+            </>
+          ) : nextVaccination ? (
+            <>
+              <span className="text-[16px] font-bold text-text-primary">
+                ✓ All vaccinations up to date
+              </span>
+              <VaccinationBadge nextDueDate={nextVaccination.next_due_date} />
+            </>
+          ) : (
+            <span className="text-[14px] text-text-secondary">No vaccinations recorded yet</span>
+          )}
+        </div>
+
+        {/* Stat grid */}
+        <div className="flex flex-col gap-3">
+          {/* Row 1 */}
+          <div className="flex gap-3">
+            {/* Next vaccine */}
+            <div className="flex-1 bg-white rounded-card p-4 flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold text-text-secondary tracking-wider">NEXT VACCINE</span>
+                <Link href="/vaccinations">
+                  <ArrowUpRight size={16} className="text-text-secondary" />
+                </Link>
+              </div>
+              {nextVaccination ? (
+                <>
+                  <span className="text-[15px] font-bold text-text-primary leading-tight">
+                    {nextVaccination.vaccine_name}
+                  </span>
+                  <span className="text-[13px] text-text-secondary">
+                    {nextVaccination.next_due_date ? formatDate(nextVaccination.next_due_date) : "No date set"}
+                  </span>
+                  <VaccinationBadge nextDueDate={nextVaccination.next_due_date} />
+                </>
+              ) : (
+                <span className="text-[13px] text-text-secondary">None recorded</span>
+              )}
+            </div>
+
+            {/* Next vet */}
+            <div className="flex-1 bg-white rounded-card p-4 flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold text-text-secondary tracking-wider">NEXT VET VISIT</span>
+                <Link href="/vet-visits">
+                  <ArrowUpRight size={16} className="text-text-secondary" />
+                </Link>
+              </div>
+              {nextVetVisit ? (
+                <>
+                  <span className="text-[18px] font-bold text-text-primary">
+                    {formatDate(nextVetVisit.next_appointment_date!)}
+                  </span>
+                  <span className="text-[13px] text-text-secondary">
+                    {nextVetVisit.next_appointment_reason ?? nextVetVisit.reason}
+                  </span>
+                </>
+              ) : (
+                <span className="text-[13px] text-text-secondary">None scheduled</span>
+              )}
+            </div>
+          </div>
+
+          {/* Row 2 */}
+          <div className="flex gap-3">
+            {/* Weight */}
+            <div className="flex-1 bg-white rounded-card p-4 flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold text-text-secondary tracking-wider">WEIGHT</span>
+                <Link href="/weight">
+                  <ArrowUpRight size={16} className="text-text-secondary" />
+                </Link>
+              </div>
+              {latestWeight ? (
+                <>
+                  <span className="text-[28px] font-bold text-text-primary leading-none">
+                    {formatWeight(latestWeight.weight_kg)}
+                  </span>
+                  <span className="text-[13px] text-text-secondary">
+                    {formatDate(latestWeight.date)}
+                  </span>
+                </>
+              ) : (
+                <span className="text-[13px] text-text-secondary">Not logged yet</span>
+              )}
+            </div>
+
+            {/* Food */}
+            <div className="flex-1 bg-white rounded-card p-4 flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold text-text-secondary tracking-wider">FOOD</span>
+                <Link href="/food">
+                  <ArrowUpRight size={16} className="text-text-secondary" />
+                </Link>
+              </div>
+              {currentFood ? (
+                <>
+                  <span className="text-[15px] font-bold text-text-primary leading-tight">
+                    {currentFood.brand}
+                  </span>
+                  <span className="text-[13px] text-text-secondary">
+                    {currentFood.daily_amount_g ? `${currentFood.daily_amount_g}g / day` : currentFood.product_name}
+                  </span>
+                </>
+              ) : (
+                <span className="text-[13px] text-text-secondary">Not set yet</span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Milestones */}
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center justify-between">
+            <span className="text-[18px] font-bold text-text-primary">Recent Milestones</span>
+            <Link href="/milestones" className="text-[13px] text-text-secondary">See all</Link>
+          </div>
+          {milestones && milestones.length > 0 ? (
+            <div className="flex gap-3">
+              {milestones.map((m) => (
+                <div key={m.id} className="flex-1 bg-white rounded-[16px] p-3.5 flex flex-col gap-1">
+                  <span className="text-[14px] font-bold text-text-primary">{m.title}</span>
+                  <span className="text-[12px] text-text-secondary">{formatDate(m.date)}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-white rounded-card p-5 flex flex-col items-center gap-2">
+              <PawPrint size={28} className="text-accent opacity-40" />
+              <span className="text-[13px] text-text-secondary text-center">
+                No milestones yet. Add Dobby&apos;s first!
+              </span>
+              <Link
+                href="/milestones/new"
+                className="text-[13px] font-semibold text-accent"
+              >
+                Add milestone
+              </Link>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <BottomNav />
+    </div>
+  );
+}
