@@ -1,0 +1,142 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { PawPrint, Eye, EyeOff } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
+
+type Mode = "signin" | "signup";
+
+export default function LoginPage() {
+  const [mode, setMode] = useState<Mode>("signin");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
+  const supabase = createClient();
+
+  function switchMode(next: Mode) {
+    setMode(next);
+    setError(null);
+    setMessage(null);
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setMessage(null);
+    setLoading(true);
+
+    try {
+      if (mode === "signin") {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        router.push("/dashboard");
+        router.refresh();
+      } else {
+        const { data, error } = await supabase.auth.signUp({ email, password });
+        if (error) throw error;
+        if (data.session) {
+          router.push("/profile/setup");
+          router.refresh();
+        } else {
+          setMessage("Check your email to confirm your account, then sign in.");
+          switchMode("signin");
+        }
+      }
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-background flex flex-col justify-center px-8 py-12">
+      <div className="flex flex-col items-center gap-3 mb-8">
+        <PawPrint size={48} strokeWidth={1.5} className="text-text-primary opacity-80" />
+        <h1 className="text-[28px] font-bold text-text-primary">Dobby</h1>
+        <p className="text-sm text-text-secondary text-center">
+          Keeping your pup healthy, together
+        </p>
+      </div>
+
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2">
+          <label className="text-[12px] font-semibold text-text-secondary">
+            Email
+          </label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@example.com"
+            required
+            className="h-[52px] bg-[#EBEBEB] rounded-input px-4 text-base text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40 transition-shadow"
+          />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <label className="text-[12px] font-semibold text-text-secondary">
+            Password
+          </label>
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              required
+              className="w-full h-[52px] bg-[#EBEBEB] rounded-input px-4 pr-12 text-base text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40 transition-shadow"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((v) => !v)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-text-secondary"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+          </div>
+        </div>
+
+        {error && (
+          <p className="text-sm text-[#9B1C1C] bg-blush-pink rounded-lg px-4 py-2">
+            {error}
+          </p>
+        )}
+
+        {message && (
+          <p className="text-sm text-[#2D6A4F] bg-sage-green rounded-lg px-4 py-2">
+            {message}
+          </p>
+        )}
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="h-[56px] bg-accent text-white rounded-pill text-base font-semibold mt-2 disabled:opacity-60 transition-opacity"
+        >
+          {loading ? "…" : mode === "signin" ? "Sign in" : "Sign up"}
+        </button>
+      </form>
+
+      <div className="flex justify-center items-center gap-1 mt-5">
+        <span className="text-sm text-text-secondary">
+          {mode === "signin" ? "Don't have an account?" : "Already have an account?"}
+        </span>
+        <button
+          type="button"
+          onClick={() => switchMode(mode === "signin" ? "signup" : "signin")}
+          className="text-sm font-semibold text-text-primary"
+        >
+          {mode === "signin" ? "Sign up" : "Sign in"}
+        </button>
+      </div>
+    </div>
+  );
+}
