@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Plus, UtensilsCrossed } from "lucide-react";
+import { Plus, UtensilsCrossed, ChevronLeft } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import BottomNav from "@/components/BottomNav";
 import { formatDate } from "@/lib/utils";
@@ -33,7 +33,12 @@ export default async function FoodPage() {
   return (
     <div className="min-h-screen bg-background pb-32">
       <div className="px-5 pt-10 pb-4 flex items-center justify-between">
-        <h1 className="text-[28px] font-bold text-text-primary">Food & Diet</h1>
+        <div className="flex items-center gap-2">
+          <Link href="/more">
+            <ChevronLeft size={26} className="text-text-primary" />
+          </Link>
+          <h1 className="text-[28px] font-bold text-text-primary">Food & Diet</h1>
+        </div>
         <Link href="/food/new">
           <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center">
             <Plus size={20} className="text-white" />

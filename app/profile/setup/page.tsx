@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { PawPrint } from "lucide-react";
 import imageCompression from "browser-image-compression";
 import { createClient } from "@/lib/supabase/client";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function ProfileSetupPage() {
   const [checking, setChecking] = useState(true);
@@ -127,17 +128,12 @@ export default function ProfileSetupPage() {
       router.refresh();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
-    } finally {
       setLoading(false);
     }
   }
 
-  if (checking) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <PawPrint size={32} className="text-accent animate-pulse" />
-      </div>
-    );
+  if (checking || loading) {
+    return <LoadingSpinner />;
   }
 
   return (
