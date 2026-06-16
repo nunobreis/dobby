@@ -204,9 +204,18 @@ export default async function DashboardPage() {
           {milestones && milestones.length > 0 ? (
             <div className="flex gap-3">
               {milestones.map((m) => (
-                <div key={m.id} className="flex-1 bg-white rounded-[16px] p-3.5 flex flex-col gap-1">
-                  <span className="text-[14px] font-bold text-text-primary">{m.title}</span>
-                  <span className="text-[12px] text-text-secondary">{formatDate(m.date)}</span>
+                <div key={m.id} className="flex-1 bg-white rounded-[16px] overflow-hidden flex flex-col">
+                  {m.photo_url && (
+                    <img
+                      src={m.photo_url}
+                      alt={m.title}
+                      className="w-full h-24 object-cover"
+                    />
+                  )}
+                  <div className="p-3.5 flex flex-col gap-1">
+                    <span className="text-[14px] font-bold text-text-primary">{m.title}</span>
+                    <span className="text-[12px] text-text-secondary">{formatDate(m.date)}</span>
+                  </div>
                 </div>
               ))}
             </div>
