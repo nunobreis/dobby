@@ -35,17 +35,46 @@ export default async function DashboardPage() {
   ] = await Promise.all([
     supabase.from("puppies").select("*").eq("id", puppyId).single(),
     supabase.from("vaccinations").select("*").eq("puppy_id", puppyId).order("next_due_date", { ascending: true }),
-    supabase.from("vet_visits").select("*").eq("puppy_id", puppyId).not("next_appointment_date", "is", null).gte("next_appointment_date", today).order("next_appointment_date", { ascending: true }).limit(1),
+    supabase.from("vet_visits").select("*").eq("puppy_id", puppyId).or(`next_appointment_date.gte.${today},date.gte.${today}`).order("date", { ascending: true }).limit(5),
     supabase.from("weight_entries").select("*").eq("puppy_id", puppyId).order("date", { ascending: false }).limit(1),
     supabase.from("food_entries").select("*").eq("puppy_id", puppyId).is("end_date", null).order("start_date", { ascending: false }).limit(1),
     supabase.from("milestones").select("*").eq("puppy_id", puppyId).order("date", { ascending: false }).limit(3),
   ]);
 
-  const nextVaccination = vaccinations?.find((v) => v.next_due_date) ?? null;
+  const allVaccinations = vaccinations ?? [];
+  const hasVaccinations = allVaccinations.length > 0;
+
+  // Hero card: soonest-due vaccination for badge/alert
+  const nextVaccination = allVaccinations
+    .filter((v) => v.next_due_date)
+    .sort((a, b) => a.next_due_date!.localeCompare(b.next_due_date!))[0] ?? null;
   const vaccinationStatus = nextVaccination ? getVaccinationStatus(nextVaccination.next_due_date) : null;
   const hasAlert = vaccinationStatus === "overdue" || vaccinationStatus === "due_soon";
 
-  const nextVetVisit = vetVisits?.[0] ?? null;
+  // Stat card: soonest upcoming date (future next_due_date → future date_given → overdue → most recent)
+  const statVaccination = (() => {
+    const futureNext = allVaccinations
+      .filter((v) => v.next_due_date && v.next_due_date >= today)
+      .sort((a, b) => a.next_due_date!.localeCompare(b.next_due_date!))[0];
+    if (futureNext) return futureNext;
+    const futureGiven = allVaccinations
+      .filter((v) => v.date_given >= today)
+      .sort((a, b) => a.date_given.localeCompare(b.date_given))[0];
+    if (futureGiven) return futureGiven;
+    if (nextVaccination) return nextVaccination;
+    return allVaccinations.sort((a, b) => b.date_given.localeCompare(a.date_given))[0] ?? null;
+  })();
+
+  const nextVetVisit = (() => {
+    const visits = vetVisits ?? [];
+    const byAppt = visits
+      .filter((v) => v.next_appointment_date && v.next_appointment_date >= today)
+      .sort((a, b) => a.next_appointment_date!.localeCompare(b.next_appointment_date!))[0];
+    if (byAppt) return byAppt;
+    return visits
+      .filter((v) => v.date >= today)
+      .sort((a, b) => a.date.localeCompare(b.date))[0] ?? null;
+  })();
   const latestWeight = weightEntries?.[0] ?? null;
   const currentFood = foodEntries?.[0] ?? null;
 
@@ -92,6 +121,10 @@ export default async function DashboardPage() {
               </span>
               <VaccinationBadge nextDueDate={nextVaccination.next_due_date} />
             </>
+          ) : hasVaccinations ? (
+            <span className="text-[16px] font-bold text-text-primary">
+              ✓ Vaccinations recorded
+            </span>
           ) : (
             <span className="text-[14px] text-text-secondary">No vaccinations recorded yet</span>
           )}
@@ -109,15 +142,19 @@ export default async function DashboardPage() {
                   <ArrowUpRight size={16} className="text-text-secondary" />
                 </Link>
               </div>
-              {nextVaccination ? (
+              {statVaccination ? (
                 <>
                   <span className="text-[15px] font-bold text-text-primary leading-tight">
-                    {nextVaccination.vaccine_name}
+                    {statVaccination.vaccine_name}
                   </span>
                   <span className="text-[13px] text-text-secondary">
-                    {nextVaccination.next_due_date ? formatDate(nextVaccination.next_due_date) : "No date set"}
+                    {statVaccination.next_due_date
+                      ? formatDate(statVaccination.next_due_date)
+                      : formatDate(statVaccination.date_given)}
                   </span>
-                  <VaccinationBadge nextDueDate={nextVaccination.next_due_date} />
+                  {statVaccination.next_due_date && (
+                    <VaccinationBadge nextDueDate={statVaccination.next_due_date} />
+                  )}
                 </>
               ) : (
                 <span className="text-[13px] text-text-secondary">None recorded</span>
@@ -135,7 +172,7 @@ export default async function DashboardPage() {
               {nextVetVisit ? (
                 <>
                   <span className="text-[18px] font-bold text-text-primary">
-                    {formatDate(nextVetVisit.next_appointment_date!)}
+                    {formatDate(nextVetVisit.next_appointment_date ?? nextVetVisit.date)}
                   </span>
                   <span className="text-[13px] text-text-secondary">
                     {nextVetVisit.next_appointment_reason ?? nextVetVisit.reason}

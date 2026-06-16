@@ -1,8 +1,9 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Plus, Trophy, ChevronLeft } from "lucide-react";
+import { Plus, Trophy } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import BottomNav from "@/components/BottomNav";
+import BackButton from "@/components/BackButton";
 import { formatDate } from "@/lib/utils";
 
 export default async function MilestonesPage() {
@@ -31,9 +32,7 @@ export default async function MilestonesPage() {
     <div className="min-h-screen bg-background pb-32">
       <div className="px-5 pt-10 pb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Link href="/more">
-            <ChevronLeft size={26} className="text-text-primary" />
-          </Link>
+          <BackButton />
           <h1 className="text-[28px] font-bold text-text-primary">Milestones</h1>
         </div>
         <Link href="/milestones/new">
