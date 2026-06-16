@@ -4,6 +4,7 @@ import { Plus, Trophy } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import BottomNav from "@/components/BottomNav";
 import BackButton from "@/components/BackButton";
+import EmptyState from "@/components/EmptyState";
 import { formatDate } from "@/lib/utils";
 
 export default async function MilestonesPage() {
@@ -69,16 +70,13 @@ export default async function MilestonesPage() {
             </div>
           </div>
         ) : (
-          <div className="bg-white rounded-card p-8 flex flex-col items-center gap-3">
-            <Trophy size={32} className="text-accent opacity-40" />
-            <span className="text-[15px] font-semibold text-text-primary">No milestones yet</span>
-            <span className="text-[13px] text-text-secondary text-center">
-              Record Dobby&apos;s firsts and special moments.
-            </span>
-            <Link href="/milestones/new" className="text-[13px] font-semibold text-accent">
-              Add milestone
-            </Link>
-          </div>
+          <EmptyState
+            icon={Trophy}
+            title="No milestones yet"
+            message="Record Dobby's firsts and special moments."
+            ctaLabel="Add milestone"
+            ctaHref="/milestones/new"
+          />
         )}
       </div>
 

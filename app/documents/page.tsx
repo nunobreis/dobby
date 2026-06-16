@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Plus, FileText, ExternalLink } from "lucide-react";
 import BackButton from "@/components/BackButton";
+import EmptyState from "@/components/EmptyState";
 import { createClient } from "@/lib/supabase/server";
 import BottomNav from "@/components/BottomNav";
 import { formatDate } from "@/lib/utils";
@@ -71,16 +72,13 @@ export default async function DocumentsPage() {
 
       <div className="px-5 flex flex-col gap-5">
         {Object.keys(grouped).length === 0 ? (
-          <div className="bg-white rounded-card p-8 flex flex-col items-center gap-3">
-            <FileText size={32} className="text-accent opacity-40" />
-            <span className="text-[15px] font-semibold text-text-primary">No documents yet</span>
-            <span className="text-[13px] text-text-secondary text-center">
-              Add your insurance policy, certificates, or vet records.
-            </span>
-            <Link href="/documents/new" className="text-[13px] font-semibold text-accent">
-              Add document
-            </Link>
-          </div>
+          <EmptyState
+            icon={FileText}
+            title="No documents yet"
+            message="Add your insurance policy, certificates, or vet records."
+            ctaLabel="Add document"
+            ctaHref="/documents/new"
+          />
         ) : (
           Object.entries(grouped).map(([cat, docs]) => (
             <div key={cat} className="flex flex-col gap-3">

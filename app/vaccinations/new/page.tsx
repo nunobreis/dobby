@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function NewVaccinationPage() {
   const [vaccineName, setVaccineName] = useState("");
@@ -59,10 +60,11 @@ export default function NewVaccinationPage() {
       router.refresh();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
-    } finally {
       setLoading(false);
     }
   }
+
+  if (loading) return <LoadingSpinner />;
 
   return (
     <div className="min-h-screen bg-background px-5 py-8">

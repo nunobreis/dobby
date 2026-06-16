@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Plus, Stethoscope } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import BottomNav from "@/components/BottomNav";
+import EmptyState from "@/components/EmptyState";
 import { formatDate } from "@/lib/utils";
 
 export default async function VetVisitsPage() {
@@ -45,16 +46,13 @@ export default async function VetVisitsPage() {
 
       <div className="px-5 flex flex-col gap-5">
         {upcoming.length === 0 && past.length === 0 ? (
-          <div className="bg-white rounded-card p-8 flex flex-col items-center gap-3">
-            <Stethoscope size={32} className="text-accent opacity-40" />
-            <span className="text-[15px] font-semibold text-text-primary">No vet visits yet</span>
-            <span className="text-[13px] text-text-secondary text-center">
-              Log Dobby&apos;s visits and upcoming appointments here.
-            </span>
-            <Link href="/vet-visits/new" className="text-[13px] font-semibold text-accent">
-              Add visit
-            </Link>
-          </div>
+          <EmptyState
+            icon={Stethoscope}
+            title="No vet visits yet"
+            message="Log Dobby's visits and upcoming appointments here."
+            ctaLabel="Add visit"
+            ctaHref="/vet-visits/new"
+          />
         ) : (
           <>
             {upcoming.length > 0 && (

@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Plus, Pill } from "lucide-react";
 import BackButton from "@/components/BackButton";
+import EmptyState from "@/components/EmptyState";
 import { createClient } from "@/lib/supabase/server";
 import BottomNav from "@/components/BottomNav";
 import { formatDate } from "@/lib/utils";
@@ -60,16 +61,13 @@ export default async function MedicationsPage() {
 
       <div className="px-5 flex flex-col gap-5">
         {active.length === 0 && past.length === 0 ? (
-          <div className="bg-white rounded-card p-8 flex flex-col items-center gap-3">
-            <Pill size={32} className="text-accent opacity-40" />
-            <span className="text-[15px] font-semibold text-text-primary">No medications yet</span>
-            <span className="text-[13px] text-text-secondary text-center">
-              Track dewormings, flea treatments, and any prescribed medications.
-            </span>
-            <Link href="/medications/new" className="text-[13px] font-semibold text-accent">
-              Add medication
-            </Link>
-          </div>
+          <EmptyState
+            icon={Pill}
+            title="No medications yet"
+            message="Track dewormings, flea treatments, and any prescribed medications."
+            ctaLabel="Add medication"
+            ctaHref="/medications/new"
+          />
         ) : (
           <>
             {active.length > 0 && (

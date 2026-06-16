@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Plus, UtensilsCrossed } from "lucide-react";
 import BackButton from "@/components/BackButton";
+import EmptyState from "@/components/EmptyState";
 import { createClient } from "@/lib/supabase/server";
 import BottomNav from "@/components/BottomNav";
 import { formatDate } from "@/lib/utils";
@@ -47,16 +48,13 @@ export default async function FoodPage() {
 
       <div className="px-5 flex flex-col gap-5">
         {!current && history.length === 0 ? (
-          <div className="bg-white rounded-card p-8 flex flex-col items-center gap-3">
-            <UtensilsCrossed size={32} className="text-accent opacity-40" />
-            <span className="text-[15px] font-semibold text-text-primary">No food logged yet</span>
-            <span className="text-[13px] text-text-secondary text-center">
-              Track what Dobby&apos;s eating to keep their diet consistent.
-            </span>
-            <Link href="/food/new" className="text-[13px] font-semibold text-accent">
-              Add food
-            </Link>
-          </div>
+          <EmptyState
+            icon={UtensilsCrossed}
+            title="No food logged yet"
+            message="Track what Dobby's eating to keep their diet consistent."
+            ctaLabel="Add food"
+            ctaHref="/food/new"
+          />
         ) : (
           <>
             {current && (

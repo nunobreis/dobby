@@ -4,6 +4,7 @@ import { Plus, Syringe } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import BottomNav from "@/components/BottomNav";
 import VaccinationBadge from "@/components/VaccinationBadge";
+import EmptyState from "@/components/EmptyState";
 import { formatDate } from "@/lib/utils";
 
 export default async function VaccinationsPage() {
@@ -67,16 +68,13 @@ export default async function VaccinationsPage() {
             </div>
           ))
         ) : (
-          <div className="bg-white rounded-card p-8 flex flex-col items-center gap-3">
-            <Syringe size={32} className="text-accent opacity-40" />
-            <span className="text-[15px] font-semibold text-text-primary">No vaccinations yet</span>
-            <span className="text-[13px] text-text-secondary text-center">
-              Add Dobby&apos;s first vaccination record to start tracking.
-            </span>
-            <Link href="/vaccinations/new" className="text-[13px] font-semibold text-accent">
-              Add vaccination
-            </Link>
-          </div>
+          <EmptyState
+            icon={Syringe}
+            title="No vaccinations yet"
+            message="Add Dobby's first vaccination record to start tracking."
+            ctaLabel="Add vaccination"
+            ctaHref="/vaccinations/new"
+          />
         )}
       </div>
 

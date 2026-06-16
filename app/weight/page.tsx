@@ -4,6 +4,7 @@ import { Plus, Scale } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import BottomNav from "@/components/BottomNav";
 import WeightChart from "@/components/WeightChart";
+import EmptyState from "@/components/EmptyState";
 import { formatDate, formatWeight } from "@/lib/utils";
 
 export default async function WeightPage() {
@@ -72,16 +73,13 @@ export default async function WeightPage() {
               </div>
             ))
           ) : (
-            <div className="bg-white rounded-card p-8 flex flex-col items-center gap-3">
-              <Scale size={32} className="text-accent opacity-40" />
-              <span className="text-[15px] font-semibold text-text-primary">No weight entries yet</span>
-              <span className="text-[13px] text-text-secondary text-center">
-                Start tracking Dobby&apos;s weight to see their growth over time.
-              </span>
-              <Link href="/weight/new" className="text-[13px] font-semibold text-accent">
-                Add weight
-              </Link>
-            </div>
+            <EmptyState
+              icon={Scale}
+              title="No weight entries yet"
+              message="Start tracking Dobby's weight to see their growth over time."
+              ctaLabel="Add weight"
+              ctaHref="/weight/new"
+            />
           )}
         </div>
       </div>
