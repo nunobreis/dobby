@@ -88,36 +88,40 @@ export default function ProfileSetupPage() {
       } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { data: puppy, error: puppyError } = await supabase
+      // Generate ID client-side so we can create the member row first,
+      // avoiding the RLS chicken-and-egg: the SELECT policy on puppies
+      // requires membership, but membership requires the puppy to exist.
+      const puppyId = crypto.randomUUID();
+
+      const { error: puppyError } = await supabase
         .from("puppies")
         .insert({
+          id: puppyId,
           name,
           breed,
           date_of_birth: dob,
           sex,
           colour: colour || null,
           microchip_number: microchip || null,
-        })
-        .select()
-        .single();
+        });
 
       if (puppyError) throw puppyError;
 
+      const { error: memberError } = await supabase
+        .from("puppy_members")
+        .insert({ puppy_id: puppyId, user_id: user.id });
+
+      if (memberError) throw memberError;
+
       if (photo) {
-        const photoUrl = await uploadPhoto(photo, puppy.id);
+        const photoUrl = await uploadPhoto(photo, puppyId);
         if (photoUrl) {
           await supabase
             .from("puppies")
             .update({ photo_url: photoUrl })
-            .eq("id", puppy.id);
+            .eq("id", puppyId);
         }
       }
-
-      const { error: memberError } = await supabase
-        .from("puppy_members")
-        .insert({ puppy_id: puppy.id, user_id: user.id });
-
-      if (memberError) throw memberError;
 
       router.push("/dashboard");
       router.refresh();
