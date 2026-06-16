@@ -30,7 +30,7 @@ export default function BottomNav() {
               key={href}
               href={href}
               aria-label={label}
-              className={`flex items-center justify-center rounded-[20px] p-[8px_14px] transition-colors ${
+              className={`flex items-center justify-center rounded-[20px] p-[11px_14px] transition-colors ${
                 active ? "bg-accent" : "bg-transparent"
               }`}
             >

@@ -53,7 +53,7 @@ export default async function MedicationsPage() {
           <h1 className="text-[28px] font-bold text-text-primary">Medications</h1>
         </div>
         <Link href="/medications/new">
-          <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center">
+          <div className="w-11 h-11 rounded-full bg-accent flex items-center justify-center">
             <Plus size={20} className="text-white" />
           </div>
         </Link>

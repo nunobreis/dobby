@@ -37,9 +37,9 @@ export default function ImageUpload({ onChange }: Props) {
       <button
         type="button"
         onClick={handleClear}
-        className="absolute top-2 right-2 w-8 h-8 bg-black/50 rounded-full flex items-center justify-center"
+        className="absolute top-2 right-2 w-10 h-10 bg-black/50 rounded-full flex items-center justify-center"
       >
-        <X size={16} className="text-white" />
+        <X size={18} className="text-white" />
       </button>
     </div>
   ) : (

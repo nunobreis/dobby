@@ -138,7 +138,7 @@ export default async function DashboardPage() {
             <div className="flex-1 bg-white rounded-card p-4 flex flex-col gap-2">
               <div className="flex items-center justify-between">
                 <span className="text-[11px] font-bold text-text-secondary tracking-wider">NEXT VACCINE</span>
-                <Link href="/vaccinations">
+                <Link href="/vaccinations" className="p-2 -mr-2">
                   <ArrowUpRight size={16} className="text-text-secondary" />
                 </Link>
               </div>
@@ -165,7 +165,7 @@ export default async function DashboardPage() {
             <div className="flex-1 bg-white rounded-card p-4 flex flex-col gap-2">
               <div className="flex items-center justify-between">
                 <span className="text-[11px] font-bold text-text-secondary tracking-wider">NEXT VET VISIT</span>
-                <Link href="/vet-visits">
+                <Link href="/vet-visits" className="p-2 -mr-2">
                   <ArrowUpRight size={16} className="text-text-secondary" />
                 </Link>
               </div>
@@ -190,7 +190,7 @@ export default async function DashboardPage() {
             <div className="flex-1 bg-white rounded-card p-4 flex flex-col gap-2">
               <div className="flex items-center justify-between">
                 <span className="text-[11px] font-bold text-text-secondary tracking-wider">WEIGHT</span>
-                <Link href="/weight">
+                <Link href="/weight" className="p-2 -mr-2">
                   <ArrowUpRight size={16} className="text-text-secondary" />
                 </Link>
               </div>
@@ -212,7 +212,7 @@ export default async function DashboardPage() {
             <div className="flex-1 bg-white rounded-card p-4 flex flex-col gap-2">
               <div className="flex items-center justify-between">
                 <span className="text-[11px] font-bold text-text-secondary tracking-wider">FOOD</span>
-                <Link href="/food">
+                <Link href="/food" className="p-2 -mr-2">
                   <ArrowUpRight size={16} className="text-text-secondary" />
                 </Link>
               </div>

@@ -36,7 +36,7 @@ export default async function WeightPage() {
       <div className="px-5 pt-10 pb-4 flex items-center justify-between">
         <h1 className="text-[28px] font-bold text-text-primary">Weight</h1>
         <Link href="/weight/new">
-          <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center">
+          <div className="w-11 h-11 rounded-full bg-accent flex items-center justify-center">
             <Plus size={20} className="text-white" />
           </div>
         </Link>
