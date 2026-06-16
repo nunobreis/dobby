@@ -16,7 +16,7 @@ export default function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <div className="fixed bottom-3 left-4 right-4 z-50">
+    <div className="fixed bottom-6 left-4 right-4 z-50">
       <nav className="bg-white/70 backdrop-blur-xl rounded-pill h-14 flex items-center justify-between px-3 border border-white/60">
         {tabs.map(({ href, icon: Icon, label }) => {
           const active = pathname === href || (href !== "/dashboard" && pathname.startsWith(href));

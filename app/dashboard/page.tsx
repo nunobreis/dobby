@@ -52,9 +52,9 @@ export default async function DashboardPage() {
   const greeting = user.email?.split("@")[0] ?? "there";
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-background pb-32">
       {/* Top bar */}
-      <div className="px-5 pt-4 pb-2 flex items-center justify-between">
+      <div className="px-5 pt-10 pb-2 flex items-center justify-between">
         <div className="flex flex-col gap-0.5">
           <span className="text-[13px] text-text-secondary">Hello, {greeting}</span>
           <span className="text-[24px] font-bold text-text-primary">
