@@ -11,6 +11,12 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   title: "Dobby",
   description: "Dobby's health tracker",
+  themeColor: "#8B5CF6",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Dobby",
+  },
 };
 
 export default function RootLayout({
