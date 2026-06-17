@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { Camera } from "lucide-react";
+import BackButton from "@/components/BackButton";
 import { toast } from "sonner";
 import imageCompression from "browser-image-compression";
 import { createClient } from "@/lib/supabase/client";
@@ -90,7 +91,10 @@ export default function AccountClient({ user }: { user: User }) {
 
   return (
     <div className="min-h-screen bg-background px-5 py-8 pb-32 lg:pb-10">
-      <h1 className="text-[32px] font-bold text-text-primary mb-8">{t("title")}</h1>
+      <div className="flex items-center gap-2 mb-8">
+        <BackButton />
+        <h1 className="text-[32px] font-bold text-text-primary">{t("title")}</h1>
+      </div>
 
       {/* Avatar */}
       <div className="flex flex-col items-center gap-2 mb-8">
