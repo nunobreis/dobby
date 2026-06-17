@@ -299,7 +299,10 @@
     "hasAccount": "Já tens conta?",
     "signUpLink": "Registar",
     "signInLink": "Entrar",
-    "confirmEmail": "Verifica o teu email para confirmar a conta e depois entra."
+    "confirmEmail": "Verifica o teu email para confirmar a conta e depois entra.",
+    "forgotPassword": "Esqueceste-te da palavra-passe?",
+    "resetSent": "Verifica o teu email para redefinir a palavra-passe.",
+    "enterEmail": "Introduz primeiro o teu endereço de email."
   },
   "vaccinationBadge": {
     "upToDate": "Em dia",

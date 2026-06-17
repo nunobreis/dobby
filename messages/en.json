@@ -299,7 +299,10 @@
     "hasAccount": "Already have an account?",
     "signUpLink": "Sign up",
     "signInLink": "Sign in",
-    "confirmEmail": "Check your email to confirm your account, then sign in."
+    "confirmEmail": "Check your email to confirm your account, then sign in.",
+    "forgotPassword": "Forgot your password?",
+    "resetSent": "Check your email for a password reset link.",
+    "enterEmail": "Please enter your email address first."
   },
   "vaccinationBadge": {
     "upToDate": "Up to date",
