@@ -38,6 +38,11 @@ export default async function MorePage() {
   const t = await getTranslations("more");
   const puppyName = puppy?.name ?? "Dobby";
 
+  const emailPrefix = user.email?.split("@")[0] ?? "User";
+  const displayName = (user.user_metadata?.display_name as string | undefined) ?? emailPrefix;
+  const avatarUrl = (user.user_metadata?.avatar_url as string | undefined) ?? null;
+  const initial = displayName[0].toUpperCase();
+
   const sections = [
     {
       href: "/food",
@@ -78,8 +83,28 @@ export default async function MorePage() {
       </div>
 
       <div className="px-5 flex flex-col gap-3">
+        {/* User account card */}
+        <div className="bg-white rounded-card overflow-hidden">
+          <Link href="/account">
+            <div className="flex items-center gap-4 px-4 py-4 active:bg-[#F5F5F5] transition-colors">
+              <div className="w-10 h-10 rounded-full bg-[#F2C4CE] flex items-center justify-center shrink-0 overflow-hidden">
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt={displayName} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-[16px] font-bold text-white">{initial}</span>
+                )}
+              </div>
+              <div className="flex flex-col flex-1 min-w-0">
+                <span className="text-[15px] font-semibold text-text-primary">{displayName}</span>
+                <span className="text-[12px] text-text-secondary truncate">{user.email}</span>
+              </div>
+              <ChevronRight size={16} className="text-[#AEAEAE] shrink-0" />
+            </div>
+          </Link>
+        </div>
+
         {/* Pet sections */}
-        <span className="text-[11px] font-bold text-text-secondary tracking-wider px-1">
+        <span className="text-[11px] font-bold text-text-secondary tracking-wider px-1 mt-2">
           {puppyName.toUpperCase()}
         </span>
         <div className="bg-white rounded-card overflow-hidden">
