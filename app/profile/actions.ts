@@ -2,6 +2,7 @@
 
 import { createClient as createSupabaseAdmin } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
+import { headers } from "next/headers";
 
 export async function invitePartner(email: string) {
   const supabase = await createClient();
@@ -24,8 +25,14 @@ export async function invitePartner(email: string) {
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
+  const headersList = await headers();
+  const host = headersList.get("host");
+  const proto = headersList.get("x-forwarded-proto") ?? "https";
+  const callbackUrl = `${proto}://${host}/auth/callback`;
+
   const { error } = await admin.auth.admin.inviteUserByEmail(email, {
     data: { puppy_id: membership.puppy_id },
+    redirectTo: callbackUrl,
   });
 
   if (error) throw error;

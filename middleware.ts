@@ -33,6 +33,10 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
+  if (pathname.startsWith("/auth/")) {
+    return supabaseResponse;
+  }
+
   if (pathname === "/login") {
     if (user) {
       const { data: membership } = await supabase
