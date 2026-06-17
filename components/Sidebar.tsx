@@ -28,7 +28,7 @@ export default async function Sidebar() {
       {/* Logo */}
       <div className="flex items-center gap-2.5 h-[72px] px-5">
         <PawPrint size={24} className="text-accent" />
-        <span className="text-[12px] font-bold text-text-primary leading-tight">Dobby</span>
+        <span className="text-[18px] font-bold text-text-primary leading-tight">Dobby</span>
       </div>
 
       {/* Nav items */}
