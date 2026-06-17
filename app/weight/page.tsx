@@ -6,6 +6,7 @@ import BottomNav from "@/components/BottomNav";
 import WeightChart from "@/components/WeightChart";
 import EmptyState from "@/components/EmptyState";
 import { formatDate, formatWeight } from "@/lib/utils";
+import { getTranslations } from "next-intl/server";
 
 export default async function WeightPage() {
   const supabase = await createClient();
@@ -23,18 +24,28 @@ export default async function WeightPage() {
 
   if (!membership) redirect("/profile/setup");
 
-  const { data: entriesAsc } = await supabase
-    .from("weight_entries")
-    .select("*")
-    .eq("puppy_id", membership.puppy_id)
-    .order("date", { ascending: true });
+  const [{ data: entriesAsc }, { data: puppy }] = await Promise.all([
+    supabase
+      .from("weight_entries")
+      .select("*")
+      .eq("puppy_id", membership.puppy_id)
+      .order("date", { ascending: true }),
+    supabase
+      .from("puppies")
+      .select("name")
+      .eq("id", membership.puppy_id)
+      .single(),
+  ]);
+
+  const t = await getTranslations("weight");
+  const puppyName = puppy?.name ?? "Dobby";
 
   const entriesDesc = [...(entriesAsc ?? [])].reverse();
 
   return (
     <div className="min-h-screen bg-background pb-32 lg:pb-10">
       <div className="px-5 pt-10 pb-4 flex items-center justify-between">
-        <h1 className="text-[28px] font-bold text-text-primary">Weight</h1>
+        <h1 className="text-[28px] font-bold text-text-primary">{t("title")}</h1>
         <Link href="/weight/new">
           <div className="w-11 h-11 rounded-full bg-accent flex items-center justify-center">
             <Plus size={20} className="text-white" />
@@ -45,7 +56,7 @@ export default async function WeightPage() {
       <div className="px-5 flex flex-col gap-5">
         {entriesAsc && entriesAsc.length >= 2 && (
           <div className="bg-white rounded-card p-4">
-            <span className="text-[11px] font-bold text-text-secondary tracking-wider">GROWTH CHART</span>
+            <span className="text-[11px] font-bold text-text-secondary tracking-wider">{t("growthChart")}</span>
             <div className="mt-3">
               <WeightChart entries={entriesAsc} />
             </div>
@@ -75,9 +86,9 @@ export default async function WeightPage() {
           ) : (
             <EmptyState
               icon={Scale}
-              title="No weight entries yet"
-              message="Start tracking Dobby's weight to see their growth over time."
-              ctaLabel="Add weight"
+              title={t("emptyTitle")}
+              message={t("emptyMessage", { name: puppyName })}
+              ctaLabel={t("emptyCta")}
               ctaHref="/weight/new"
             />
           )}

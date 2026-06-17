@@ -7,8 +7,10 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 export default function NewWeightPage() {
+  const t = useTranslations("weight");
   const today = new Date().toISOString().split("T")[0];
   const [date, setDate] = useState(today);
   const [weightKg, setWeightKg] = useState("");
@@ -23,7 +25,7 @@ export default function NewWeightPage() {
     e.preventDefault();
     const weight = parseFloat(weightKg);
     if (!date || isNaN(weight) || weight <= 0) {
-      setError("Please enter a valid date and weight.");
+      setError(t("errorInvalid"));
       return;
     }
     setError(null);
@@ -53,7 +55,7 @@ export default function NewWeightPage() {
 
       if (insertError) throw insertError;
 
-      toast.success("Weight logged!");
+      toast.success(t("toastSuccess"));
       router.push("/weight");
       router.refresh();
     } catch (err: unknown) {
@@ -70,11 +72,11 @@ export default function NewWeightPage() {
         <Link href="/weight">
           <ChevronLeft size={26} className="text-text-primary" />
         </Link>
-        <h1 className="text-[28px] font-bold text-text-primary">Add Weight</h1>
+        <h1 className="text-[28px] font-bold text-text-primary">{t("addTitle")}</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-        <Field label="DATE">
+        <Field label={t("fieldDate")}>
           <input
             type="date"
             value={date}
@@ -84,12 +86,12 @@ export default function NewWeightPage() {
           />
         </Field>
 
-        <Field label="WEIGHT (KG)">
+        <Field label={t("fieldWeight")}>
           <input
             type="number"
             value={weightKg}
             onChange={(e) => setWeightKg(e.target.value)}
-            placeholder="e.g. 12.5"
+            placeholder={t("placeholderWeight")}
             step="0.1"
             min="0"
             required
@@ -97,11 +99,11 @@ export default function NewWeightPage() {
           />
         </Field>
 
-        <Field label="NOTES (optional)">
+        <Field label={t("fieldNotes")}>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            placeholder="Any additional notes…"
+            placeholder={t("placeholderNotes")}
             rows={3}
             className="bg-[#EBEBEB] rounded-input px-4 py-3 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40 resize-none"
           />
@@ -116,7 +118,7 @@ export default function NewWeightPage() {
           disabled={loading}
           className="h-[56px] bg-accent text-white rounded-pill text-base font-semibold disabled:opacity-60 transition-opacity mt-2"
         >
-          {loading ? "Saving…" : "Save weight"}
+          {loading ? t("saving") : t("saveButton")}
         </button>
       </form>
     </div>
