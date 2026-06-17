@@ -53,7 +53,7 @@ export default async function MilestonesPage() {
         </Link>
       </div>
 
-      <div className="px-5 max-w-xl lg:max-w-2xl">
+      <div className="px-5 max-w-xl lg:max-w-2xl lg:mx-auto">
         {milestones && milestones.length > 0 ? (
           <MilestoneTimeline milestones={milestones} />
         ) : (
