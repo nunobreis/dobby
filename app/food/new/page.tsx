@@ -8,8 +8,10 @@ import { createClient } from "@/lib/supabase/client";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { toast } from "sonner";
 import type { FoodEntry } from "@/lib/types";
+import { useTranslations } from "next-intl";
 
 export default function NewFoodPage() {
+  const t = useTranslations("food");
   const today = new Date().toISOString().split("T")[0];
   const [currentFood, setCurrentFood] = useState<FoodEntry | null>(null);
   const [currentFoodEndDate, setCurrentFoodEndDate] = useState(today);
@@ -54,11 +56,11 @@ export default function NewFoodPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!brand || !productName || !startDate) {
-      setError("Brand, product name, and start date are required.");
+      setError(t("errorRequired"));
       return;
     }
     if (endDate && endDate < startDate) {
-      setError("End date must be after the start date.");
+      setError(t("errorEndDate"));
       return;
     }
     setError(null);
@@ -97,7 +99,7 @@ export default function NewFoodPage() {
       });
       if (insertError) throw insertError;
 
-      toast.success("Food saved!");
+      toast.success(t("toastSuccess"));
       router.push("/food");
       router.refresh();
     } catch (err: unknown) {
@@ -114,7 +116,7 @@ export default function NewFoodPage() {
         <Link href="/food">
           <ChevronLeft size={26} className="text-text-primary" />
         </Link>
-        <h1 className="text-[28px] font-bold text-text-primary">Add Food</h1>
+        <h1 className="text-[28px] font-bold text-text-primary">{t("addTitle")}</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
@@ -122,13 +124,13 @@ export default function NewFoodPage() {
           <div className="bg-white rounded-card p-4 flex flex-col gap-3">
             <div>
               <span className="text-[13px] font-semibold text-text-primary">
-                Currently feeding: {currentFood.brand} · {currentFood.product_name}
+                {t("currentlyFeeding", { brand: currentFood.brand, product: currentFood.product_name })}
               </span>
               <p className="text-[12px] text-text-secondary mt-0.5">
-                Set an end date before switching to new food.
+                {t("setEndDate")}
               </p>
             </div>
-            <Field label="END DATE FOR CURRENT FOOD">
+            <Field label={t("fieldEndDateCurrent")}>
               <input
                 type="date"
                 value={currentFoodEndDate}
@@ -139,62 +141,62 @@ export default function NewFoodPage() {
           </div>
         )}
 
-        <Field label="BRAND">
+        <Field label={t("fieldBrand")}>
           <input
             type="text"
             value={brand}
             onChange={(e) => setBrand(e.target.value)}
-            placeholder="e.g. Royal Canin"
+            placeholder={t("placeholderBrand")}
             required
             className="h-[52px] bg-[#EBEBEB] rounded-input px-4 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40"
           />
         </Field>
 
-        <Field label="PRODUCT NAME">
+        <Field label={t("fieldProduct")}>
           <input
             type="text"
             value={productName}
             onChange={(e) => setProductName(e.target.value)}
-            placeholder="e.g. Puppy Golden Retriever"
+            placeholder={t("placeholderProduct")}
             required
             className="h-[52px] bg-[#EBEBEB] rounded-input px-4 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40"
           />
         </Field>
 
-        <Field label="TYPE">
+        <Field label={t("fieldType")}>
           <select
             value={foodType}
             onChange={(e) => setFoodType(e.target.value as typeof foodType)}
             className="h-[52px] bg-[#EBEBEB] rounded-input px-4 text-[15px] text-text-primary outline-none focus:ring-2 focus:ring-accent/40 appearance-none"
           >
-            <option value="">Select…</option>
-            <option value="dry">Dry</option>
-            <option value="wet">Wet</option>
-            <option value="raw">Raw</option>
-            <option value="mixed">Mixed</option>
+            <option value="">{t("typeSelect")}</option>
+            <option value="dry">{t("typeDry")}</option>
+            <option value="wet">{t("typeWet")}</option>
+            <option value="raw">{t("typeRaw")}</option>
+            <option value="mixed">{t("typeMixed")}</option>
           </select>
         </Field>
 
         <div className="flex gap-3">
           <div className="flex-1">
-            <Field label="DAILY AMOUNT (G)">
+            <Field label={t("fieldDailyAmount")}>
               <input
                 type="number"
                 value={dailyAmountG}
                 onChange={(e) => setDailyAmountG(e.target.value)}
-                placeholder="e.g. 300"
+                placeholder={t("placeholderDailyAmount")}
                 min="0"
                 className="h-[52px] bg-[#EBEBEB] rounded-input px-4 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40 w-full"
               />
             </Field>
           </div>
           <div className="flex-1">
-            <Field label="MEALS / DAY">
+            <Field label={t("fieldMealsPerDay")}>
               <input
                 type="number"
                 value={mealsPerDay}
                 onChange={(e) => setMealsPerDay(e.target.value)}
-                placeholder="e.g. 3"
+                placeholder={t("placeholderMeals")}
                 min="1"
                 max="10"
                 className="h-[52px] bg-[#EBEBEB] rounded-input px-4 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40 w-full"
@@ -203,7 +205,7 @@ export default function NewFoodPage() {
           </div>
         </div>
 
-        <Field label="START DATE">
+        <Field label={t("fieldStartDate")}>
           <input
             type="date"
             value={startDate}
@@ -213,7 +215,7 @@ export default function NewFoodPage() {
           />
         </Field>
 
-        <Field label="END DATE (optional)">
+        <Field label={t("fieldEndDate")}>
           <input
             type="date"
             value={endDate}
@@ -222,11 +224,11 @@ export default function NewFoodPage() {
           />
         </Field>
 
-        <Field label="NOTES (optional)">
+        <Field label={t("fieldNotes")}>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            placeholder="Any additional notes…"
+            placeholder={t("placeholderNotes")}
             rows={3}
             className="bg-[#EBEBEB] rounded-input px-4 py-3 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40 resize-none"
           />
@@ -241,7 +243,7 @@ export default function NewFoodPage() {
           disabled={loading}
           className="h-[56px] bg-accent text-white rounded-pill text-base font-semibold disabled:opacity-60 transition-opacity mt-2"
         >
-          {loading ? "Saving…" : "Save food"}
+          {loading ? t("saving") : t("saveButton")}
         </button>
       </form>
     </div>

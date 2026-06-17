@@ -6,6 +6,7 @@ import EmptyState from "@/components/EmptyState";
 import { createClient } from "@/lib/supabase/server";
 import BottomNav from "@/components/BottomNav";
 import { formatDate } from "@/lib/utils";
+import { getTranslations } from "next-intl/server";
 
 export default async function FoodPage() {
   const supabase = await createClient();
@@ -23,11 +24,21 @@ export default async function FoodPage() {
 
   if (!membership) redirect("/profile/setup");
 
-  const { data: entries } = await supabase
-    .from("food_entries")
-    .select("*")
-    .eq("puppy_id", membership.puppy_id)
-    .order("start_date", { ascending: false });
+  const [{ data: entries }, { data: puppy }] = await Promise.all([
+    supabase
+      .from("food_entries")
+      .select("*")
+      .eq("puppy_id", membership.puppy_id)
+      .order("start_date", { ascending: false }),
+    supabase
+      .from("puppies")
+      .select("name")
+      .eq("id", membership.puppy_id)
+      .single(),
+  ]);
+
+  const t = await getTranslations("food");
+  const puppyName = puppy?.name ?? "Dobby";
 
   const current = (entries ?? []).find((e) => !e.end_date) ?? null;
   const history = (entries ?? []).filter((e) => !!e.end_date);
@@ -37,7 +48,7 @@ export default async function FoodPage() {
       <div className="px-5 pt-10 pb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <BackButton />
-          <h1 className="text-[28px] font-bold text-text-primary">Food & Diet</h1>
+          <h1 className="text-[28px] font-bold text-text-primary">{t("title")}</h1>
         </div>
         <Link href="/food/new">
           <div className="w-11 h-11 rounded-full bg-accent flex items-center justify-center">
@@ -50,9 +61,9 @@ export default async function FoodPage() {
         {!current && history.length === 0 ? (
           <EmptyState
             icon={UtensilsCrossed}
-            title="No food logged yet"
-            message="Track what Dobby's eating to keep their diet consistent."
-            ctaLabel="Add food"
+            title={t("emptyTitle")}
+            message={t("emptyMessage", { name: puppyName })}
+            ctaLabel={t("emptyCta")}
             ctaHref="/food/new"
           />
         ) : (
@@ -60,7 +71,7 @@ export default async function FoodPage() {
             {current && (
               <div className="flex flex-col gap-3">
                 <span className="text-[11px] font-bold text-text-secondary tracking-wider px-1">
-                  CURRENT FOOD
+                  {t("current")}
                 </span>
                 <div className="bg-white rounded-card p-4 flex flex-col gap-2 border-l-4 border-accent">
                   <span className="text-[18px] font-bold text-text-primary">{current.brand}</span>
@@ -70,14 +81,16 @@ export default async function FoodPage() {
                       <Chip label={current.food_type} />
                     )}
                     {current.daily_amount_g && (
-                      <Chip label={`${current.daily_amount_g}g / day`} />
+                      <Chip label={t("perDay", { amount: current.daily_amount_g })} />
                     )}
                     {current.meals_per_day && (
-                      <Chip label={`${current.meals_per_day} meal${current.meals_per_day > 1 ? "s" : ""} / day`} />
+                      <Chip label={current.meals_per_day > 1
+                        ? t("mealsPerDayPlural", { count: current.meals_per_day })
+                        : t("mealsPerDay", { count: current.meals_per_day })} />
                     )}
                   </div>
                   <span className="text-[12px] text-text-secondary mt-1">
-                    Since {formatDate(current.start_date)}
+                    {t("since", { date: formatDate(current.start_date) })}
                   </span>
                   {current.notes && (
                     <span className="text-[13px] text-text-secondary italic">{current.notes}</span>
@@ -89,7 +102,7 @@ export default async function FoodPage() {
             {history.length > 0 && (
               <div className="flex flex-col gap-3">
                 <span className="text-[11px] font-bold text-text-secondary tracking-wider px-1">
-                  HISTORY
+                  {t("history")}
                 </span>
                 {history.map((e) => (
                   <div key={e.id} className="bg-white rounded-card p-4 flex flex-col gap-1">
@@ -101,7 +114,7 @@ export default async function FoodPage() {
                     </div>
                     <span className="text-[13px] text-text-secondary">{e.product_name}</span>
                     {e.daily_amount_g && (
-                      <span className="text-[13px] text-text-secondary">{e.daily_amount_g}g / day</span>
+                      <span className="text-[13px] text-text-secondary">{t("perDay", { amount: e.daily_amount_g })}</span>
                     )}
                   </div>
                 ))}
