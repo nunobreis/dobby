@@ -26,10 +26,10 @@ export default async function Sidebar() {
   return (
     <aside className="hidden lg:flex flex-col w-[220px] shrink-0 bg-white border-r border-[#E0E0E0] h-screen sticky top-0">
       {/* Logo */}
-      <div className="flex items-center gap-2.5 h-[72px] px-5">
+      <Link href="/dashboard" className="flex items-center gap-2.5 h-[72px] px-5">
         <PawPrint size={24} className="text-accent" />
         <span className="text-[18px] font-bold text-text-primary leading-tight">Dobby</span>
-      </div>
+      </Link>
 
       {/* Nav items */}
       <SidebarNav />
