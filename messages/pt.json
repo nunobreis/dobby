@@ -228,6 +228,7 @@
     "failedSave": "Erro ao guardar.",
     "toastSuccess": "Perfil guardado!",
     "fieldName": "NOME",
+    "fieldBreed": "RAÇA",
     "fieldDateOfBirth": "DATA DE NASCIMENTO",
     "fieldSex": "SEXO",
     "fieldColour": "COR",

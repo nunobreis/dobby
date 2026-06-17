@@ -228,6 +228,7 @@
     "failedSave": "Failed to save.",
     "toastSuccess": "Profile saved!",
     "fieldName": "NAME",
+    "fieldBreed": "BREED",
     "fieldDateOfBirth": "DATE OF BIRTH",
     "fieldSex": "SEX",
     "fieldColour": "COLOUR",

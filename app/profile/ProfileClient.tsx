@@ -28,6 +28,7 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
   const t = useTranslations("profile");
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(puppy.name);
+  const [breed, setBreed] = useState(puppy.breed);
   const [dob, setDob] = useState(puppy.date_of_birth);
   const [sex, setSex] = useState(puppy.sex ?? "");
   const [colour, setColour] = useState(puppy.colour ?? "");
@@ -77,6 +78,7 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
         .from("puppies")
         .update({
           name,
+          breed: breed || "Golden Retriever",
           date_of_birth: dob,
           sex: sex || null,
           colour: colour || null,
@@ -166,6 +168,13 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
           value={name}
           editing={editing}
           onChange={setName}
+        />
+        <ProfileField
+          label={t("fieldBreed")}
+          value={breed}
+          editing={editing}
+          onChange={setBreed}
+          placeholder="e.g. Golden Retriever"
         />
         <ProfileField
           label={t("fieldDateOfBirth")}
