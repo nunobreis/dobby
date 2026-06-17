@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import BottomNav from "@/components/BottomNav";
 import EmptyState from "@/components/EmptyState";
 import { formatDate } from "@/lib/utils";
+import { getTranslations } from "next-intl/server";
 
 export default async function VetVisitsPage() {
   const supabase = await createClient();
@@ -24,19 +25,41 @@ export default async function VetVisitsPage() {
 
   const today = new Date().toISOString().split("T")[0];
 
-  const { data: visits } = await supabase
-    .from("vet_visits")
-    .select("*")
-    .eq("puppy_id", membership.puppy_id)
-    .order("date", { ascending: false });
+  const [{ data: visits }, { data: puppy }] = await Promise.all([
+    supabase
+      .from("vet_visits")
+      .select("*")
+      .eq("puppy_id", membership.puppy_id)
+      .order("date", { ascending: false }),
+    supabase
+      .from("puppies")
+      .select("name")
+      .eq("id", membership.puppy_id)
+      .single(),
+  ]);
+
+  const t = await getTranslations("vetVisits");
+  const puppyName = puppy?.name ?? "Dobby";
 
   const upcoming = (visits ?? []).filter((v) => v.date >= today).reverse();
   const past = (visits ?? []).filter((v) => v.date < today);
 
+  function getNextLabel(visit: {
+    next_appointment_date: string | null;
+    next_appointment_reason: string | null;
+  }): string {
+    if (!visit.next_appointment_date) return "";
+    const date = formatDate(visit.next_appointment_date);
+    if (visit.next_appointment_reason) {
+      return t("nextDateWithReason", { date, reason: visit.next_appointment_reason });
+    }
+    return t("nextDate", { date });
+  }
+
   return (
     <div className="min-h-screen bg-background pb-32 lg:pb-10">
       <div className="px-5 pt-10 pb-4 flex items-center justify-between">
-        <h1 className="text-[28px] font-bold text-text-primary">Vet Visits</h1>
+        <h1 className="text-[28px] font-bold text-text-primary">{t("title")}</h1>
         <Link href="/vet-visits/new">
           <div className="w-11 h-11 rounded-full bg-accent flex items-center justify-center">
             <Plus size={20} className="text-white" />
@@ -48,9 +71,9 @@ export default async function VetVisitsPage() {
         {upcoming.length === 0 && past.length === 0 ? (
           <EmptyState
             icon={Stethoscope}
-            title="No vet visits yet"
-            message="Log Dobby's visits and upcoming appointments here."
-            ctaLabel="Add visit"
+            title={t("emptyTitle")}
+            message={t("emptyMessage", { name: puppyName })}
+            ctaLabel={t("emptyCta")}
             ctaHref="/vet-visits/new"
           />
         ) : (
@@ -58,10 +81,10 @@ export default async function VetVisitsPage() {
             {upcoming.length > 0 && (
               <div className="flex flex-col gap-3">
                 <span className="text-[11px] font-bold text-text-secondary tracking-wider px-1">
-                  UPCOMING
+                  {t("upcoming")}
                 </span>
                 {upcoming.map((v) => (
-                  <VisitCard key={v.id} visit={v} upcoming />
+                  <VisitCard key={v.id} visit={v} upcoming nextLabel={getNextLabel(v)} />
                 ))}
               </div>
             )}
@@ -69,10 +92,10 @@ export default async function VetVisitsPage() {
             {past.length > 0 && (
               <div className="flex flex-col gap-3">
                 <span className="text-[11px] font-bold text-text-secondary tracking-wider px-1">
-                  PAST VISITS
+                  {t("past")}
                 </span>
                 {past.map((v) => (
-                  <VisitCard key={v.id} visit={v} />
+                  <VisitCard key={v.id} visit={v} nextLabel={getNextLabel(v)} />
                 ))}
               </div>
             )}
@@ -88,6 +111,7 @@ export default async function VetVisitsPage() {
 function VisitCard({
   visit,
   upcoming = false,
+  nextLabel,
 }: {
   visit: {
     id: string;
@@ -101,6 +125,7 @@ function VisitCard({
     notes: string | null;
   };
   upcoming?: boolean;
+  nextLabel: string;
 }) {
   return (
     <div
@@ -121,11 +146,10 @@ function VisitCard({
       {visit.cost != null && (
         <span className="text-[13px] text-text-secondary">€{visit.cost.toFixed(2)}</span>
       )}
-      {visit.next_appointment_date && (
+      {visit.next_appointment_date && nextLabel && (
         <div className="mt-1 pt-2 border-t border-[#F0F0F0]">
           <span className="text-[12px] font-semibold text-accent">
-            Next: {formatDate(visit.next_appointment_date)}
-            {visit.next_appointment_reason ? ` · ${visit.next_appointment_reason}` : ""}
+            {nextLabel}
           </span>
         </div>
       )}

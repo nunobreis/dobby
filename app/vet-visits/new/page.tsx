@@ -7,8 +7,10 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 export default function NewVetVisitPage() {
+  const t = useTranslations("vetVisits");
   const today = new Date().toISOString().split("T")[0];
   const [date, setDate] = useState(today);
   const [vetClinic, setVetClinic] = useState("");
@@ -27,11 +29,11 @@ export default function NewVetVisitPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!date || !reason) {
-      setError("Date and reason are required.");
+      setError(t("errorRequired"));
       return;
     }
     if (nextAppointmentDate && nextAppointmentDate <= date) {
-      setError("Next appointment date must be after the visit date.");
+      setError(t("errorNextDate"));
       return;
     }
     setError(null);
@@ -68,7 +70,7 @@ export default function NewVetVisitPage() {
 
       if (insertError) throw insertError;
 
-      toast.success("Visit saved!");
+      toast.success(t("toastSuccess"));
       router.push("/vet-visits");
       router.refresh();
     } catch (err: unknown) {
@@ -85,11 +87,11 @@ export default function NewVetVisitPage() {
         <Link href="/vet-visits">
           <ChevronLeft size={26} className="text-text-primary" />
         </Link>
-        <h1 className="text-[28px] font-bold text-text-primary">Add Vet Visit</h1>
+        <h1 className="text-[28px] font-bold text-text-primary">{t("addTitle")}</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-        <Field label="DATE">
+        <Field label={t("fieldDate")}>
           <input
             type="date"
             value={date}
@@ -99,43 +101,43 @@ export default function NewVetVisitPage() {
           />
         </Field>
 
-        <Field label="REASON">
+        <Field label={t("fieldReason")}>
           <input
             type="text"
             value={reason}
             onChange={(e) => setReason(e.target.value)}
-            placeholder="e.g. Annual checkup"
+            placeholder={t("placeholderReason")}
             required
             className="h-[52px] bg-[#EBEBEB] rounded-input px-4 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40"
           />
         </Field>
 
-        <Field label="VET CLINIC (optional)">
+        <Field label={t("fieldVetClinic")}>
           <input
             type="text"
             value={vetClinic}
             onChange={(e) => setVetClinic(e.target.value)}
-            placeholder="e.g. Riverside Animal Clinic"
+            placeholder={t("placeholderVetClinic")}
             className="h-[52px] bg-[#EBEBEB] rounded-input px-4 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40"
           />
         </Field>
 
-        <Field label="OUTCOME (optional)">
+        <Field label={t("fieldOutcome")}>
           <textarea
             value={outcome}
             onChange={(e) => setOutcome(e.target.value)}
-            placeholder="e.g. All healthy, prescribed antibiotics"
+            placeholder={t("placeholderOutcome")}
             rows={2}
             className="bg-[#EBEBEB] rounded-input px-4 py-3 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40 resize-none"
           />
         </Field>
 
-        <Field label="COST (optional)">
+        <Field label={t("fieldCost")}>
           <input
             type="number"
             value={cost}
             onChange={(e) => setCost(e.target.value)}
-            placeholder="e.g. 85.00"
+            placeholder={t("placeholderCost")}
             step="0.01"
             min="0"
             className="h-[52px] bg-[#EBEBEB] rounded-input px-4 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40"
@@ -143,9 +145,9 @@ export default function NewVetVisitPage() {
         </Field>
 
         <div className="bg-white rounded-card p-4 flex flex-col gap-4">
-          <span className="text-[13px] font-semibold text-text-primary">Next Appointment</span>
+          <span className="text-[13px] font-semibold text-text-primary">{t("nextAppointment")}</span>
 
-          <Field label="DATE (optional)">
+          <Field label={t("fieldNextDate")}>
             <input
               type="date"
               value={nextAppointmentDate}
@@ -154,22 +156,22 @@ export default function NewVetVisitPage() {
             />
           </Field>
 
-          <Field label="REASON (optional)">
+          <Field label={t("fieldNextReason")}>
             <input
               type="text"
               value={nextAppointmentReason}
               onChange={(e) => setNextAppointmentReason(e.target.value)}
-              placeholder="e.g. Follow-up"
+              placeholder={t("placeholderNextReason")}
               className="h-[52px] bg-[#EBEBEB] rounded-input px-4 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40"
             />
           </Field>
         </div>
 
-        <Field label="NOTES (optional)">
+        <Field label={t("fieldNotes")}>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            placeholder="Any additional notes…"
+            placeholder={t("placeholderNotes")}
             rows={3}
             className="bg-[#EBEBEB] rounded-input px-4 py-3 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40 resize-none"
           />
@@ -184,7 +186,7 @@ export default function NewVetVisitPage() {
           disabled={loading}
           className="h-[56px] bg-accent text-white rounded-pill text-base font-semibold disabled:opacity-60 transition-opacity mt-2"
         >
-          {loading ? "Saving…" : "Save visit"}
+          {loading ? t("saving") : t("saveButton")}
         </button>
       </form>
     </div>
