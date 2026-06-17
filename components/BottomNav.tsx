@@ -2,20 +2,22 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { House, Syringe, Scale, Stethoscope, Ellipsis } from "lucide-react";
 
-const tabs = [
-  { href: "/dashboard",    icon: House,        label: "Home" },
-  { href: "/vaccinations", icon: Syringe,      label: "Vaccines" },
-  { href: "/weight",       icon: Scale,        label: "Weight" },
-  { href: "/vet-visits",   icon: Stethoscope,  label: "Vet" },
-  { href: "/more",         icon: Ellipsis,     label: "More" },
-];
-
-const morePaths = ["/more", "/food", "/medications", "/milestones", "/documents", "/profile"];
+const morePaths = ["/more", "/food", "/medications", "/milestones", "/documents", "/profile", "/settings"];
 
 export default function BottomNav() {
   const pathname = usePathname();
+  const t = useTranslations("nav");
+
+  const tabs = [
+    { href: "/dashboard",    icon: House,        label: t("home") },
+    { href: "/vaccinations", icon: Syringe,      label: t("vaccinations") },
+    { href: "/weight",       icon: Scale,        label: t("weight") },
+    { href: "/vet-visits",   icon: Stethoscope,  label: t("vetVisits") },
+    { href: "/more",         icon: Ellipsis,     label: t("more") },
+  ];
 
   return (
     <div className="lg:hidden fixed bottom-6 left-4 right-4 z-50">
