@@ -82,7 +82,7 @@ export default async function DashboardPage() {
   const latestWeight = weightEntries?.[0] ?? null;
   const currentFood = foodEntries?.[0] ?? null;
 
-  const greeting = user.email?.split("@")[0] ?? "there";
+  const greeting = (user.user_metadata?.display_name as string | undefined) ?? user.email?.split("@")[0] ?? "there";
 
   return (
     <div className="min-h-screen bg-background pb-32 lg:pb-10">
