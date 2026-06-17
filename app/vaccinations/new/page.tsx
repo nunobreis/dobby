@@ -7,8 +7,10 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 export default function NewVaccinationPage() {
+  const t = useTranslations("vaccinations");
   const [vaccineName, setVaccineName] = useState("");
   const [dateGiven, setDateGiven] = useState("");
   const [nextDueDate, setNextDueDate] = useState("");
@@ -24,11 +26,11 @@ export default function NewVaccinationPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!vaccineName || !dateGiven) {
-      setError("Vaccine name and date given are required.");
+      setError(t("errorRequired"));
       return;
     }
     if (nextDueDate && nextDueDate <= dateGiven) {
-      setError("Next due date must be after the date given.");
+      setError(t("errorNextDueDate"));
       return;
     }
     setError(null);
@@ -61,7 +63,7 @@ export default function NewVaccinationPage() {
 
       if (insertError) throw insertError;
 
-      toast.success("Vaccination saved!");
+      toast.success(t("toastSuccess"));
       router.push("/vaccinations");
       router.refresh();
     } catch (err: unknown) {
@@ -78,22 +80,22 @@ export default function NewVaccinationPage() {
         <Link href="/vaccinations">
           <ChevronLeft size={26} className="text-text-primary" />
         </Link>
-        <h1 className="text-[28px] font-bold text-text-primary">Add Vaccination</h1>
+        <h1 className="text-[28px] font-bold text-text-primary">{t("addTitle")}</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-        <Field label="VACCINE NAME">
+        <Field label={t("fieldVaccineName")}>
           <input
             type="text"
             value={vaccineName}
             onChange={(e) => setVaccineName(e.target.value)}
-            placeholder="e.g. Rabies, DHPP"
+            placeholder={t("placeholderVaccineName")}
             required
             className="h-[52px] bg-[#EBEBEB] rounded-input px-4 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40"
           />
         </Field>
 
-        <Field label="DATE GIVEN">
+        <Field label={t("fieldDateGiven")}>
           <input
             type="date"
             value={dateGiven}
@@ -103,7 +105,7 @@ export default function NewVaccinationPage() {
           />
         </Field>
 
-        <Field label="NEXT DUE DATE (optional)">
+        <Field label={t("fieldNextDueDate")}>
           <input
             type="date"
             value={nextDueDate}
@@ -112,31 +114,31 @@ export default function NewVaccinationPage() {
           />
         </Field>
 
-        <Field label="VET CLINIC (optional)">
+        <Field label={t("fieldVetClinic")}>
           <input
             type="text"
             value={vetClinic}
             onChange={(e) => setVetClinic(e.target.value)}
-            placeholder="e.g. Riverside Animal Clinic"
+            placeholder={t("placeholderVetClinic")}
             className="h-[52px] bg-[#EBEBEB] rounded-input px-4 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40"
           />
         </Field>
 
-        <Field label="BATCH NUMBER (optional)">
+        <Field label={t("fieldBatchNumber")}>
           <input
             type="text"
             value={batchNumber}
             onChange={(e) => setBatchNumber(e.target.value)}
-            placeholder="e.g. A12345B"
+            placeholder={t("placeholderBatchNumber")}
             className="h-[52px] bg-[#EBEBEB] rounded-input px-4 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40"
           />
         </Field>
 
-        <Field label="NOTES (optional)">
+        <Field label={t("fieldNotes")}>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            placeholder="Any additional notes…"
+            placeholder={t("placeholderNotes")}
             rows={3}
             className="bg-[#EBEBEB] rounded-input px-4 py-3 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40 resize-none"
           />
@@ -151,7 +153,7 @@ export default function NewVaccinationPage() {
           disabled={loading}
           className="h-[56px] bg-accent text-white rounded-pill text-base font-semibold disabled:opacity-60 transition-opacity mt-2"
         >
-          {loading ? "Saving…" : "Save vaccination"}
+          {loading ? t("saving") : t("saveButton")}
         </button>
       </form>
     </div>

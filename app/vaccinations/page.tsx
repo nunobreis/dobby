@@ -6,6 +6,7 @@ import BottomNav from "@/components/BottomNav";
 import VaccinationBadge from "@/components/VaccinationBadge";
 import EmptyState from "@/components/EmptyState";
 import { formatDate } from "@/lib/utils";
+import { getTranslations } from "next-intl/server";
 
 export default async function VaccinationsPage() {
   const supabase = await createClient();
@@ -23,16 +24,26 @@ export default async function VaccinationsPage() {
 
   if (!membership) redirect("/profile/setup");
 
-  const { data: vaccinations } = await supabase
-    .from("vaccinations")
-    .select("*")
-    .eq("puppy_id", membership.puppy_id)
-    .order("date_given", { ascending: false });
+  const [{ data: vaccinations }, { data: puppy }] = await Promise.all([
+    supabase
+      .from("vaccinations")
+      .select("*")
+      .eq("puppy_id", membership.puppy_id)
+      .order("date_given", { ascending: false }),
+    supabase
+      .from("puppies")
+      .select("name")
+      .eq("id", membership.puppy_id)
+      .single(),
+  ]);
+
+  const t = await getTranslations("vaccinations");
+  const puppyName = puppy?.name ?? "Dobby";
 
   return (
     <div className="min-h-screen bg-background pb-32 lg:pb-10">
       <div className="px-5 pt-10 pb-4 flex items-center justify-between">
-        <h1 className="text-[28px] font-bold text-text-primary">Vaccinations</h1>
+        <h1 className="text-[28px] font-bold text-text-primary">{t("title")}</h1>
         <Link href="/vaccinations/new">
           <div className="w-11 h-11 rounded-full bg-accent flex items-center justify-center">
             <Plus size={20} className="text-white" />
@@ -49,18 +60,18 @@ export default async function VaccinationsPage() {
                 <VaccinationBadge nextDueDate={v.next_due_date} />
               </div>
               <span className="text-[13px] text-text-secondary">
-                Given: {formatDate(v.date_given)}
+                {t("given", { date: formatDate(v.date_given) })}
               </span>
               {v.next_due_date && (
                 <span className="text-[13px] text-text-secondary">
-                  Next due: {formatDate(v.next_due_date)}
+                  {t("nextDue", { date: formatDate(v.next_due_date) })}
                 </span>
               )}
               {v.vet_clinic && (
                 <span className="text-[13px] text-text-secondary">{v.vet_clinic}</span>
               )}
               {v.batch_number && (
-                <span className="text-[12px] text-text-secondary">Batch: {v.batch_number}</span>
+                <span className="text-[12px] text-text-secondary">{t("batch", { number: v.batch_number })}</span>
               )}
               {v.notes && (
                 <span className="text-[13px] text-text-secondary italic">{v.notes}</span>
@@ -70,9 +81,9 @@ export default async function VaccinationsPage() {
         ) : (
           <EmptyState
             icon={Syringe}
-            title="No vaccinations yet"
-            message="Add Dobby's first vaccination record to start tracking."
-            ctaLabel="Add vaccination"
+            title={t("emptyTitle")}
+            message={t("emptyMessage", { name: puppyName })}
+            ctaLabel={t("emptyCta")}
             ctaHref="/vaccinations/new"
           />
         )}
