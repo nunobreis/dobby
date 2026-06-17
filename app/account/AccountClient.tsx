@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Camera } from "lucide-react";
+import { Camera, LogOut } from "lucide-react";
+import { useRouter } from "next/navigation";
 import BackButton from "@/components/BackButton";
 import { toast } from "sonner";
 import imageCompression from "browser-image-compression";
@@ -33,6 +34,12 @@ export default function AccountClient({ user }: { user: User }) {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const supabase = createClient();
+  const router = useRouter();
+
+  async function handleSignOut() {
+    await supabase.auth.signOut();
+    router.push("/login");
+  }
 
   async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -170,6 +177,17 @@ export default function AccountClient({ user }: { user: User }) {
           {savingProfile ? t("saving") : t("saveProfile")}
         </button>
       </form>
+
+      {/* Sign out */}
+      <div className="h-px bg-[#E0E0E0] mb-8" />
+      <button
+        type="button"
+        onClick={handleSignOut}
+        className="w-full h-[56px] flex items-center justify-center gap-2 rounded-pill border border-[#E0E0E0] text-[#9B1C1C] text-base font-semibold mb-8"
+      >
+        <LogOut size={18} />
+        {t("signOut")}
+      </button>
 
       {/* Change password */}
       <div className="h-px bg-[#E0E0E0] mb-8" />

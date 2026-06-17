@@ -327,6 +327,7 @@
     "passwordMismatch": "Passwords do not match.",
     "savePassword": "Update password",
     "toastPasswordSaved": "Password updated!",
-    "failedSave": "Something went wrong."
+    "failedSave": "Something went wrong.",
+    "signOut": "Sign out"
   }
 }

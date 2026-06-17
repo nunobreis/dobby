@@ -327,6 +327,7 @@
     "passwordMismatch": "As palavras-passe não coincidem.",
     "savePassword": "Atualizar palavra-passe",
     "toastPasswordSaved": "Palavra-passe atualizada!",
-    "failedSave": "Algo correu mal."
+    "failedSave": "Algo correu mal.",
+    "signOut": "Terminar sessão"
   }
 }
