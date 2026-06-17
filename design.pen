@@ -5700,25 +5700,7 @@
           "name": "Left Panel",
           "width": 720,
           "height": "fill_container",
-          "fill": {
-            "type": "gradient",
-            "gradientType": "linear",
-            "enabled": true,
-            "rotation": 135,
-            "size": {
-              "height": 1
-            },
-            "colors": [
-              {
-                "color": "#DDD3F8",
-                "position": 0
-              },
-              {
-                "color": "#F0EBFF",
-                "position": 1
-              }
-            ]
-          },
+          "fill": "$accent",
           "layout": "vertical",
           "justifyContent": "center",
           "alignItems": "center",
@@ -5731,7 +5713,7 @@
               "height": 80,
               "icon": "paw-print",
               "library": "lucide",
-              "fill": "$accent"
+              "fill": "$background"
             }
           ]
         },
@@ -10338,6 +10320,458 @@
                   "fontFamily": "DM Sans",
                   "fontSize": 11,
                   "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "O3hgRH",
+      "x": 1350,
+      "y": 0,
+      "name": "App Icons",
+      "width": 900,
+      "height": 778,
+      "fill": "#FAFAFA",
+      "cornerRadius": 20,
+      "layout": "vertical",
+      "gap": 48,
+      "padding": 40,
+      "children": [
+        {
+          "type": "frame",
+          "id": "DK9mH",
+          "name": "Favicons",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 20,
+          "children": [
+            {
+              "type": "text",
+              "id": "sxxuy",
+              "name": "Favicon Label",
+              "fill": "$text-secondary",
+              "content": "FAVICON",
+              "fontFamily": "DM Sans",
+              "fontSize": 11,
+              "fontWeight": "700",
+              "letterSpacing": 2
+            },
+            {
+              "type": "frame",
+              "id": "Z3x7F",
+              "name": "Favicon Row",
+              "gap": 24,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "y5DNDm",
+                  "name": "Favicon 16×16",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "rvd3o",
+                      "name": "Frame 16×16",
+                      "clip": true,
+                      "width": 16,
+                      "height": 16,
+                      "fill": "#8B5CF6",
+                      "cornerRadius": 2,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "JvdNH",
+                          "name": "Paw Icon",
+                          "width": 10,
+                          "height": 10,
+                          "icon": "paw-print",
+                          "library": "lucide",
+                          "fill": "#FFFFFF"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "nVu29",
+                      "name": "Label 16×16",
+                      "fill": "#7A7A7A",
+                      "content": "16×16",
+                      "fontFamily": "DM Sans",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "d6Ktu",
+                  "name": "Favicon 32×32",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "jId8W",
+                      "name": "Frame 32×32",
+                      "clip": true,
+                      "width": 32,
+                      "height": 32,
+                      "fill": "#8B5CF6",
+                      "cornerRadius": 4,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "mxZfA",
+                          "name": "Paw Icon",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "paw-print",
+                          "library": "lucide",
+                          "fill": "#FFFFFF"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "D2bpX3",
+                      "name": "Label 32×32",
+                      "fill": "#7A7A7A",
+                      "content": "32×32",
+                      "fontFamily": "DM Sans",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "oLxbC",
+                  "name": "Favicon 48×48",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "ZrvYt",
+                      "name": "Frame 48×48",
+                      "clip": true,
+                      "width": 48,
+                      "height": 48,
+                      "fill": "#8B5CF6",
+                      "cornerRadius": 6,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "FM79y",
+                          "name": "Paw Icon",
+                          "width": 28,
+                          "height": 28,
+                          "icon": "paw-print",
+                          "library": "lucide",
+                          "fill": "#FFFFFF"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "dOTZg",
+                      "name": "Label 48×48",
+                      "fill": "#7A7A7A",
+                      "content": "48×48",
+                      "fontFamily": "DM Sans",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "IjbPR",
+                  "name": "16px Favicon Pair",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "zHnHa",
+                      "name": "16x16 Favicon",
+                      "clip": true,
+                      "width": 16,
+                      "height": 16,
+                      "fill": "#8B5CF6",
+                      "cornerRadius": 2,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "Fsqf4",
+                          "name": "Paw Print Icon",
+                          "width": 10,
+                          "height": 10,
+                          "icon": "paw-print",
+                          "library": "lucide",
+                          "fill": "#FFFFFF"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "TVtNS",
+                      "name": "Size Label",
+                      "fill": "#7A7A7A",
+                      "content": "16×16",
+                      "fontFamily": "DM Sans",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "o7KfEH",
+                  "name": "32px Favicon Pair",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "haFWN",
+                      "name": "32x32 Favicon",
+                      "clip": true,
+                      "width": 32,
+                      "height": 32,
+                      "fill": "#8B5CF6",
+                      "cornerRadius": 4,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "uSXzD",
+                          "name": "Paw Print Icon",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "paw-print",
+                          "library": "lucide",
+                          "fill": "#FFFFFF"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "uPAFS",
+                      "name": "Size Label",
+                      "fill": "#7A7A7A",
+                      "content": "32×32",
+                      "fontFamily": "DM Sans",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "KNDtE",
+                  "name": "48px Favicon Pair",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "LERSD",
+                      "name": "48x48 Favicon",
+                      "clip": true,
+                      "width": 48,
+                      "height": 48,
+                      "fill": "#8B5CF6",
+                      "cornerRadius": 6,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "Wnjxj",
+                          "name": "Paw Print Icon",
+                          "width": 28,
+                          "height": 28,
+                          "icon": "paw-print",
+                          "library": "lucide",
+                          "fill": "#FFFFFF"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "qVyJj",
+                      "name": "Size Label",
+                      "fill": "#7A7A7A",
+                      "content": "48×48",
+                      "fontFamily": "DM Sans",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "jnw3f",
+          "name": "PWA Icons",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 20,
+          "children": [
+            {
+              "type": "text",
+              "id": "q5ZfC1",
+              "name": "PWA Label",
+              "fill": "$text-secondary",
+              "content": "PWA APP ICON",
+              "fontFamily": "DM Sans",
+              "fontSize": 11,
+              "fontWeight": "700",
+              "letterSpacing": 2
+            },
+            {
+              "type": "frame",
+              "id": "o2ka49",
+              "name": "PWA Row",
+              "gap": 32,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "UoePJ",
+                  "name": "PWA 192",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "nQvSJ",
+                      "name": "Icon 192x192",
+                      "clip": true,
+                      "width": 192,
+                      "height": 192,
+                      "fill": "$accent",
+                      "cornerRadius": 28,
+                      "layout": "vertical",
+                      "gap": 10,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "ZybgO",
+                          "name": "Paw",
+                          "width": 80,
+                          "height": 80,
+                          "icon": "paw-print",
+                          "library": "lucide",
+                          "fill": "#FFFFFF"
+                        },
+                        {
+                          "type": "text",
+                          "id": "z8aQI",
+                          "name": "App Name",
+                          "fill": "#FFFFFF",
+                          "content": "Dobby",
+                          "fontFamily": "DM Sans",
+                          "fontSize": 24,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "PfMMZ",
+                      "name": "Dim Label",
+                      "fill": "$text-secondary",
+                      "content": "192×192",
+                      "fontFamily": "DM Sans",
+                      "fontSize": 11,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "uKVkp",
+                  "name": "PWA 512",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "E5Kzdg",
+                      "name": "Icon 512x512",
+                      "clip": true,
+                      "width": 512,
+                      "height": 512,
+                      "fill": "$accent",
+                      "cornerRadius": 72,
+                      "layout": "vertical",
+                      "gap": 24,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "niAYo",
+                          "name": "Paw",
+                          "width": 200,
+                          "height": 200,
+                          "icon": "paw-print",
+                          "library": "lucide",
+                          "fill": "#FFFFFF"
+                        },
+                        {
+                          "type": "text",
+                          "id": "qq7Wv",
+                          "name": "App Name",
+                          "fill": "#FFFFFF",
+                          "content": "Dobby",
+                          "fontFamily": "DM Sans",
+                          "fontSize": 64,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "R8I7V",
+                      "name": "Dim Label",
+                      "fill": "$text-secondary",
+                      "content": "512×512",
+                      "fontFamily": "DM Sans",
+                      "fontSize": 11,
+                      "fontWeight": "600"
+                    }
+                  ]
                 }
               ]
             }
