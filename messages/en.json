@@ -305,5 +305,25 @@
     "upToDate": "Up to date",
     "dueSoon": "Due soon",
     "overdue": "Overdue"
+  },
+  "account": {
+    "title": "My Account",
+    "fieldEmail": "EMAIL",
+    "fieldMemberSince": "MEMBER SINCE",
+    "fieldDisplayName": "DISPLAY NAME",
+    "placeholderDisplayName": "e.g. Nuno",
+    "fieldPhone": "PHONE",
+    "placeholderPhone": "e.g. +351 912 345 678",
+    "changePhoto": "Change photo",
+    "saveProfile": "Save changes",
+    "saving": "Saving…",
+    "toastProfileSaved": "Account updated!",
+    "passwordSection": "Change Password",
+    "fieldNewPassword": "NEW PASSWORD",
+    "fieldConfirmPassword": "CONFIRM PASSWORD",
+    "passwordMismatch": "Passwords do not match.",
+    "savePassword": "Update password",
+    "toastPasswordSaved": "Password updated!",
+    "failedSave": "Something went wrong."
   }
 }

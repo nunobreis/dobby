@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { PawPrint } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import SidebarNav from "./SidebarNav";
@@ -19,6 +20,8 @@ export default async function Sidebar() {
 
   const username = user.email?.split("@")[0] ?? "User";
   const initial = username[0].toUpperCase();
+  const displayName = (user.user_metadata?.display_name as string | undefined) ?? username;
+  const avatarUrl = user.user_metadata?.avatar_url as string | undefined;
 
   return (
     <aside className="hidden lg:flex flex-col w-[220px] shrink-0 bg-white border-r border-[#E0E0E0] h-screen sticky top-0">
@@ -35,15 +38,22 @@ export default async function Sidebar() {
       <div className="flex-1" />
 
       {/* User row */}
-      <div className="flex items-center gap-3 h-[72px] px-4 border-t border-[#F0F0F0]">
-        <div className="w-9 h-9 rounded-full bg-[#F2C4CE] flex items-center justify-center shrink-0">
-          <span className="text-[14px] font-bold text-white">{initial}</span>
+      <Link
+        href="/account"
+        className="flex items-center gap-3 h-[72px] px-4 border-t border-[#F0F0F0] hover:bg-[#FAFAFA] transition-colors"
+      >
+        <div className="w-9 h-9 rounded-full bg-[#F2C4CE] flex items-center justify-center shrink-0 overflow-hidden">
+          {avatarUrl ? (
+            <img src={avatarUrl} alt={displayName} className="w-full h-full object-cover" />
+          ) : (
+            <span className="text-[14px] font-bold text-white">{initial}</span>
+          )}
         </div>
         <div className="flex flex-col min-w-0">
-          <span className="text-[13px] font-bold text-text-primary truncate">{username}</span>
+          <span className="text-[13px] font-bold text-text-primary truncate">{displayName}</span>
           <span className="text-[11px] text-text-secondary truncate">{user.email}</span>
         </div>
-      </div>
+      </Link>
     </aside>
   );
 }

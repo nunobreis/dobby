@@ -305,5 +305,25 @@
     "upToDate": "Em dia",
     "dueSoon": "Em breve",
     "overdue": "Em atraso"
+  },
+  "account": {
+    "title": "A Minha Conta",
+    "fieldEmail": "EMAIL",
+    "fieldMemberSince": "MEMBRO DESDE",
+    "fieldDisplayName": "NOME DE EXIBIÇÃO",
+    "placeholderDisplayName": "ex: Nuno",
+    "fieldPhone": "TELEFONE",
+    "placeholderPhone": "ex: +351 912 345 678",
+    "changePhoto": "Alterar foto",
+    "saveProfile": "Guardar alterações",
+    "saving": "A guardar…",
+    "toastProfileSaved": "Conta atualizada!",
+    "passwordSection": "Alterar Palavra-passe",
+    "fieldNewPassword": "NOVA PALAVRA-PASSE",
+    "fieldConfirmPassword": "CONFIRMAR PALAVRA-PASSE",
+    "passwordMismatch": "As palavras-passe não coincidem.",
+    "savePassword": "Atualizar palavra-passe",
+    "toastPasswordSaved": "Palavra-passe atualizada!",
+    "failedSave": "Algo correu mal."
   }
 }

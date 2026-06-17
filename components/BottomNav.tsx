@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { House, Syringe, Scale, Stethoscope, Ellipsis } from "lucide-react";
 
-const morePaths = ["/more", "/food", "/medications", "/milestones", "/documents", "/profile", "/settings"];
+const morePaths = ["/more", "/food", "/medications", "/milestones", "/documents", "/profile", "/settings", "/account"];
 
 export default function BottomNav() {
   const pathname = usePathname();
