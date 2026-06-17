@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import { Toaster } from "sonner";
+import Sidebar from "@/components/Sidebar";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -27,7 +28,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${dmSans.variable} font-sans antialiased bg-background`}>
-        {children}
+        <div className="flex min-h-screen">
+          <Sidebar />
+          <div className="flex-1 min-w-0">
+            {children}
+          </div>
+        </div>
         <Toaster position="top-center" richColors />
       </body>
     </html>

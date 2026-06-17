@@ -32,7 +32,7 @@ export default async function WeightPage() {
   const entriesDesc = [...(entriesAsc ?? [])].reverse();
 
   return (
-    <div className="min-h-screen bg-background pb-32">
+    <div className="min-h-screen bg-background pb-32 lg:pb-10">
       <div className="px-5 pt-10 pb-4 flex items-center justify-between">
         <h1 className="text-[28px] font-bold text-text-primary">Weight</h1>
         <Link href="/weight/new">

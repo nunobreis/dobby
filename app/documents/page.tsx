@@ -57,7 +57,7 @@ export default async function DocumentsPage() {
   }, {});
 
   return (
-    <div className="min-h-screen bg-background pb-32">
+    <div className="min-h-screen bg-background pb-32 lg:pb-10">
       <div className="px-5 pt-10 pb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <BackButton />
