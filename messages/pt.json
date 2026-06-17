@@ -187,7 +187,16 @@
     "placeholderNotes": "Notas adicionais…",
     "errorRequired": "Título e data são obrigatórios.",
     "saveButton": "Guardar marco",
-    "toastSuccess": "Marco adicionado!"
+    "toastSuccess": "Marco adicionado!",
+    "editButton": "Editar",
+    "editTitle": "Editar Marco",
+    "deleteButton": "Eliminar",
+    "deleteConfirmTitle": "Eliminar este marco?",
+    "deleteConfirmMessage": "Esta ação não pode ser desfeita.",
+    "cancelButton": "Cancelar",
+    "saveChangesButton": "Guardar alterações",
+    "toastUpdated": "Marco atualizado!",
+    "toastDeleted": "Marco eliminado."
   },
   "documents": {
     "title": "Documentos",

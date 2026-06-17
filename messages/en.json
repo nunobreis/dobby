@@ -187,7 +187,16 @@
     "placeholderNotes": "Any additional notes…",
     "errorRequired": "Title and date are required.",
     "saveButton": "Save milestone",
-    "toastSuccess": "Milestone added!"
+    "toastSuccess": "Milestone added!",
+    "editButton": "Edit",
+    "editTitle": "Edit Milestone",
+    "deleteButton": "Delete",
+    "deleteConfirmTitle": "Delete this milestone?",
+    "deleteConfirmMessage": "This can't be undone.",
+    "cancelButton": "Cancel",
+    "saveChangesButton": "Save changes",
+    "toastUpdated": "Milestone updated!",
+    "toastDeleted": "Milestone deleted."
   },
   "documents": {
     "title": "Documents",
