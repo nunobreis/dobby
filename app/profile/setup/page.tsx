@@ -6,8 +6,10 @@ import { PawPrint } from "lucide-react";
 import imageCompression from "browser-image-compression";
 import { createClient } from "@/lib/supabase/client";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { useTranslations } from "next-intl";
 
 export default function ProfileSetupPage() {
+  const t = useTranslations("profile");
   const [checking, setChecking] = useState(true);
   const [name, setName] = useState("Dobby");
   const [breed, setBreed] = useState("Golden Retriever");
@@ -77,7 +79,7 @@ export default function ProfileSetupPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!dob || !sex) {
-      setError("Date of birth and sex are required.");
+      setError(t("setup.errorRequired"));
       return;
     }
     setError(null);
@@ -139,7 +141,7 @@ export default function ProfileSetupPage() {
   return (
     <div className="min-h-screen bg-background px-5 py-8">
       <h1 className="text-[32px] font-bold text-text-primary mb-6">
-        Set up Dobby&apos;s profile
+        {t("setup.title", { name })}
       </h1>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
@@ -164,10 +166,10 @@ export default function ProfileSetupPage() {
               className="hidden"
             />
           </label>
-          <span className="text-[13px] text-text-secondary">Add photo</span>
+          <span className="text-[13px] text-text-secondary">{t("setup.addPhoto")}</span>
         </div>
 
-        <Field label="NAME">
+        <Field label={t("setup.fieldName")}>
           <input
             type="text"
             value={name}
@@ -177,7 +179,7 @@ export default function ProfileSetupPage() {
           />
         </Field>
 
-        <Field label="BREED">
+        <Field label={t("setup.fieldBreed")}>
           <input
             type="text"
             value={breed}
@@ -187,7 +189,7 @@ export default function ProfileSetupPage() {
           />
         </Field>
 
-        <Field label="DATE OF BIRTH">
+        <Field label={t("setup.fieldDateOfBirth")}>
           <input
             type="date"
             value={dob}
@@ -197,7 +199,7 @@ export default function ProfileSetupPage() {
           />
         </Field>
 
-        <Field label="SEX">
+        <Field label={t("setup.fieldSex")}>
           <select
             value={sex}
             onChange={(e) => setSex(e.target.value as "male" | "female")}
@@ -205,29 +207,29 @@ export default function ProfileSetupPage() {
             className="h-[52px] bg-[#EBEBEB] rounded-input px-4 text-[15px] text-text-primary outline-none focus:ring-2 focus:ring-accent/40 appearance-none"
           >
             <option value="" disabled>
-              Select…
+              {t("selectSex")}
             </option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
+            <option value="male">{t("male")}</option>
+            <option value="female">{t("female")}</option>
           </select>
         </Field>
 
-        <Field label="COLOUR (optional)">
+        <Field label={t("setup.fieldColour")}>
           <input
             type="text"
             value={colour}
             onChange={(e) => setColour(e.target.value)}
-            placeholder="e.g. Golden"
+            placeholder={t("placeholderColour")}
             className="h-[52px] bg-[#EBEBEB] rounded-input px-4 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40"
           />
         </Field>
 
-        <Field label="MICROCHIP NUMBER (optional)">
+        <Field label={t("setup.fieldMicrochip")}>
           <input
             type="text"
             value={microchip}
             onChange={(e) => setMicrochip(e.target.value)}
-            placeholder="e.g. 985 141 000 012 345"
+            placeholder={t("placeholderMicrochip")}
             className="h-[52px] bg-[#EBEBEB] rounded-input px-4 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40"
           />
         </Field>
@@ -243,7 +245,7 @@ export default function ProfileSetupPage() {
           disabled={loading}
           className="h-[56px] bg-accent text-white rounded-pill text-base font-semibold disabled:opacity-60 transition-opacity mt-2"
         >
-          {loading ? "Saving…" : "Save profile"}
+          {loading ? t("setup.saving") : t("setup.saveButton")}
         </button>
       </form>
     </div>

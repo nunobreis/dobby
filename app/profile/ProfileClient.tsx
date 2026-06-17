@@ -9,6 +9,7 @@ import { createClient } from "@/lib/supabase/client";
 import { invitePartner } from "./actions";
 import { formatDate } from "@/lib/utils";
 import type { Puppy } from "@/lib/types";
+import { useTranslations } from "next-intl";
 
 interface Member {
   user_id: string;
@@ -24,6 +25,7 @@ interface Props {
 const AVATAR_COLORS = ["#D5C9F0", "#C2DCF0", "#F2C4CE", "#C5DDD1", "#F5EAC2"];
 
 export default function ProfileClient({ puppy, members, currentUserId }: Props) {
+  const t = useTranslations("profile");
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(puppy.name);
   const [dob, setDob] = useState(puppy.date_of_birth);
@@ -83,10 +85,10 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
         .eq("id", puppy.id);
 
       if (error) throw error;
-      toast.success("Profile saved!");
+      toast.success(t("toastSuccess"));
       setEditing(false);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Failed to save.");
+      setError(err instanceof Error ? err.message : t("failedSave"));
     } finally {
       setSaving(false);
     }
@@ -98,7 +100,7 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
     setInviteMsg(null);
     try {
       await invitePartner(inviteEmail);
-      setInviteMsg(`Invite sent to ${inviteEmail}`);
+      setInviteMsg(t("inviteSent", { email: inviteEmail }));
       setInviteEmail("");
     } catch (err: unknown) {
       setInviteMsg(err instanceof Error ? err.message : "Failed to send invite.");
@@ -116,14 +118,14 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
               <ChevronLeft size={26} className="text-text-primary" />
             </button>
           )}
-          <h1 className="text-[32px] font-bold text-text-primary">Profile</h1>
+          <h1 className="text-[32px] font-bold text-text-primary">{t("title")}</h1>
         </div>
         <button
           onClick={() => (editing ? saveProfile() : setEditing(true))}
           disabled={saving}
           className="text-accent text-[15px] font-semibold disabled:opacity-50"
         >
-          {saving ? "Saving…" : editing ? "Save" : "Edit"}
+          {saving ? t("saving") : editing ? t("save") : t("edit")}
         </button>
       </div>
 
@@ -151,20 +153,20 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
           )}
         </label>
         {editing && (
-          <span className="text-[13px] text-text-secondary">Edit photo</span>
+          <span className="text-[13px] text-text-secondary">{t("editPhoto")}</span>
         )}
       </div>
 
       {/* Fields */}
       <div className="flex flex-col gap-4">
         <ProfileField
-          label="NAME"
+          label={t("fieldName")}
           value={name}
           editing={editing}
           onChange={setName}
         />
         <ProfileField
-          label="DATE OF BIRTH"
+          label={t("fieldDateOfBirth")}
           value={dob}
           editing={editing}
           onChange={setDob}
@@ -173,7 +175,7 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
         />
         <div className="flex flex-col gap-2">
           <span className="text-[11px] font-bold text-text-secondary tracking-wider">
-            SEX
+            {t("fieldSex")}
           </span>
           {editing ? (
             <select
@@ -181,9 +183,9 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
               onChange={(e) => setSex(e.target.value)}
               className="h-[52px] bg-[#EBEBEB] rounded-input px-4 text-[15px] text-text-primary outline-none focus:ring-2 focus:ring-accent/40 appearance-none"
             >
-              <option value="">Select…</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
+              <option value="">{t("selectSex")}</option>
+              <option value="male">{t("male")}</option>
+              <option value="female">{t("female")}</option>
             </select>
           ) : (
             <div className="h-[52px] bg-[#EBEBEB] rounded-input px-4 flex items-center">
@@ -194,18 +196,18 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
           )}
         </div>
         <ProfileField
-          label="COLOUR"
+          label={t("fieldColour")}
           value={colour}
           editing={editing}
           onChange={setColour}
-          placeholder="e.g. Golden"
+          placeholder={t("placeholderColour")}
         />
         <ProfileField
-          label="MICROCHIP NUMBER"
+          label={t("fieldMicrochip")}
           value={microchip}
           editing={editing}
           onChange={setMicrochip}
-          placeholder="e.g. 985 141 000 012 345"
+          placeholder={t("placeholderMicrochip")}
         />
       </div>
 
@@ -217,7 +219,7 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
 
       {/* Household */}
       <div className="mt-8 bg-white rounded-card p-5 flex flex-col gap-4">
-        <h2 className="text-[18px] font-bold text-text-primary">Household</h2>
+        <h2 className="text-[18px] font-bold text-text-primary">{t("household")}</h2>
 
         {members.map((m, i) => (
           <div key={m.user_id} className="flex items-center gap-3">
@@ -229,10 +231,10 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
             </div>
             <div className="flex flex-col">
               <span className="text-[14px] font-semibold text-text-primary">
-                {m.user_id === currentUserId ? "You" : "Partner"}
+                {m.user_id === currentUserId ? t("you") : t("partner")}
               </span>
               <span className="text-[13px] text-text-secondary">
-                Joined {formatDate(m.joined_at)}
+                {t("joined", { date: formatDate(m.joined_at) })}
               </span>
             </div>
           </div>
@@ -243,7 +245,7 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
             type="email"
             value={inviteEmail}
             onChange={(e) => setInviteEmail(e.target.value)}
-            placeholder="Partner's email"
+            placeholder={t("partnerEmailPlaceholder")}
             className="h-[52px] bg-[#EBEBEB] rounded-input px-4 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40"
           />
           <button
@@ -251,7 +253,7 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
             disabled={inviting || !inviteEmail}
             className="h-[50px] bg-accent text-white rounded-pill text-[15px] font-semibold disabled:opacity-60"
           >
-            {inviting ? "Sending…" : "+ Invite partner"}
+            {inviting ? t("inviting") : t("inviteButton")}
           </button>
           {inviteMsg && (
             <p className="text-[13px] text-text-secondary text-center">
