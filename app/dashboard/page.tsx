@@ -40,7 +40,7 @@ export default async function DashboardPage() {
     supabase.from("vet_visits").select("*").eq("puppy_id", puppyId).or(`next_appointment_date.gte.${today},date.gte.${today}`).order("date", { ascending: true }).limit(5),
     supabase.from("weight_entries").select("*").eq("puppy_id", puppyId).order("date", { ascending: false }).limit(2),
     supabase.from("food_entries").select("*").eq("puppy_id", puppyId).is("end_date", null).order("start_date", { ascending: false }).limit(1),
-    supabase.from("milestones").select("*").eq("puppy_id", puppyId).order("date", { ascending: false }).limit(3),
+    supabase.from("milestones").select("*").eq("puppy_id", puppyId).order("date", { ascending: false }).limit(6),
   ]);
 
   const t = await getTranslations("dashboard");
