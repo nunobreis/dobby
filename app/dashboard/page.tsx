@@ -109,7 +109,12 @@ export default async function DashboardPage() {
         {/* Hero card */}
         <div className="bg-white rounded-card p-5 flex flex-col gap-2.5">
           <span className="text-[13px] text-text-secondary">
-            {puppy?.breed ?? "Golden Retriever"} · {puppy?.date_of_birth ? calculateAge(puppy.date_of_birth) : "—"}
+            {[
+              puppy?.breed ?? "Golden Retriever",
+              puppy?.date_of_birth ? calculateAge(puppy.date_of_birth) : "—",
+              puppy?.sex ? puppy.sex.charAt(0).toUpperCase() + puppy.sex.slice(1) : null,
+              puppy?.colour ?? null,
+            ].filter(Boolean).join(" · ")}
           </span>
           {nextVaccination && hasAlert ? (
             <>
