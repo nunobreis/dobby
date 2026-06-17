@@ -6,16 +6,11 @@ import EmptyState from "@/components/EmptyState";
 import { createClient } from "@/lib/supabase/server";
 import BottomNav from "@/components/BottomNav";
 import { formatDate } from "@/lib/utils";
-
-const TYPE_LABELS: Record<string, string> = {
-  deworming: "Deworming",
-  flea_tick: "Flea & Tick",
-  antibiotic: "Antibiotic",
-  other: "Other",
-};
+import { getTranslations } from "next-intl/server";
 
 export default async function MedicationsPage() {
   const supabase = await createClient();
+  const t = await getTranslations("medications");
 
   const {
     data: { user },
@@ -45,12 +40,25 @@ export default async function MedicationsPage() {
     (m) => m.end_date && m.end_date < today
   );
 
+  const typeLabel = (type: string): string => {
+    const map: Record<string, string> = {
+      deworming: t("typeDeworming"),
+      flea_tick: t("typeFleaTick"),
+      antibiotic: t("typeAntibiotic"),
+      other: t("typeOther"),
+    };
+    return map[type] ?? type;
+  };
+
+  const ongoingLabel = t("ongoing");
+  const prescribedByLabel = (name: string) => t("prescribedBy", { name });
+
   return (
     <div className="min-h-screen bg-background pb-32 lg:pb-10">
       <div className="px-5 pt-10 pb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <BackButton />
-          <h1 className="text-[28px] font-bold text-text-primary">Medications</h1>
+          <h1 className="text-[28px] font-bold text-text-primary">{t("title")}</h1>
         </div>
         <Link href="/medications/new">
           <div className="w-11 h-11 rounded-full bg-accent flex items-center justify-center">
@@ -63,9 +71,9 @@ export default async function MedicationsPage() {
         {active.length === 0 && past.length === 0 ? (
           <EmptyState
             icon={Pill}
-            title="No medications yet"
-            message="Track dewormings, flea treatments, and any prescribed medications."
-            ctaLabel="Add medication"
+            title={t("emptyTitle")}
+            message={t("emptyMessage")}
+            ctaLabel={t("emptyCta")}
             ctaHref="/medications/new"
           />
         ) : (
@@ -73,10 +81,16 @@ export default async function MedicationsPage() {
             {active.length > 0 && (
               <div className="flex flex-col gap-3">
                 <span className="text-[11px] font-bold text-text-secondary tracking-wider px-1">
-                  ACTIVE
+                  {t("active")}
                 </span>
                 {active.map((m) => (
-                  <MedicationCard key={m.id} medication={m} />
+                  <MedicationCard
+                    key={m.id}
+                    medication={m}
+                    typeLabel={typeLabel}
+                    ongoingLabel={ongoingLabel}
+                    prescribedByLabel={prescribedByLabel}
+                  />
                 ))}
               </div>
             )}
@@ -84,10 +98,16 @@ export default async function MedicationsPage() {
             {past.length > 0 && (
               <div className="flex flex-col gap-3">
                 <span className="text-[11px] font-bold text-text-secondary tracking-wider px-1">
-                  PAST
+                  {t("past")}
                 </span>
                 {past.map((m) => (
-                  <MedicationCard key={m.id} medication={m} />
+                  <MedicationCard
+                    key={m.id}
+                    medication={m}
+                    typeLabel={typeLabel}
+                    ongoingLabel={ongoingLabel}
+                    prescribedByLabel={prescribedByLabel}
+                  />
                 ))}
               </div>
             )}
@@ -102,6 +122,9 @@ export default async function MedicationsPage() {
 
 function MedicationCard({
   medication,
+  typeLabel,
+  ongoingLabel,
+  prescribedByLabel,
 }: {
   medication: {
     id: string;
@@ -114,6 +137,9 @@ function MedicationCard({
     prescribed_by: string | null;
     notes: string | null;
   };
+  typeLabel: (type: string) => string;
+  ongoingLabel: string;
+  prescribedByLabel: (name: string) => string;
 }) {
   return (
     <div className="bg-white rounded-card p-4 flex flex-col gap-2">
@@ -121,7 +147,7 @@ function MedicationCard({
         <span className="text-[16px] font-bold text-text-primary">{medication.name}</span>
         {medication.medication_type && (
           <span className="bg-lavender text-text-primary text-[12px] font-medium px-3 py-1 rounded-badge shrink-0">
-            {TYPE_LABELS[medication.medication_type] ?? medication.medication_type}
+            {typeLabel(medication.medication_type)}
           </span>
         )}
       </div>
@@ -133,11 +159,11 @@ function MedicationCard({
       )}
       <span className="text-[13px] text-text-secondary">
         {formatDate(medication.start_date)}
-        {medication.end_date ? ` – ${formatDate(medication.end_date)}` : " · ongoing"}
+        {medication.end_date ? ` – ${formatDate(medication.end_date)}` : ` · ${ongoingLabel}`}
       </span>
       {medication.prescribed_by && (
         <span className="text-[12px] text-text-secondary">
-          Prescribed by {medication.prescribed_by}
+          {prescribedByLabel(medication.prescribed_by)}
         </span>
       )}
       {medication.notes && (

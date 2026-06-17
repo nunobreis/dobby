@@ -7,8 +7,10 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 export default function NewMedicationPage() {
+  const t = useTranslations("medications");
   const today = new Date().toISOString().split("T")[0];
   const [name, setName] = useState("");
   const [medicationType, setMedicationType] = useState("");
@@ -27,11 +29,11 @@ export default function NewMedicationPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!name || !startDate) {
-      setError("Name and start date are required.");
+      setError(t("errorRequired"));
       return;
     }
     if (endDate && endDate < startDate) {
-      setError("End date must be after the start date.");
+      setError(t("errorEndDate"));
       return;
     }
     setError(null);
@@ -66,7 +68,7 @@ export default function NewMedicationPage() {
 
       if (insertError) throw insertError;
 
-      toast.success("Medication saved!");
+      toast.success(t("toastSuccess"));
       router.push("/medications");
       router.refresh();
     } catch (err: unknown) {
@@ -83,56 +85,56 @@ export default function NewMedicationPage() {
         <Link href="/medications">
           <ChevronLeft size={26} className="text-text-primary" />
         </Link>
-        <h1 className="text-[28px] font-bold text-text-primary">Add Medication</h1>
+        <h1 className="text-[28px] font-bold text-text-primary">{t("addTitle")}</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-        <Field label="NAME">
+        <Field label={t("fieldName")}>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="e.g. Milbemax, Frontline"
+            placeholder={t("placeholderName")}
             required
             className="h-[52px] bg-[#EBEBEB] rounded-input px-4 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40"
           />
         </Field>
 
-        <Field label="TYPE">
+        <Field label={t("fieldType")}>
           <select
             value={medicationType}
             onChange={(e) => setMedicationType(e.target.value)}
             className="h-[52px] bg-[#EBEBEB] rounded-input px-4 text-[15px] text-text-primary outline-none focus:ring-2 focus:ring-accent/40 appearance-none"
           >
-            <option value="">Select…</option>
-            <option value="deworming">Deworming</option>
-            <option value="flea_tick">Flea & Tick</option>
-            <option value="antibiotic">Antibiotic</option>
-            <option value="other">Other</option>
+            <option value="">{t("typeSelect")}</option>
+            <option value="deworming">{t("typeDeworming")}</option>
+            <option value="flea_tick">{t("typeFleaTick")}</option>
+            <option value="antibiotic">{t("typeAntibiotic")}</option>
+            <option value="other">{t("typeOther")}</option>
           </select>
         </Field>
 
-        <Field label="DOSAGE (optional)">
+        <Field label={t("fieldDosage")}>
           <input
             type="text"
             value={dosage}
             onChange={(e) => setDosage(e.target.value)}
-            placeholder="e.g. 1 tablet"
+            placeholder={t("placeholderDosage")}
             className="h-[52px] bg-[#EBEBEB] rounded-input px-4 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40"
           />
         </Field>
 
-        <Field label="FREQUENCY (optional)">
+        <Field label={t("fieldFrequency")}>
           <input
             type="text"
             value={frequency}
             onChange={(e) => setFrequency(e.target.value)}
-            placeholder="e.g. Once a month"
+            placeholder={t("placeholderFrequency")}
             className="h-[52px] bg-[#EBEBEB] rounded-input px-4 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40"
           />
         </Field>
 
-        <Field label="START DATE">
+        <Field label={t("fieldStartDate")}>
           <input
             type="date"
             value={startDate}
@@ -142,7 +144,7 @@ export default function NewMedicationPage() {
           />
         </Field>
 
-        <Field label="END DATE (optional)">
+        <Field label={t("fieldEndDate")}>
           <input
             type="date"
             value={endDate}
@@ -151,21 +153,21 @@ export default function NewMedicationPage() {
           />
         </Field>
 
-        <Field label="PRESCRIBED BY (optional)">
+        <Field label={t("fieldPrescribedBy")}>
           <input
             type="text"
             value={prescribedBy}
             onChange={(e) => setPrescribedBy(e.target.value)}
-            placeholder="e.g. Dr. Smith"
+            placeholder={t("placeholderPrescribedBy")}
             className="h-[52px] bg-[#EBEBEB] rounded-input px-4 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40"
           />
         </Field>
 
-        <Field label="NOTES (optional)">
+        <Field label={t("fieldNotes")}>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            placeholder="Any additional notes…"
+            placeholder={t("placeholderNotes")}
             rows={3}
             className="bg-[#EBEBEB] rounded-input px-4 py-3 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40 resize-none"
           />
@@ -180,7 +182,7 @@ export default function NewMedicationPage() {
           disabled={loading}
           className="h-[56px] bg-accent text-white rounded-pill text-base font-semibold disabled:opacity-60 transition-opacity mt-2"
         >
-          {loading ? "Saving…" : "Save medication"}
+          {loading ? t("saving") : t("saveButton")}
         </button>
       </form>
     </div>
