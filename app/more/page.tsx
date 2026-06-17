@@ -1,41 +1,17 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { UtensilsCrossed, Pill, Trophy, FileText, PawPrint, ChevronRight } from "lucide-react";
+import {
+  UtensilsCrossed,
+  Pill,
+  Trophy,
+  FileText,
+  PawPrint,
+  ChevronRight,
+  Settings,
+} from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { getTranslations } from "next-intl/server";
 import BottomNav from "@/components/BottomNav";
-
-const sections = [
-  {
-    href: "/food",
-    icon: UtensilsCrossed,
-    label: "Food & Diet",
-    description: "Current food and feeding history",
-  },
-  {
-    href: "/medications",
-    icon: Pill,
-    label: "Medications",
-    description: "Dewormings, flea treatment and more",
-  },
-  {
-    href: "/milestones",
-    icon: Trophy,
-    label: "Milestones",
-    description: "First walks, tricks and memories",
-  },
-  {
-    href: "/documents",
-    icon: FileText,
-    label: "Documents",
-    description: "Insurance, certificates and vet records",
-  },
-  {
-    href: "/profile",
-    icon: PawPrint,
-    label: "Profile",
-    description: "Dobby's details and household members",
-  },
-];
 
 export default async function MorePage() {
   const supabase = await createClient();
@@ -45,13 +21,67 @@ export default async function MorePage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
+  const { data: membership } = await supabase
+    .from("puppy_members")
+    .select("puppy_id")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (!membership) redirect("/profile/setup");
+
+  const { data: puppy } = await supabase
+    .from("puppies")
+    .select("name")
+    .eq("id", membership.puppy_id)
+    .single();
+
+  const t = await getTranslations("more");
+  const puppyName = puppy?.name ?? "Dobby";
+
+  const sections = [
+    {
+      href: "/food",
+      icon: UtensilsCrossed,
+      label: t("foodLabel"),
+      description: t("foodDescription"),
+    },
+    {
+      href: "/medications",
+      icon: Pill,
+      label: t("medicationsLabel"),
+      description: t("medicationsDescription"),
+    },
+    {
+      href: "/milestones",
+      icon: Trophy,
+      label: t("milestonesLabel"),
+      description: t("milestonesDescription"),
+    },
+    {
+      href: "/documents",
+      icon: FileText,
+      label: t("documentsLabel"),
+      description: t("documentsDescription"),
+    },
+    {
+      href: "/profile",
+      icon: PawPrint,
+      label: t("profileLabel"),
+      description: t("profileDescription", { name: puppyName }),
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-background pb-32 lg:pb-10">
       <div className="px-5 pt-10 pb-4">
-        <h1 className="text-[28px] font-bold text-text-primary">More</h1>
+        <h1 className="text-[28px] font-bold text-text-primary">{t("title")}</h1>
       </div>
 
       <div className="px-5 flex flex-col gap-3">
+        {/* Pet sections */}
+        <span className="text-[11px] font-bold text-text-secondary tracking-wider px-1">
+          {puppyName.toUpperCase()}
+        </span>
         <div className="bg-white rounded-card overflow-hidden">
           {sections.map((section, i) => {
             const Icon = section.icon;
@@ -66,14 +96,41 @@ export default async function MorePage() {
                     <Icon size={18} className="text-accent" />
                   </div>
                   <div className="flex flex-col flex-1 min-w-0">
-                    <span className="text-[15px] font-semibold text-text-primary">{section.label}</span>
-                    <span className="text-[12px] text-text-secondary">{section.description}</span>
+                    <span className="text-[15px] font-semibold text-text-primary">
+                      {section.label}
+                    </span>
+                    <span className="text-[12px] text-text-secondary">
+                      {section.description}
+                    </span>
                   </div>
                   <ChevronRight size={16} className="text-[#AEAEAE] shrink-0" />
                 </div>
               </Link>
             );
           })}
+        </div>
+
+        {/* App section */}
+        <span className="text-[11px] font-bold text-text-secondary tracking-wider px-1 mt-2">
+          {t("sectionApp").toUpperCase()}
+        </span>
+        <div className="bg-white rounded-card overflow-hidden">
+          <Link href="/settings">
+            <div className="flex items-center gap-4 px-4 py-4 active:bg-[#F5F5F5] transition-colors">
+              <div className="w-10 h-10 rounded-[12px] bg-accent flex items-center justify-center shrink-0">
+                <Settings size={18} className="text-white" />
+              </div>
+              <div className="flex flex-col flex-1 min-w-0">
+                <span className="text-[15px] font-semibold text-text-primary">
+                  {t("settingsLabel")}
+                </span>
+                <span className="text-[12px] text-text-secondary">
+                  {t("settingsDescription")}
+                </span>
+              </div>
+              <ChevronRight size={16} className="text-[#AEAEAE] shrink-0" />
+            </div>
+          </Link>
         </div>
       </div>
 
