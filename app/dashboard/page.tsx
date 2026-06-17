@@ -87,7 +87,7 @@ export default async function DashboardPage() {
   return (
     <div className="min-h-screen bg-background pb-32 lg:pb-10">
       {/* Top bar */}
-      <div className="px-5 pt-10 pb-2 flex items-center justify-between">
+      <div className="px-5 pt-10 pb-5 lg:pb-2 flex items-center justify-between">
         <div className="flex flex-col gap-0.5">
           <span className="text-[13px] text-text-secondary">{t("greeting", { name: greeting })}</span>
           <span className="text-[24px] font-bold text-text-primary">
