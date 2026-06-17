@@ -6,6 +6,7 @@ import BottomNav from "@/components/BottomNav";
 import VaccinationBadge from "@/components/VaccinationBadge";
 import { formatDate, calculateAge, formatWeight, getVaccinationStatus } from "@/lib/utils";
 import { getTranslations } from "next-intl/server";
+import MilestoneCards from "./MilestoneCards";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -244,23 +245,7 @@ export default async function DashboardPage() {
             <Link href="/milestones" className="text-[13px] text-text-secondary">{t("seeAll")}</Link>
           </div>
           {milestones && milestones.length > 0 ? (
-            <div className="grid grid-cols-3 gap-3">
-              {milestones.map((m) => (
-                <div key={m.id} className="bg-white rounded-[16px] overflow-hidden flex flex-col">
-                  {m.photo_url && (
-                    <img
-                      src={m.photo_url}
-                      alt={m.title}
-                      className="w-full h-24 lg:h-40 object-cover"
-                    />
-                  )}
-                  <div className="p-3.5 flex flex-col gap-1">
-                    <span className="text-[14px] font-bold text-text-primary">{m.title}</span>
-                    <span className="text-[12px] text-text-secondary">{formatDate(m.date)}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <MilestoneCards milestones={milestones} />
           ) : (
             <div className="bg-white rounded-card p-5 flex flex-col items-center gap-2">
               <PawPrint size={28} className="text-accent opacity-40" />
