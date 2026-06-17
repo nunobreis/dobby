@@ -25,7 +25,8 @@
     "seeAll": "Ver todos",
     "noMilestonesYet": "Nenhum marco ainda. Adiciona o primeiro do {name}!",
     "addMilestone": "Adicionar marco",
-    "perDay": "{amount}g / dia"
+    "perDay": "{amount}g / dia",
+    "weightSinceLast": "desde o último"
   },
   "vaccinations": {
     "title": "Vacinas",

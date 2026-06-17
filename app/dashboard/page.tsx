@@ -38,7 +38,7 @@ export default async function DashboardPage() {
     supabase.from("puppies").select("*").eq("id", puppyId).single(),
     supabase.from("vaccinations").select("*").eq("puppy_id", puppyId).order("next_due_date", { ascending: true }),
     supabase.from("vet_visits").select("*").eq("puppy_id", puppyId).or(`next_appointment_date.gte.${today},date.gte.${today}`).order("date", { ascending: true }).limit(5),
-    supabase.from("weight_entries").select("*").eq("puppy_id", puppyId).order("date", { ascending: false }).limit(1),
+    supabase.from("weight_entries").select("*").eq("puppy_id", puppyId).order("date", { ascending: false }).limit(2),
     supabase.from("food_entries").select("*").eq("puppy_id", puppyId).is("end_date", null).order("start_date", { ascending: false }).limit(1),
     supabase.from("milestones").select("*").eq("puppy_id", puppyId).order("date", { ascending: false }).limit(3),
   ]);
@@ -80,6 +80,10 @@ export default async function DashboardPage() {
       .sort((a, b) => a.date.localeCompare(b.date))[0] ?? null;
   })();
   const latestWeight = weightEntries?.[0] ?? null;
+  const previousWeight = weightEntries?.[1] ?? null;
+  const weightChangePct = latestWeight && previousWeight
+    ? ((latestWeight.weight_kg - previousWeight.weight_kg) / previousWeight.weight_kg) * 100
+    : null;
   const currentFood = foodEntries?.[0] ?? null;
 
   const greeting = (user.user_metadata?.display_name as string | undefined) ?? user.email?.split("@")[0] ?? "there";
@@ -108,14 +112,26 @@ export default async function DashboardPage() {
       <div className="px-5 flex flex-col gap-5">
         {/* Hero card */}
         <div className="bg-white rounded-card p-5 flex flex-col gap-2.5">
-          <span className="text-[13px] text-text-secondary">
-            {[
-              puppy?.breed ?? "Golden Retriever",
-              puppy?.date_of_birth ? calculateAge(puppy.date_of_birth) : "—",
-              puppy?.sex ? puppy.sex.charAt(0).toUpperCase() + puppy.sex.slice(1) : null,
-              puppy?.colour ?? null,
-            ].filter(Boolean).join(" · ")}
-          </span>
+          <div className="flex flex-wrap gap-1.5">
+            <span className="px-2.5 py-0.5 rounded-badge text-[11px] font-semibold bg-lavender text-[#5B21B6]">
+              {puppy?.breed ?? "Golden Retriever"}
+            </span>
+            {puppy?.date_of_birth && (
+              <span className="px-2.5 py-0.5 rounded-badge text-[11px] font-semibold bg-soft-yellow text-[#78350F]">
+                {calculateAge(puppy.date_of_birth)}
+              </span>
+            )}
+            {puppy?.sex && (
+              <span className="px-2.5 py-0.5 rounded-badge text-[11px] font-semibold bg-sky-blue text-[#1e40af]">
+                {puppy.sex.charAt(0).toUpperCase() + puppy.sex.slice(1)}
+              </span>
+            )}
+            {puppy?.colour && (
+              <span className="px-2.5 py-0.5 rounded-badge text-[11px] font-semibold bg-sage-green text-[#166534]">
+                {puppy.colour}
+              </span>
+            )}
+          </div>
           {nextVaccination && hasAlert ? (
             <>
               <span className="text-[16px] font-bold text-text-primary">
@@ -213,6 +229,11 @@ export default async function DashboardPage() {
                   <span className="text-[13px] text-text-secondary">
                     {formatDate(latestWeight.date)}
                   </span>
+                  {weightChangePct !== null && (
+                    <span className={`text-[12px] font-medium ${weightChangePct >= 0 ? "text-[#166534]" : "text-[#9B1C1C]"}`}>
+                      {weightChangePct >= 0 ? "↑" : "↓"} {Math.abs(weightChangePct).toFixed(1)}% {t("weightSinceLast")}
+                    </span>
+                  )}
                 </>
               ) : (
                 <span className="text-[13px] text-text-secondary">{t("notLoggedYet")}</span>

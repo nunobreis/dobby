@@ -25,7 +25,8 @@
     "seeAll": "See all",
     "noMilestonesYet": "No milestones yet. Add {name}'s first!",
     "addMilestone": "Add milestone",
-    "perDay": "{amount}g / day"
+    "perDay": "{amount}g / day",
+    "weightSinceLast": "since last"
   },
   "vaccinations": {
     "title": "Vaccinations",
