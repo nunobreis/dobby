@@ -32,6 +32,7 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
   const [sex, setSex] = useState(puppy.sex ?? "");
   const [colour, setColour] = useState(puppy.colour ?? "");
   const [microchip, setMicrochip] = useState(puppy.microchip_number ?? "");
+  const [legalOwner, setLegalOwner] = useState(puppy.legal_owner ?? "");
   const [photoPreview, setPhotoPreview] = useState<string | null>(puppy.photo_url);
   const [pendingPhoto, setPendingPhoto] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
@@ -80,6 +81,7 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
           sex: sex || null,
           colour: colour || null,
           microchip_number: microchip || null,
+          legal_owner: legalOwner || null,
           photo_url: photoUrl,
         })
         .eq("id", puppy.id);
@@ -208,6 +210,13 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
           editing={editing}
           onChange={setMicrochip}
           placeholder={t("placeholderMicrochip")}
+        />
+        <ProfileField
+          label={t("fieldLegalOwner")}
+          value={legalOwner}
+          editing={editing}
+          onChange={setLegalOwner}
+          placeholder={t("placeholderLegalOwner")}
         />
       </div>
 

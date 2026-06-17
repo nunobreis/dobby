@@ -237,6 +237,8 @@
     "female": "Female",
     "placeholderColour": "e.g. Golden",
     "placeholderMicrochip": "e.g. 985 141 000 012 345",
+    "fieldLegalOwner": "LEGAL OWNER",
+    "placeholderLegalOwner": "e.g. John Smith",
     "setup": {
       "title": "Set up {name}'s profile",
       "addPhoto": "Add photo",

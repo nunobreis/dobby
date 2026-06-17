@@ -237,6 +237,8 @@
     "female": "Fêmea",
     "placeholderColour": "ex: Dourado",
     "placeholderMicrochip": "ex: 985 141 000 012 345",
+    "fieldLegalOwner": "PROPRIETÁRIO LEGAL",
+    "placeholderLegalOwner": "ex: João Silva",
     "setup": {
       "title": "Configurar o perfil do {name}",
       "addPhoto": "Adicionar foto",

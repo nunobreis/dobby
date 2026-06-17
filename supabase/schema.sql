@@ -14,6 +14,7 @@ create table puppies (
   sex text check (sex in ('male', 'female')),
   colour text,
   microchip_number text,
+  legal_owner text,
   photo_url text,
   created_at timestamptz default now()
 );
