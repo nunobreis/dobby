@@ -6,9 +6,11 @@ import BottomNav from "@/components/BottomNav";
 import BackButton from "@/components/BackButton";
 import EmptyState from "@/components/EmptyState";
 import { formatDate } from "@/lib/utils";
+import { getTranslations } from "next-intl/server";
 
 export default async function MilestonesPage() {
   const supabase = await createClient();
+  const t = await getTranslations("milestones");
 
   const {
     data: { user },
@@ -23,6 +25,14 @@ export default async function MilestonesPage() {
 
   if (!membership) redirect("/profile/setup");
 
+  const { data: puppy } = await supabase
+    .from("puppies")
+    .select("name")
+    .eq("id", membership.puppy_id)
+    .single();
+
+  const puppyName = puppy?.name ?? "";
+
   const { data: milestones } = await supabase
     .from("milestones")
     .select("*")
@@ -34,7 +44,7 @@ export default async function MilestonesPage() {
       <div className="px-5 pt-10 pb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <BackButton />
-          <h1 className="text-[28px] font-bold text-text-primary">Milestones</h1>
+          <h1 className="text-[28px] font-bold text-text-primary">{t("title")}</h1>
         </div>
         <Link href="/milestones/new">
           <div className="w-11 h-11 rounded-full bg-accent flex items-center justify-center">
@@ -72,9 +82,9 @@ export default async function MilestonesPage() {
         ) : (
           <EmptyState
             icon={Trophy}
-            title="No milestones yet"
-            message="Record Dobby's firsts and special moments."
-            ctaLabel="Add milestone"
+            title={t("emptyTitle")}
+            message={t("emptyMessage", { name: puppyName })}
+            ctaLabel={t("emptyCta")}
             ctaHref="/milestones/new"
           />
         )}

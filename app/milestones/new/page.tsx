@@ -8,8 +8,10 @@ import { createClient } from "@/lib/supabase/client";
 import ImageUpload from "@/components/ImageUpload";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 export default function NewMilestonePage() {
+  const t = useTranslations("milestones");
   const today = new Date().toISOString().split("T")[0];
   const [title, setTitle] = useState("");
   const [date, setDate] = useState(today);
@@ -24,7 +26,7 @@ export default function NewMilestonePage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!title || !date) {
-      setError("Title and date are required.");
+      setError(t("errorRequired"));
       return;
     }
     setError(null);
@@ -72,7 +74,7 @@ export default function NewMilestonePage() {
 
       if (insertError) throw insertError;
 
-      toast.success("Milestone added!");
+      toast.success(t("toastSuccess"));
       router.push("/milestones");
       router.refresh();
     } catch (err: unknown) {
@@ -89,22 +91,22 @@ export default function NewMilestonePage() {
         <Link href="/milestones">
           <ChevronLeft size={26} className="text-text-primary" />
         </Link>
-        <h1 className="text-[28px] font-bold text-text-primary">Add Milestone</h1>
+        <h1 className="text-[28px] font-bold text-text-primary">{t("addTitle")}</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-        <Field label="TITLE">
+        <Field label={t("fieldTitle")}>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="e.g. First walk, First trick"
+            placeholder={t("placeholderTitle")}
             required
             className="h-[52px] bg-[#EBEBEB] rounded-input px-4 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40"
           />
         </Field>
 
-        <Field label="DATE">
+        <Field label={t("fieldDate")}>
           <input
             type="date"
             value={date}
@@ -114,15 +116,15 @@ export default function NewMilestonePage() {
           />
         </Field>
 
-        <Field label="PHOTO (optional)">
+        <Field label={t("fieldPhoto")}>
           <ImageUpload onChange={setPhoto} />
         </Field>
 
-        <Field label="NOTES (optional)">
+        <Field label={t("fieldNotes")}>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            placeholder="Any additional notes…"
+            placeholder={t("placeholderNotes")}
             rows={3}
             className="bg-[#EBEBEB] rounded-input px-4 py-3 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40 resize-none"
           />
@@ -137,7 +139,7 @@ export default function NewMilestonePage() {
           disabled={loading}
           className="h-[56px] bg-accent text-white rounded-pill text-base font-semibold disabled:opacity-60 transition-opacity mt-2"
         >
-          Save milestone
+          {t("saveButton")}
         </button>
       </form>
     </div>
