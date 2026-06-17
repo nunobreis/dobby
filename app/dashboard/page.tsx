@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import BottomNav from "@/components/BottomNav";
 import VaccinationBadge from "@/components/VaccinationBadge";
 import { formatDate, calculateAge, formatWeight, getVaccinationStatus } from "@/lib/utils";
+import { getTranslations } from "next-intl/server";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -40,6 +41,8 @@ export default async function DashboardPage() {
     supabase.from("food_entries").select("*").eq("puppy_id", puppyId).is("end_date", null).order("start_date", { ascending: false }).limit(1),
     supabase.from("milestones").select("*").eq("puppy_id", puppyId).order("date", { ascending: false }).limit(3),
   ]);
+
+  const t = await getTranslations("dashboard");
 
   const allVaccinations = vaccinations ?? [];
   const hasVaccinations = allVaccinations.length > 0;
@@ -85,7 +88,7 @@ export default async function DashboardPage() {
       {/* Top bar */}
       <div className="px-5 pt-10 pb-2 flex items-center justify-between">
         <div className="flex flex-col gap-0.5">
-          <span className="text-[13px] text-text-secondary">Hello, {greeting}</span>
+          <span className="text-[13px] text-text-secondary">{t("greeting", { name: greeting })}</span>
           <span className="text-[24px] font-bold text-text-primary">
             {puppy?.name ?? "Dobby"} 🐾
           </span>
@@ -110,23 +113,25 @@ export default async function DashboardPage() {
           {nextVaccination && hasAlert ? (
             <>
               <span className="text-[16px] font-bold text-text-primary">
-                🐾 {nextVaccination.vaccine_name} {vaccinationStatus === "overdue" ? "is overdue" : "due soon"}
+                {vaccinationStatus === "overdue"
+                  ? t("vaccinationOverdue", { vaccine: nextVaccination.vaccine_name })
+                  : t("vaccinationDueSoon", { vaccine: nextVaccination.vaccine_name })}
               </span>
               <VaccinationBadge nextDueDate={nextVaccination.next_due_date} />
             </>
           ) : nextVaccination ? (
             <>
               <span className="text-[16px] font-bold text-text-primary">
-                ✓ All vaccinations up to date
+                {t("allUpToDate")}
               </span>
               <VaccinationBadge nextDueDate={nextVaccination.next_due_date} />
             </>
           ) : hasVaccinations ? (
             <span className="text-[16px] font-bold text-text-primary">
-              ✓ Vaccinations recorded
+              {t("vaccinationsRecorded")}
             </span>
           ) : (
-            <span className="text-[14px] text-text-secondary">No vaccinations recorded yet</span>
+            <span className="text-[14px] text-text-secondary">{t("noVaccinations")}</span>
           )}
         </div>
 
@@ -137,7 +142,7 @@ export default async function DashboardPage() {
             {/* Next vaccine */}
             <div className="flex-1 bg-white rounded-card p-4 flex flex-col gap-2">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-text-secondary tracking-wider">NEXT VACCINE</span>
+                <span className="text-[11px] font-bold text-text-secondary tracking-wider">{t("nextVaccine")}</span>
                 <Link href="/vaccinations" className="p-2 -mr-2">
                   <ArrowUpRight size={16} className="text-text-secondary" />
                 </Link>
@@ -157,14 +162,14 @@ export default async function DashboardPage() {
                   )}
                 </>
               ) : (
-                <span className="text-[13px] text-text-secondary">None recorded</span>
+                <span className="text-[13px] text-text-secondary">{t("noneRecorded")}</span>
               )}
             </div>
 
             {/* Next vet */}
             <div className="flex-1 bg-white rounded-card p-4 flex flex-col gap-2">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-text-secondary tracking-wider">NEXT VET VISIT</span>
+                <span className="text-[11px] font-bold text-text-secondary tracking-wider">{t("nextVetVisit")}</span>
                 <Link href="/vet-visits" className="p-2 -mr-2">
                   <ArrowUpRight size={16} className="text-text-secondary" />
                 </Link>
@@ -179,7 +184,7 @@ export default async function DashboardPage() {
                   </span>
                 </>
               ) : (
-                <span className="text-[13px] text-text-secondary">None scheduled</span>
+                <span className="text-[13px] text-text-secondary">{t("noneScheduled")}</span>
               )}
             </div>
           </div>
@@ -189,7 +194,7 @@ export default async function DashboardPage() {
             {/* Weight */}
             <div className="flex-1 bg-white rounded-card p-4 flex flex-col gap-2">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-text-secondary tracking-wider">WEIGHT</span>
+                <span className="text-[11px] font-bold text-text-secondary tracking-wider">{t("weightLabel")}</span>
                 <Link href="/weight" className="p-2 -mr-2">
                   <ArrowUpRight size={16} className="text-text-secondary" />
                 </Link>
@@ -204,14 +209,14 @@ export default async function DashboardPage() {
                   </span>
                 </>
               ) : (
-                <span className="text-[13px] text-text-secondary">Not logged yet</span>
+                <span className="text-[13px] text-text-secondary">{t("notLoggedYet")}</span>
               )}
             </div>
 
             {/* Food */}
             <div className="flex-1 bg-white rounded-card p-4 flex flex-col gap-2">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-text-secondary tracking-wider">FOOD</span>
+                <span className="text-[11px] font-bold text-text-secondary tracking-wider">{t("foodLabel")}</span>
                 <Link href="/food" className="p-2 -mr-2">
                   <ArrowUpRight size={16} className="text-text-secondary" />
                 </Link>
@@ -222,11 +227,11 @@ export default async function DashboardPage() {
                     {currentFood.brand}
                   </span>
                   <span className="text-[13px] text-text-secondary">
-                    {currentFood.daily_amount_g ? `${currentFood.daily_amount_g}g / day` : currentFood.product_name}
+                    {currentFood.daily_amount_g ? t("perDay", { amount: currentFood.daily_amount_g }) : currentFood.product_name}
                   </span>
                 </>
               ) : (
-                <span className="text-[13px] text-text-secondary">Not set yet</span>
+                <span className="text-[13px] text-text-secondary">{t("notSetYet")}</span>
               )}
             </div>
           </div>
@@ -235,8 +240,8 @@ export default async function DashboardPage() {
         {/* Milestones */}
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between">
-            <span className="text-[18px] font-bold text-text-primary">Recent Milestones</span>
-            <Link href="/milestones" className="text-[13px] text-text-secondary">See all</Link>
+            <span className="text-[18px] font-bold text-text-primary">{t("recentMilestones")}</span>
+            <Link href="/milestones" className="text-[13px] text-text-secondary">{t("seeAll")}</Link>
           </div>
           {milestones && milestones.length > 0 ? (
             <div className="flex gap-3">
@@ -260,13 +265,13 @@ export default async function DashboardPage() {
             <div className="bg-white rounded-card p-5 flex flex-col items-center gap-2">
               <PawPrint size={28} className="text-accent opacity-40" />
               <span className="text-[13px] text-text-secondary text-center">
-                No milestones yet. Add Dobby&apos;s first!
+                {t("noMilestonesYet", { name: puppy?.name ?? "Dobby" })}
               </span>
               <Link
                 href="/milestones/new"
                 className="text-[13px] font-semibold text-accent"
               >
-                Add milestone
+                {t("addMilestone")}
               </Link>
             </div>
           )}
