@@ -53,7 +53,7 @@ export default async function MilestonesPage() {
         </Link>
       </div>
 
-      <div className="px-5">
+      <div className="px-5 max-w-xl lg:max-w-2xl">
         {milestones && milestones.length > 0 ? (
           <div className="relative">
             <div className="absolute left-[7px] top-3 bottom-3 w-[2px] bg-[#E0E0E0]" />
