@@ -6,18 +6,20 @@ import EmptyState from "@/components/EmptyState";
 import { createClient } from "@/lib/supabase/server";
 import BottomNav from "@/components/BottomNav";
 import { formatDate } from "@/lib/utils";
-
-const CATEGORY_LABELS: Record<string, string> = {
-  insurance: "Insurance",
-  certificates: "Certificates",
-  vet_records: "Vet Records",
-  other: "Other",
-};
+import { getTranslations } from "next-intl/server";
 
 const CATEGORY_ORDER = ["insurance", "certificates", "vet_records", "other"];
 
 export default async function DocumentsPage() {
   const supabase = await createClient();
+  const t = await getTranslations("documents");
+
+  const CATEGORY_LABELS: Record<string, string> = {
+    insurance: t("categoryInsurance"),
+    certificates: t("categoryCertificates"),
+    vet_records: t("categoryVetRecords"),
+    other: t("categoryOther"),
+  };
 
   const {
     data: { user },
@@ -61,7 +63,7 @@ export default async function DocumentsPage() {
       <div className="px-5 pt-10 pb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <BackButton />
-          <h1 className="text-[28px] font-bold text-text-primary">Documents</h1>
+          <h1 className="text-[28px] font-bold text-text-primary">{t("title")}</h1>
         </div>
         <Link href="/documents/new">
           <div className="w-11 h-11 rounded-full bg-accent flex items-center justify-center">
@@ -74,9 +76,9 @@ export default async function DocumentsPage() {
         {Object.keys(grouped).length === 0 ? (
           <EmptyState
             icon={FileText}
-            title="No documents yet"
-            message="Add your insurance policy, certificates, or vet records."
-            ctaLabel="Add document"
+            title={t("emptyTitle")}
+            message={t("emptyMessage")}
+            ctaLabel={t("emptyCta")}
             ctaHref="/documents/new"
           />
         ) : (

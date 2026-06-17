@@ -8,8 +8,10 @@ import { createClient } from "@/lib/supabase/client";
 import DocumentUpload from "@/components/DocumentUpload";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 export default function NewDocumentPage() {
+  const t = useTranslations("documents");
   const today = new Date().toISOString().split("T")[0];
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
@@ -25,7 +27,7 @@ export default function NewDocumentPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!title || !file) {
-      setError("Title and file are required.");
+      setError(t("errorRequired"));
       return;
     }
     setError(null);
@@ -70,7 +72,7 @@ export default function NewDocumentPage() {
 
       if (insertError) throw insertError;
 
-      toast.success("Document saved!");
+      toast.success(t("toastSuccess"));
       router.push("/documents");
       router.refresh();
     } catch (err: unknown) {
@@ -87,40 +89,40 @@ export default function NewDocumentPage() {
         <Link href="/documents">
           <ChevronLeft size={26} className="text-text-primary" />
         </Link>
-        <h1 className="text-[28px] font-bold text-text-primary">Add Document</h1>
+        <h1 className="text-[28px] font-bold text-text-primary">{t("addTitle")}</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-        <Field label="FILE">
+        <Field label={t("fieldFile")}>
           <DocumentUpload onChange={setFile} />
         </Field>
 
-        <Field label="TITLE">
+        <Field label={t("fieldTitle")}>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="e.g. Pet Insurance Policy"
+            placeholder={t("placeholderTitle")}
             required
             className="h-[52px] bg-[#EBEBEB] rounded-input px-4 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40"
           />
         </Field>
 
-        <Field label="CATEGORY">
+        <Field label={t("fieldCategory")}>
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             className="h-[52px] bg-[#EBEBEB] rounded-input px-4 text-[15px] text-text-primary outline-none focus:ring-2 focus:ring-accent/40 appearance-none"
           >
-            <option value="">Select…</option>
-            <option value="insurance">Insurance</option>
-            <option value="certificates">Certificates</option>
-            <option value="vet_records">Vet Records</option>
-            <option value="other">Other</option>
+            <option value="">{t("categorySelect")}</option>
+            <option value="insurance">{t("categoryInsurance")}</option>
+            <option value="certificates">{t("categoryCertificates")}</option>
+            <option value="vet_records">{t("categoryVetRecords")}</option>
+            <option value="other">{t("categoryOther")}</option>
           </select>
         </Field>
 
-        <Field label="DATE (optional)">
+        <Field label={t("fieldDate")}>
           <input
             type="date"
             value={documentDate}
@@ -129,11 +131,11 @@ export default function NewDocumentPage() {
           />
         </Field>
 
-        <Field label="NOTES (optional)">
+        <Field label={t("fieldNotes")}>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            placeholder="Any additional notes…"
+            placeholder={t("placeholderNotes")}
             rows={3}
             className="bg-[#EBEBEB] rounded-input px-4 py-3 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40 resize-none"
           />
@@ -148,7 +150,7 @@ export default function NewDocumentPage() {
           disabled={loading}
           className="h-[56px] bg-accent text-white rounded-pill text-base font-semibold disabled:opacity-60 transition-opacity mt-2"
         >
-          Save document
+          {t("saveButton")}
         </button>
       </form>
     </div>
