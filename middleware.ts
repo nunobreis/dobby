@@ -63,6 +63,16 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // Sync NEXT_LOCALE cookie from Supabase user metadata (cross-device sync)
+  const userLocale = user.user_metadata?.language as string | undefined;
+  const cookieLocale = request.cookies.get("NEXT_LOCALE")?.value;
+  if (userLocale && ["en", "pt"].includes(userLocale) && userLocale !== cookieLocale) {
+    supabaseResponse.cookies.set("NEXT_LOCALE", userLocale, {
+      maxAge: 60 * 60 * 24 * 365,
+      path: "/",
+    });
+  }
+
   return supabaseResponse;
 }
 
