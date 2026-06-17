@@ -17,7 +17,7 @@ export default function MilestoneCards({ milestones }: { milestones: Milestone[]
 
   return (
     <>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
         {milestones.map((m) => (
           <button
             key={m.id}
