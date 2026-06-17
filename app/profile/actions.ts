@@ -35,5 +35,8 @@ export async function invitePartner(email: string) {
     redirectTo: callbackUrl,
   });
 
-  if (error) throw error;
+  if (error) {
+    console.error("invitePartner error", { name: error.name, message: error.message, status: (error as { status?: number }).status });
+    throw error;
+  }
 }
