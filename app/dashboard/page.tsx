@@ -244,14 +244,14 @@ export default async function DashboardPage() {
             <Link href="/milestones" className="text-[13px] text-text-secondary">{t("seeAll")}</Link>
           </div>
           {milestones && milestones.length > 0 ? (
-            <div className="flex gap-3">
+            <div className="grid grid-cols-3 gap-3">
               {milestones.map((m) => (
-                <div key={m.id} className="flex-1 bg-white rounded-[16px] overflow-hidden flex flex-col">
+                <div key={m.id} className="bg-white rounded-[16px] overflow-hidden flex flex-col">
                   {m.photo_url && (
                     <img
                       src={m.photo_url}
                       alt={m.title}
-                      className="w-full h-24 object-cover"
+                      className="w-full h-24 lg:h-40 object-cover"
                     />
                   )}
                   <div className="p-3.5 flex flex-col gap-1">
