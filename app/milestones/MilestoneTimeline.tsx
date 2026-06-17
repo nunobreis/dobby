@@ -59,15 +59,14 @@ export default function MilestoneTimeline({ milestones }: { milestones: Mileston
       let photoUrl = selected.photo_url;
 
       if (editPhoto) {
-        const ext = editPhoto.name.split(".").pop();
+        const ext = editPhoto.name.split(".").pop() ?? "jpg";
         const path = `${selected.puppy_id}/milestones/${selected.id}.${ext}`;
         const { error: uploadError } = await supabase.storage
           .from("dobby-photos")
           .upload(path, editPhoto, { upsert: true });
-        if (!uploadError) {
-          const { data } = supabase.storage.from("dobby-photos").getPublicUrl(path);
-          photoUrl = data.publicUrl;
-        }
+        if (uploadError) throw uploadError;
+        const { data } = supabase.storage.from("dobby-photos").getPublicUrl(path);
+        photoUrl = data.publicUrl;
       }
 
       const { error: updateError } = await supabase
