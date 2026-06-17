@@ -55,53 +55,43 @@ export default function LoginPage() {
     }
   }
 
-  return (
-    <div className="min-h-screen bg-background flex flex-col justify-center px-8 py-12">
+  const form = (
+    <>
       <div className="flex flex-col items-center gap-3 mb-8">
-        <PawPrint size={48} strokeWidth={1.5} className="text-text-primary opacity-80" />
+        <PawPrint size={40} strokeWidth={1.5} className="text-accent" />
         <h1 className="text-[28px] font-bold text-text-primary">Dobby</h1>
         <p className="text-sm text-text-secondary text-center">
-          Keeping your pup healthy, together
+          Track your golden retriever&apos;s health journey
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-        <div className="flex flex-col gap-2">
-          <label className="text-[12px] font-semibold text-text-secondary">
-            Email
-          </label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
-            required
-            className="h-[52px] bg-[#EBEBEB] rounded-input px-4 text-base text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40 transition-shadow"
-          />
-        </div>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email address"
+          required
+          className="h-[52px] bg-[#EFEFEF] rounded-input px-4 text-base text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40 transition-shadow"
+        />
 
-        <div className="flex flex-col gap-2">
-          <label className="text-[12px] font-semibold text-text-secondary">
-            Password
-          </label>
-          <div className="relative">
-            <input
-              type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              required
-              className="w-full h-[52px] bg-[#EBEBEB] rounded-input px-4 pr-12 text-base text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40 transition-shadow"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword((v) => !v)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-text-secondary"
-              aria-label={showPassword ? "Hide password" : "Show password"}
-            >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
-          </div>
+        <div className="relative">
+          <input
+            type={showPassword ? "text" : "password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            required
+            className="w-full h-[52px] bg-[#EFEFEF] rounded-input px-4 pr-12 text-base text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40 transition-shadow"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((v) => !v)}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-text-secondary"
+            aria-label={showPassword ? "Hide password" : "Show password"}
+          >
+            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          </button>
         </div>
 
         {error && (
@@ -121,7 +111,7 @@ export default function LoginPage() {
           disabled={loading}
           className="h-[56px] bg-accent text-white rounded-pill text-base font-semibold mt-2 disabled:opacity-60 transition-opacity"
         >
-          {loading ? "…" : mode === "signin" ? "Sign in" : "Sign up"}
+          {loading ? "…" : mode === "signin" ? "Sign In" : "Sign Up"}
         </button>
       </form>
 
@@ -132,11 +122,34 @@ export default function LoginPage() {
         <button
           type="button"
           onClick={() => switchMode(mode === "signin" ? "signup" : "signin")}
-          className="text-sm font-semibold text-text-primary"
+          className="text-sm font-semibold text-accent"
         >
           {mode === "signin" ? "Sign up" : "Sign in"}
         </button>
       </div>
-    </div>
+    </>
+  );
+
+  return (
+    <>
+      {/* Mobile layout */}
+      <div className="lg:hidden min-h-screen bg-background flex flex-col justify-center px-8 py-12">
+        {form}
+      </div>
+
+      {/* Desktop layout */}
+      <div className="hidden lg:flex min-h-screen">
+        {/* Left panel */}
+        <div className="w-1/2 bg-accent flex items-center justify-center">
+          <PawPrint size={80} strokeWidth={1.5} className="text-background opacity-90" />
+        </div>
+        {/* Right panel */}
+        <div className="w-1/2 bg-white flex items-center justify-center px-12">
+          <div className="w-full max-w-[400px]">
+            {form}
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
