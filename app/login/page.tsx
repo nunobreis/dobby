@@ -4,10 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { PawPrint, Eye, EyeOff } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { useTranslations } from "next-intl";
 
 type Mode = "signin" | "signup";
 
 export default function LoginPage() {
+  const t = useTranslations("login");
   const [mode, setMode] = useState<Mode>("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -44,7 +46,7 @@ export default function LoginPage() {
           router.push("/profile/setup");
           router.refresh();
         } else {
-          setMessage("Check your email to confirm your account, then sign in.");
+          setMessage(t("confirmEmail"));
           switchMode("signin");
         }
       }
@@ -61,7 +63,7 @@ export default function LoginPage() {
         <PawPrint size={40} strokeWidth={1.5} className="text-accent" />
         <h1 className="text-[28px] font-bold text-text-primary">Dobby</h1>
         <p className="text-sm text-text-secondary text-center">
-          Track your golden retriever&apos;s health journey
+          {t("tagline")}
         </p>
       </div>
 
@@ -70,7 +72,7 @@ export default function LoginPage() {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email address"
+          placeholder={t("emailPlaceholder")}
           required
           className="h-[52px] bg-[#EFEFEF] rounded-input px-4 text-base text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40 transition-shadow"
         />
@@ -80,7 +82,7 @@ export default function LoginPage() {
             type={showPassword ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
+            placeholder={t("passwordPlaceholder")}
             required
             className="w-full h-[52px] bg-[#EFEFEF] rounded-input px-4 pr-12 text-base text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40 transition-shadow"
           />
@@ -88,7 +90,7 @@ export default function LoginPage() {
             type="button"
             onClick={() => setShowPassword((v) => !v)}
             className="absolute right-4 top-1/2 -translate-y-1/2 text-text-secondary"
-            aria-label={showPassword ? "Hide password" : "Show password"}
+            aria-label={showPassword ? t("hidePassword") : t("showPassword")}
           >
             {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
           </button>
@@ -111,20 +113,20 @@ export default function LoginPage() {
           disabled={loading}
           className="h-[56px] bg-accent text-white rounded-pill text-base font-semibold mt-2 disabled:opacity-60 transition-opacity"
         >
-          {loading ? "…" : mode === "signin" ? "Sign In" : "Sign Up"}
+          {loading ? t("loading") : mode === "signin" ? t("signIn") : t("signUp")}
         </button>
       </form>
 
       <div className="flex justify-center items-center gap-1 mt-5">
         <span className="text-sm text-text-secondary">
-          {mode === "signin" ? "Don't have an account?" : "Already have an account?"}
+          {mode === "signin" ? t("noAccount") : t("hasAccount")}
         </span>
         <button
           type="button"
           onClick={() => switchMode(mode === "signin" ? "signup" : "signin")}
           className="text-sm font-semibold text-accent"
         >
-          {mode === "signin" ? "Sign up" : "Sign in"}
+          {mode === "signin" ? t("signUpLink") : t("signInLink")}
         </button>
       </div>
     </>
