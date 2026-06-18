@@ -14,6 +14,8 @@ create table puppies (
   sex text check (sex in ('male', 'female')),
   colour text,
   fur_type text[],
+  tail_type text[],
+  other_info text,
   microchip_number text,
   legal_owner text,
   photo_url text,

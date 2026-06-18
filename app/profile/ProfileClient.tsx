@@ -33,9 +33,17 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
   const [sex, setSex] = useState(puppy.sex ?? "");
   const [colour, setColour] = useState(puppy.colour ?? "");
   const [furTypes, setFurTypes] = useState<string[]>(puppy.fur_type ?? []);
+  const [tailTypes, setTailTypes] = useState<string[]>(puppy.tail_type ?? []);
+  const [otherInfo, setOtherInfo] = useState(puppy.other_info ?? "");
 
   function toggleFurType(value: string) {
     setFurTypes((prev) =>
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
+    );
+  }
+
+  function toggleTailType(value: string) {
+    setTailTypes((prev) =>
       prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
     );
   }
@@ -47,6 +55,8 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
     setSex(puppy.sex ?? "");
     setColour(puppy.colour ?? "");
     setFurTypes(puppy.fur_type ?? []);
+    setTailTypes(puppy.tail_type ?? []);
+    setOtherInfo(puppy.other_info ?? "");
     setMicrochip(puppy.microchip_number ?? "");
     setLegalOwner(puppy.legal_owner ?? "");
     setPhotoPreview(puppy.photo_url);
@@ -105,6 +115,8 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
           sex: sex || null,
           colour: colour || null,
           fur_type: furTypes.length > 0 ? furTypes : null,
+          tail_type: tailTypes.length > 0 ? tailTypes : null,
+          other_info: otherInfo || null,
           microchip_number: microchip || null,
           legal_owner: legalOwner || null,
           photo_url: photoUrl,
@@ -277,6 +289,59 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
               )) : (
                 <span className="text-[15px] font-medium text-text-primary">—</span>
               )}
+            </div>
+          )}
+        </div>
+        <div className="flex flex-col gap-2">
+          <span className="text-[11px] font-bold text-text-secondary tracking-wider">
+            {t("fieldTailType")}
+          </span>
+          {editing ? (
+            <div className="flex flex-wrap gap-2">
+              {(["long", "short", "amputated"] as const).map((opt) => (
+                <button
+                  key={opt}
+                  type="button"
+                  onClick={() => toggleTailType(opt)}
+                  className={`px-4 py-2 rounded-pill text-[14px] font-medium transition-colors ${
+                    tailTypes.includes(opt)
+                      ? "bg-accent text-white"
+                      : "bg-[#EBEBEB] text-text-primary"
+                  }`}
+                >
+                  {t(`tail${opt.charAt(0).toUpperCase() + opt.slice(1)}` as Parameters<typeof t>[0])}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div className="min-h-[52px] bg-[#EBEBEB] rounded-input px-4 flex items-center flex-wrap gap-2 py-2">
+              {tailTypes.length > 0 ? tailTypes.map((opt) => (
+                <span key={opt} className="bg-accent/10 text-accent text-[13px] font-medium px-3 py-1 rounded-pill capitalize">
+                  {t(`tail${opt.charAt(0).toUpperCase() + opt.slice(1)}` as Parameters<typeof t>[0])}
+                </span>
+              )) : (
+                <span className="text-[15px] font-medium text-text-primary">—</span>
+              )}
+            </div>
+          )}
+        </div>
+        <div className="flex flex-col gap-2">
+          <span className="text-[11px] font-bold text-text-secondary tracking-wider">
+            {t("fieldOtherInfo")}
+          </span>
+          {editing ? (
+            <textarea
+              value={otherInfo}
+              onChange={(e) => setOtherInfo(e.target.value)}
+              placeholder={t("placeholderOtherInfo")}
+              rows={4}
+              className="bg-[#EBEBEB] rounded-input px-4 py-3 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40 resize-none"
+            />
+          ) : (
+            <div className="min-h-[52px] bg-[#EBEBEB] rounded-input px-4 py-3">
+              <span className="text-[15px] font-medium text-text-primary whitespace-pre-wrap">
+                {otherInfo || "—"}
+              </span>
             </div>
           )}
         </div>
