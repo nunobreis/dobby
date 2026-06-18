@@ -8,6 +8,14 @@ export interface Puppy {
   fur_type: string[] | null;
   tail_type: string[] | null;
   other_info: string | null;
+  vet_clinic_name: string | null;
+  vet_surgeon_name: string | null;
+  vet_address: string | null;
+  vet_postcode: string | null;
+  vet_city: string | null;
+  vet_country: string | null;
+  vet_phone: string | null;
+  vet_email: string | null;
   microchip_number: string | null;
   legal_owner: string | null;
   photo_url: string | null;

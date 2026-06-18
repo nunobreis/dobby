@@ -8,6 +8,7 @@ import {
   PawPrint,
   ChevronRight,
   Settings,
+  Stethoscope,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getTranslations } from "next-intl/server";
@@ -73,6 +74,12 @@ export default async function MorePage() {
       icon: PawPrint,
       label: t("profileLabel"),
       description: t("profileDescription", { name: puppyName }),
+    },
+    {
+      href: "/vet",
+      icon: Stethoscope,
+      label: t("vetLabel"),
+      description: t("vetDescription"),
     },
   ];
 
