@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Plus, Stethoscope } from "lucide-react";
+import { Plus, Stethoscope, Calendar, MapPin } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import BottomNav from "@/components/BottomNav";
 import EmptyState from "@/components/EmptyState";
@@ -129,25 +129,33 @@ function VisitCard({
 }) {
   return (
     <div
-      className={`bg-white rounded-card p-4 flex flex-col gap-2 ${
+      className={`bg-white rounded-card p-4 flex flex-col gap-3 ${
         upcoming ? "border-l-4 border-accent" : ""
       }`}
     >
-      <div className="flex items-start justify-between gap-2">
-        <span className="text-[16px] font-bold text-text-primary">{visit.reason}</span>
-        <span className="text-[13px] text-text-secondary shrink-0">{formatDate(visit.date)}</span>
+      <span className="text-[16px] font-bold text-text-primary">{visit.reason}</span>
+      <div className="flex flex-wrap gap-1.5">
+        <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-badge text-[11px] font-semibold bg-soft-yellow text-[#78350F]">
+          <Calendar size={10} />
+          {formatDate(visit.date)}
+        </span>
+        {visit.vet_clinic && (
+          <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-badge text-[11px] font-semibold bg-lavender text-[#5B21B6]">
+            <MapPin size={10} />
+            {visit.vet_clinic}
+          </span>
+        )}
+        {visit.cost != null && (
+          <span className="px-2.5 py-0.5 rounded-badge text-[11px] font-semibold bg-sage-green text-[#166534]">
+            €{visit.cost.toFixed(2)}
+          </span>
+        )}
       </div>
-      {visit.vet_clinic && (
-        <span className="text-[13px] text-text-secondary">{visit.vet_clinic}</span>
-      )}
       {visit.outcome && (
         <span className="text-[13px] text-text-secondary">{visit.outcome}</span>
       )}
-      {visit.cost != null && (
-        <span className="text-[13px] text-text-secondary">€{visit.cost.toFixed(2)}</span>
-      )}
       {visit.next_appointment_date && nextLabel && (
-        <div className="mt-1 pt-2 border-t border-[#F0F0F0]">
+        <div className="pt-2 border-t border-[#F0F0F0]">
           <span className="text-[12px] font-semibold text-accent">
             {nextLabel}
           </span>
