@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import DocumentUpload from "@/components/DocumentUpload";
 import LoadingSpinner from "@/components/LoadingSpinner";
@@ -86,9 +85,9 @@ export default function NewDocumentPage() {
   return (
     <div className="min-h-screen bg-background px-5 py-8">
       <div className="flex items-center gap-2 mb-6">
-        <Link href="/documents">
+        <button onClick={() => router.back()} className="min-w-[44px] min-h-[44px] flex items-center justify-center -ml-2">
           <ChevronLeft size={26} className="text-text-primary" />
-        </Link>
+        </button>
         <h1 className="text-[28px] font-bold text-text-primary">{t("addTitle")}</h1>
       </div>
 
