@@ -26,7 +26,11 @@
     "noMilestonesYet": "Nenhum marco ainda. Adiciona o primeiro do {name}!",
     "addMilestone": "Adicionar marco",
     "perDay": "{amount}g / dia",
-    "weightSinceLast": "desde o último"
+    "weightSinceLast": "desde o último",
+    "foodTypeDry": "Seco",
+    "foodTypeWet": "Húmido",
+    "foodTypeRaw": "Cru",
+    "foodTypeMixed": "Misto"
   },
   "vaccinations": {
     "title": "Vacinas",

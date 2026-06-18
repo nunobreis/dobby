@@ -26,7 +26,11 @@
     "noMilestonesYet": "No milestones yet. Add {name}'s first!",
     "addMilestone": "Add milestone",
     "perDay": "{amount}g / day",
-    "weightSinceLast": "since last"
+    "weightSinceLast": "since last",
+    "foodTypeDry": "Dry",
+    "foodTypeWet": "Wet",
+    "foodTypeRaw": "Raw",
+    "foodTypeMixed": "Mixed"
   },
   "vaccinations": {
     "title": "Vaccinations",

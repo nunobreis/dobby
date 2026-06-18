@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { ArrowUpRight, Syringe, Stethoscope, Scale, UtensilsCrossed, PawPrint } from "lucide-react";
+import { ArrowUpRight, Syringe, Stethoscope, Scale, UtensilsCrossed, PawPrint, Calendar } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import BottomNav from "@/components/BottomNav";
 import VaccinationBadge from "@/components/VaccinationBadge";
@@ -55,16 +55,20 @@ export default async function DashboardPage() {
   const vaccinationStatus = nextVaccination ? getVaccinationStatus(nextVaccination.next_due_date) : null;
   const hasAlert = vaccinationStatus === "overdue" || vaccinationStatus === "due_soon";
 
-  // Stat card: soonest upcoming date (future next_due_date → future date_given → overdue → most recent)
+  // Stat card: soonest upcoming vaccination across both next_due_date and date_given
   const statVaccination = (() => {
-    const futureNext = allVaccinations
-      .filter((v) => v.next_due_date && v.next_due_date >= today)
-      .sort((a, b) => a.next_due_date!.localeCompare(b.next_due_date!))[0];
-    if (futureNext) return futureNext;
-    const futureGiven = allVaccinations
-      .filter((v) => v.date_given >= today)
-      .sort((a, b) => a.date_given.localeCompare(b.date_given))[0];
-    if (futureGiven) return futureGiven;
+    const upcoming = allVaccinations
+      .map((v) => ({
+        v,
+        date: v.next_due_date && v.next_due_date >= today
+          ? v.next_due_date
+          : v.date_given >= today
+          ? v.date_given
+          : null,
+      }))
+      .filter(({ date }) => date !== null)
+      .sort((a, b) => a.date!.localeCompare(b.date!))[0];
+    if (upcoming) return upcoming.v;
     if (nextVaccination) return nextVaccination;
     return allVaccinations.sort((a, b) => b.date_given.localeCompare(a.date_given))[0] ?? null;
   })();
@@ -174,7 +178,8 @@ export default async function DashboardPage() {
                   <span className="text-[15px] font-bold text-text-primary leading-tight">
                     {statVaccination.vaccine_name}
                   </span>
-                  <span className="text-[13px] text-text-secondary">
+                  <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-badge text-[11px] font-semibold bg-soft-yellow text-[#78350F] self-start">
+                    <Calendar size={10} />
                     {statVaccination.next_due_date
                       ? formatDate(statVaccination.next_due_date)
                       : formatDate(statVaccination.date_given)}
@@ -198,11 +203,12 @@ export default async function DashboardPage() {
               </div>
               {nextVetVisit ? (
                 <>
-                  <span className="text-[18px] font-bold text-text-primary">
-                    {formatDate(nextVetVisit.next_appointment_date ?? nextVetVisit.date)}
-                  </span>
-                  <span className="text-[13px] text-text-secondary">
+                  <span className="text-[15px] font-bold text-text-primary leading-tight">
                     {nextVetVisit.next_appointment_reason ?? nextVetVisit.reason}
+                  </span>
+                  <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-badge text-[11px] font-semibold bg-soft-yellow text-[#78350F] self-start">
+                    <Calendar size={10} />
+                    {formatDate(nextVetVisit.next_appointment_date ?? nextVetVisit.date)}
                   </span>
                 </>
               ) : (
@@ -226,11 +232,12 @@ export default async function DashboardPage() {
                   <span className="text-[28px] font-bold text-text-primary leading-none">
                     {formatWeight(latestWeight.weight_kg)}
                   </span>
-                  <span className="text-[13px] text-text-secondary">
+                  <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-badge text-[11px] font-semibold bg-soft-yellow text-[#78350F] self-start">
+                    <Calendar size={10} />
                     {formatDate(latestWeight.date)}
                   </span>
                   {weightChangePct !== null && (
-                    <span className={`text-[12px] font-medium ${weightChangePct >= 0 ? "text-[#166534]" : "text-[#9B1C1C]"}`}>
+                    <span className={`px-2.5 py-0.5 rounded-badge text-[11px] font-semibold self-start ${weightChangePct >= 0 ? "bg-sage-green text-[#166534]" : "bg-blush-pink text-[#9B1C1C]"}`}>
                       {weightChangePct >= 0 ? "↑" : "↓"} {Math.abs(weightChangePct).toFixed(1)}% {t("weightSinceLast")}
                     </span>
                   )}
@@ -253,6 +260,11 @@ export default async function DashboardPage() {
                   <span className="text-[15px] font-bold text-text-primary leading-tight">
                     {currentFood.brand}
                   </span>
+                  {currentFood.food_type && (
+                    <span className="px-2.5 py-0.5 rounded-badge text-[11px] font-semibold bg-warm-peach text-[#92400e] self-start">
+                      {t(`foodType${currentFood.food_type.charAt(0).toUpperCase() + currentFood.food_type.slice(1)}` as Parameters<typeof t>[0])}
+                    </span>
+                  )}
                   <span className="text-[13px] text-text-secondary">
                     {currentFood.daily_amount_g ? t("perDay", { amount: currentFood.daily_amount_g }) : currentFood.product_name}
                   </span>
