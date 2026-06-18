@@ -13,6 +13,7 @@ create table puppies (
   date_of_birth date not null,
   sex text check (sex in ('male', 'female')),
   colour text,
+  fur_type text[],
   microchip_number text,
   legal_owner text,
   photo_url text,

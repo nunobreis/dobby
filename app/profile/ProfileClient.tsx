@@ -32,6 +32,28 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
   const [dob, setDob] = useState(puppy.date_of_birth);
   const [sex, setSex] = useState(puppy.sex ?? "");
   const [colour, setColour] = useState(puppy.colour ?? "");
+  const [furTypes, setFurTypes] = useState<string[]>(puppy.fur_type ?? []);
+
+  function toggleFurType(value: string) {
+    setFurTypes((prev) =>
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
+    );
+  }
+
+  function cancelEditing() {
+    setName(puppy.name);
+    setBreed(puppy.breed);
+    setDob(puppy.date_of_birth);
+    setSex(puppy.sex ?? "");
+    setColour(puppy.colour ?? "");
+    setFurTypes(puppy.fur_type ?? []);
+    setMicrochip(puppy.microchip_number ?? "");
+    setLegalOwner(puppy.legal_owner ?? "");
+    setPhotoPreview(puppy.photo_url);
+    setPendingPhoto(null);
+    setError(null);
+    setEditing(false);
+  }
   const [microchip, setMicrochip] = useState(puppy.microchip_number ?? "");
   const [legalOwner, setLegalOwner] = useState(puppy.legal_owner ?? "");
   const [photoPreview, setPhotoPreview] = useState<string | null>(puppy.photo_url);
@@ -82,6 +104,7 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
           date_of_birth: dob,
           sex: sex || null,
           colour: colour || null,
+          fur_type: furTypes.length > 0 ? furTypes : null,
           microchip_number: microchip || null,
           legal_owner: legalOwner || null,
           photo_url: photoUrl,
@@ -124,13 +147,24 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
           )}
           <h1 className="text-[32px] font-bold text-text-primary">{t("title")}</h1>
         </div>
-        <button
-          onClick={() => (editing ? saveProfile() : setEditing(true))}
-          disabled={saving}
-          className="text-accent text-[15px] font-semibold disabled:opacity-50"
-        >
-          {saving ? t("saving") : editing ? t("save") : t("edit")}
-        </button>
+        <div className="flex items-center gap-4">
+          {editing && (
+            <button
+              onClick={cancelEditing}
+              disabled={saving}
+              className="text-text-secondary text-[15px] font-semibold disabled:opacity-50"
+            >
+              {t("cancel")}
+            </button>
+          )}
+          <button
+            onClick={() => (editing ? saveProfile() : setEditing(true))}
+            disabled={saving}
+            className="text-accent text-[15px] font-semibold disabled:opacity-50"
+          >
+            {saving ? t("saving") : editing ? t("save") : t("edit")}
+          </button>
+        </div>
       </div>
 
       {/* Photo */}
@@ -213,6 +247,39 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
           onChange={setColour}
           placeholder={t("placeholderColour")}
         />
+        <div className="flex flex-col gap-2">
+          <span className="text-[11px] font-bold text-text-secondary tracking-wider">
+            {t("fieldFurType")}
+          </span>
+          {editing ? (
+            <div className="flex flex-wrap gap-2">
+              {(["long", "medium", "short", "straight", "curly", "wavy", "rough"] as const).map((opt) => (
+                <button
+                  key={opt}
+                  type="button"
+                  onClick={() => toggleFurType(opt)}
+                  className={`px-4 py-2 rounded-pill text-[14px] font-medium transition-colors ${
+                    furTypes.includes(opt)
+                      ? "bg-accent text-white"
+                      : "bg-[#EBEBEB] text-text-primary"
+                  }`}
+                >
+                  {t(`fur${opt.charAt(0).toUpperCase() + opt.slice(1)}` as Parameters<typeof t>[0])}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div className="min-h-[52px] bg-[#EBEBEB] rounded-input px-4 flex items-center flex-wrap gap-2 py-2">
+              {furTypes.length > 0 ? furTypes.map((opt) => (
+                <span key={opt} className="bg-accent/10 text-accent text-[13px] font-medium px-3 py-1 rounded-pill capitalize">
+                  {t(`fur${opt.charAt(0).toUpperCase() + opt.slice(1)}` as Parameters<typeof t>[0])}
+                </span>
+              )) : (
+                <span className="text-[15px] font-medium text-text-primary">—</span>
+              )}
+            </div>
+          )}
+        </div>
         <ProfileField
           label={t("fieldMicrochip")}
           value={microchip}

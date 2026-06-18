@@ -5,6 +5,7 @@ export interface Puppy {
   date_of_birth: string;
   sex: "male" | "female" | null;
   colour: string | null;
+  fur_type: string[] | null;
   microchip_number: string | null;
   legal_owner: string | null;
   photo_url: string | null;
