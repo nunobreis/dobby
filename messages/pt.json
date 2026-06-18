@@ -158,7 +158,15 @@
     "errorEndDate": "A data de fim deve ser posterior à data de início.",
     "saveButton": "Guardar alimento",
     "saving": "A guardar…",
-    "toastSuccess": "Alimento guardado!"
+    "toastSuccess": "Alimento guardado!",
+    "editTitle": "Editar Alimento",
+    "saveChangesButton": "Guardar alterações",
+    "toastUpdated": "Alimento atualizado!",
+    "deleteButton": "Eliminar alimento",
+    "deleteConfirmTitle": "Eliminar este alimento?",
+    "deleteConfirmMessage": "Esta ação não pode ser desfeita.",
+    "cancelButton": "Cancelar",
+    "toastDeleted": "Alimento eliminado."
   },
   "medications": {
     "title": "Medicamentos",
@@ -239,7 +247,18 @@
     "categorySelect": "Selecionar…",
     "errorRequired": "Título e ficheiro são obrigatórios.",
     "saveButton": "Guardar documento",
-    "toastSuccess": "Documento guardado!"
+    "toastSuccess": "Documento guardado!",
+    "saving": "A guardar…",
+    "editTitle": "Editar Documento",
+    "saveChangesButton": "Guardar alterações",
+    "toastUpdated": "Documento atualizado!",
+    "deleteButton": "Eliminar documento",
+    "deleteConfirmTitle": "Eliminar este documento?",
+    "deleteConfirmMessage": "Esta ação não pode ser desfeita.",
+    "cancelButton": "Cancelar",
+    "toastDeleted": "Documento eliminado.",
+    "viewDocument": "Ver documento",
+    "currentFile": "FICHEIRO ATUAL"
   },
   "profile": {
     "title": "Perfil",

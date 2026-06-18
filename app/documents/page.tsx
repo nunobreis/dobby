@@ -89,31 +89,42 @@ export default async function DocumentsPage() {
               </span>
               <div className="bg-white rounded-card overflow-hidden">
                 {docs!.map((doc, i) => (
-                  <a
+                  <div
                     key={doc.id}
-                    href={signedUrls[doc.id] ?? "#"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`flex items-center gap-3 px-4 py-3.5 active:bg-[#F5F5F5] transition-colors ${
+                    className={`flex items-center gap-3 px-4 py-3.5 ${
                       i < docs!.length - 1 ? "border-b border-[#F0F0F0]" : ""
                     }`}
                   >
-                    <div className="w-10 h-10 rounded-[10px] bg-lavender flex items-center justify-center shrink-0">
-                      <FileText size={18} className="text-accent" />
-                    </div>
-                    <div className="flex flex-col flex-1 min-w-0">
-                      <span className="text-[14px] font-semibold text-text-primary truncate">
-                        {doc.title}
-                      </span>
-                      <span className="text-[12px] text-text-secondary">
-                        {doc.document_date ? formatDate(doc.document_date) : formatDate(doc.created_at)}
-                        {doc.file_size_bytes
-                          ? ` · ${(doc.file_size_bytes / 1024).toFixed(0)} KB`
-                          : ""}
-                      </span>
-                    </div>
-                    <ExternalLink size={15} className="text-[#AEAEAE] shrink-0" />
-                  </a>
+                    <Link
+                      href={`/documents/${doc.id}/edit`}
+                      className="flex items-center gap-3 flex-1 min-w-0 active:opacity-70 transition-opacity"
+                    >
+                      <div className="w-10 h-10 rounded-[10px] bg-lavender flex items-center justify-center shrink-0">
+                        <FileText size={18} className="text-accent" />
+                      </div>
+                      <div className="flex flex-col flex-1 min-w-0">
+                        <span className="text-[14px] font-semibold text-text-primary truncate">
+                          {doc.title}
+                        </span>
+                        <span className="text-[12px] text-text-secondary">
+                          {doc.document_date ? formatDate(doc.document_date) : formatDate(doc.created_at)}
+                          {doc.file_size_bytes
+                            ? ` · ${(doc.file_size_bytes / 1024).toFixed(0)} KB`
+                            : ""}
+                        </span>
+                      </div>
+                    </Link>
+                    {signedUrls[doc.id] && (
+                      <a
+                        href={signedUrls[doc.id]}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 -mr-1 active:opacity-70 transition-opacity"
+                      >
+                        <ExternalLink size={15} className="text-[#AEAEAE]" />
+                      </a>
+                    )}
+                  </div>
                 ))}
               </div>
             </div>

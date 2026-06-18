@@ -158,7 +158,15 @@
     "errorEndDate": "End date must be after the start date.",
     "saveButton": "Save food",
     "saving": "Saving…",
-    "toastSuccess": "Food saved!"
+    "toastSuccess": "Food saved!",
+    "editTitle": "Edit Food",
+    "saveChangesButton": "Save changes",
+    "toastUpdated": "Food updated!",
+    "deleteButton": "Delete food",
+    "deleteConfirmTitle": "Delete this food entry?",
+    "deleteConfirmMessage": "This can't be undone.",
+    "cancelButton": "Cancel",
+    "toastDeleted": "Food deleted."
   },
   "medications": {
     "title": "Medications",
@@ -239,7 +247,18 @@
     "categorySelect": "Select…",
     "errorRequired": "Title and file are required.",
     "saveButton": "Save document",
-    "toastSuccess": "Document saved!"
+    "toastSuccess": "Document saved!",
+    "saving": "Saving…",
+    "editTitle": "Edit Document",
+    "saveChangesButton": "Save changes",
+    "toastUpdated": "Document updated!",
+    "deleteButton": "Delete document",
+    "deleteConfirmTitle": "Delete this document?",
+    "deleteConfirmMessage": "This can't be undone.",
+    "cancelButton": "Cancel",
+    "toastDeleted": "Document deleted.",
+    "viewDocument": "View document",
+    "currentFile": "CURRENT FILE"
   },
   "profile": {
     "title": "Profile",

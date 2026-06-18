@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Plus, UtensilsCrossed } from "lucide-react";
+import { Plus, UtensilsCrossed, ChevronRight } from "lucide-react";
 import BackButton from "@/components/BackButton";
 import EmptyState from "@/components/EmptyState";
 import { createClient } from "@/lib/supabase/server";
@@ -73,8 +73,12 @@ export default async function FoodPage() {
                 <span className="text-[11px] font-bold text-text-secondary tracking-wider px-1">
                   {t("current")}
                 </span>
-                <div className="bg-white rounded-card p-4 flex flex-col gap-2 border-l-4 border-accent">
-                  <span className="text-[18px] font-bold text-text-primary">{current.brand}</span>
+                <Link href={`/food/${current.id}/edit`}>
+                <div className="bg-white rounded-card p-4 flex flex-col gap-2 border-l-4 border-accent active:bg-[#F5F5F5] transition-colors">
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="text-[18px] font-bold text-text-primary">{current.brand}</span>
+                    <ChevronRight size={16} className="text-[#AEAEAE] shrink-0 mt-1" />
+                  </div>
                   <span className="text-[14px] text-text-secondary">{current.product_name}</span>
                   <div className="flex flex-wrap gap-3 mt-1">
                     {current.food_type && (
@@ -96,6 +100,7 @@ export default async function FoodPage() {
                     <span className="text-[13px] text-text-secondary italic">{current.notes}</span>
                   )}
                 </div>
+                </Link>
               </div>
             )}
 
@@ -105,18 +110,23 @@ export default async function FoodPage() {
                   {t("history")}
                 </span>
                 {history.map((e) => (
-                  <div key={e.id} className="bg-white rounded-card p-4 flex flex-col gap-1">
+                  <Link key={e.id} href={`/food/${e.id}/edit`}>
+                  <div className="bg-white rounded-card p-4 flex flex-col gap-1 active:bg-[#F5F5F5] transition-colors">
                     <div className="flex items-start justify-between gap-2">
                       <span className="text-[15px] font-bold text-text-primary">{e.brand}</span>
-                      <span className="text-[12px] text-text-secondary shrink-0">
-                        {formatDate(e.start_date)} – {e.end_date ? formatDate(e.end_date) : ""}
-                      </span>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="text-[12px] text-text-secondary">
+                          {formatDate(e.start_date)} – {e.end_date ? formatDate(e.end_date) : ""}
+                        </span>
+                        <ChevronRight size={16} className="text-[#AEAEAE]" />
+                      </div>
                     </div>
                     <span className="text-[13px] text-text-secondary">{e.product_name}</span>
                     {e.daily_amount_g && (
                       <span className="text-[13px] text-text-secondary">{t("perDay", { amount: e.daily_amount_g })}</span>
                     )}
                   </div>
+                  </Link>
                 ))}
               </div>
             )}
