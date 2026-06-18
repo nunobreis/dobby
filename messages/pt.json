@@ -107,7 +107,15 @@
     "errorNextDate": "A data do próximo agendamento deve ser posterior à da consulta.",
     "saveButton": "Guardar consulta",
     "saving": "A guardar…",
-    "toastSuccess": "Consulta guardada!"
+    "toastSuccess": "Consulta guardada!",
+    "editTitle": "Editar Consulta",
+    "saveChangesButton": "Guardar alterações",
+    "toastUpdated": "Consulta atualizada!",
+    "deleteButton": "Eliminar consulta",
+    "deleteConfirmTitle": "Eliminar esta consulta?",
+    "deleteConfirmMessage": "Esta ação não pode ser desfeita.",
+    "cancelButton": "Cancelar",
+    "toastDeleted": "Consulta eliminada."
   },
   "food": {
     "title": "Alimentação",

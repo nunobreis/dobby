@@ -107,7 +107,15 @@
     "errorNextDate": "Next appointment date must be after the visit date.",
     "saveButton": "Save visit",
     "saving": "Saving…",
-    "toastSuccess": "Visit saved!"
+    "toastSuccess": "Visit saved!",
+    "editTitle": "Edit Vet Visit",
+    "saveChangesButton": "Save changes",
+    "toastUpdated": "Visit updated!",
+    "deleteButton": "Delete visit",
+    "deleteConfirmTitle": "Delete this visit?",
+    "deleteConfirmMessage": "This can't be undone.",
+    "cancelButton": "Cancel",
+    "toastDeleted": "Visit deleted."
   },
   "food": {
     "title": "Food & Diet",

@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Plus, Stethoscope, Calendar, MapPin } from "lucide-react";
+import { Plus, Stethoscope, Calendar, MapPin, ChevronRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import BottomNav from "@/components/BottomNav";
 import EmptyState from "@/components/EmptyState";
@@ -84,7 +84,9 @@ export default async function VetVisitsPage() {
                   {t("upcoming")}
                 </span>
                 {upcoming.map((v) => (
-                  <VisitCard key={v.id} visit={v} upcoming nextLabel={getNextLabel(v)} />
+                  <Link key={v.id} href={`/vet-visits/${v.id}/edit`}>
+                    <VisitCard visit={v} upcoming nextLabel={getNextLabel(v)} />
+                  </Link>
                 ))}
               </div>
             )}
@@ -95,7 +97,9 @@ export default async function VetVisitsPage() {
                   {t("past")}
                 </span>
                 {past.map((v) => (
-                  <VisitCard key={v.id} visit={v} nextLabel={getNextLabel(v)} />
+                  <Link key={v.id} href={`/vet-visits/${v.id}/edit`}>
+                    <VisitCard visit={v} nextLabel={getNextLabel(v)} />
+                  </Link>
                 ))}
               </div>
             )}
@@ -133,7 +137,10 @@ function VisitCard({
         upcoming ? "border-l-4 border-accent" : ""
       }`}
     >
-      <span className="text-[16px] font-bold text-text-primary">{visit.reason}</span>
+      <div className="flex items-start justify-between gap-2">
+        <span className="text-[16px] font-bold text-text-primary">{visit.reason}</span>
+        <ChevronRight size={16} className="text-[#AEAEAE] shrink-0 mt-0.5" />
+      </div>
       <div className="flex flex-wrap gap-1.5">
         <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-badge text-[11px] font-semibold bg-soft-yellow text-[#78350F]">
           <Calendar size={10} />
