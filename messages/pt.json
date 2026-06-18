@@ -51,7 +51,15 @@
     "errorNextDueDate": "A próxima data deve ser posterior à data de administração.",
     "saveButton": "Guardar vacina",
     "saving": "A guardar…",
-    "toastSuccess": "Vacina guardada!"
+    "toastSuccess": "Vacina guardada!",
+    "editTitle": "Editar Vacina",
+    "saveChangesButton": "Guardar alterações",
+    "toastUpdated": "Vacina atualizada!",
+    "deleteButton": "Eliminar vacina",
+    "deleteConfirmTitle": "Eliminar esta vacina?",
+    "deleteConfirmMessage": "Esta ação não pode ser desfeita.",
+    "cancelButton": "Cancelar",
+    "toastDeleted": "Vacina eliminada."
   },
   "weight": {
     "title": "Peso",

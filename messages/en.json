@@ -51,7 +51,15 @@
     "errorNextDueDate": "Next due date must be after the date given.",
     "saveButton": "Save vaccination",
     "saving": "Saving…",
-    "toastSuccess": "Vaccination saved!"
+    "toastSuccess": "Vaccination saved!",
+    "editTitle": "Edit Vaccination",
+    "saveChangesButton": "Save changes",
+    "toastUpdated": "Vaccination updated!",
+    "deleteButton": "Delete vaccination",
+    "deleteConfirmTitle": "Delete this vaccination?",
+    "deleteConfirmMessage": "This can't be undone.",
+    "cancelButton": "Cancel",
+    "toastDeleted": "Vaccination deleted."
   },
   "weight": {
     "title": "Weight",

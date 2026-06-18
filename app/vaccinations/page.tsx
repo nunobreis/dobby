@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Plus, Syringe } from "lucide-react";
+import { Plus, Syringe, Calendar, MapPin, Hash, ChevronRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import BottomNav from "@/components/BottomNav";
 import VaccinationBadge from "@/components/VaccinationBadge";
@@ -54,29 +54,43 @@ export default async function VaccinationsPage() {
       <div className="px-5 flex flex-col gap-3">
         {vaccinations && vaccinations.length > 0 ? (
           vaccinations.map((v) => (
-            <div key={v.id} className="bg-white rounded-card p-4 flex flex-col gap-2">
+            <Link key={v.id} href={`/vaccinations/${v.id}/edit`}>
+            <div className="bg-white rounded-card p-4 flex flex-col gap-3 active:bg-[#F5F5F5] transition-colors">
               <div className="flex items-start justify-between gap-2">
                 <span className="text-[16px] font-bold text-text-primary">{v.vaccine_name}</span>
-                <VaccinationBadge nextDueDate={v.next_due_date} />
+                <div className="flex items-center gap-2 shrink-0">
+                  <VaccinationBadge nextDueDate={v.next_due_date} />
+                  <ChevronRight size={16} className="text-[#AEAEAE]" />
+                </div>
               </div>
-              <span className="text-[13px] text-text-secondary">
-                {t("given", { date: formatDate(v.date_given) })}
-              </span>
               {v.next_due_date && (
                 <span className="text-[13px] text-text-secondary">
                   {t("nextDue", { date: formatDate(v.next_due_date) })}
                 </span>
               )}
-              {v.vet_clinic && (
-                <span className="text-[13px] text-text-secondary">{v.vet_clinic}</span>
-              )}
-              {v.batch_number && (
-                <span className="text-[12px] text-text-secondary">{t("batch", { number: v.batch_number })}</span>
-              )}
+              <div className="flex flex-wrap gap-1.5">
+                <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-badge text-[11px] font-semibold bg-soft-yellow text-[#78350F]">
+                  <Calendar size={10} />
+                  {t("given", { date: formatDate(v.date_given) })}
+                </span>
+                {v.vet_clinic && (
+                  <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-badge text-[11px] font-semibold bg-lavender text-[#5B21B6]">
+                    <MapPin size={10} />
+                    {v.vet_clinic}
+                  </span>
+                )}
+                {v.batch_number && (
+                  <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-badge text-[11px] font-semibold bg-sky-blue text-[#1e40af]">
+                    <Hash size={10} />
+                    {v.batch_number}
+                  </span>
+                )}
+              </div>
               {v.notes && (
                 <span className="text-[13px] text-text-secondary italic">{v.notes}</span>
               )}
             </div>
+            </Link>
           ))
         ) : (
           <EmptyState
