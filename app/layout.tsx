@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import { Toaster } from "sonner";
 import Sidebar from "@/components/Sidebar";
+import BottomNav from "@/components/BottomNav";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import "./globals.css";
@@ -40,6 +41,7 @@ export default async function RootLayout({
               {children}
             </div>
           </div>
+          <BottomNav />
           <Toaster position="top-center" richColors />
         </NextIntlClientProvider>
       </body>

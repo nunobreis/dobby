@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { ArrowUpRight, Syringe, Stethoscope, Scale, UtensilsCrossed, PawPrint, Calendar } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import BottomNav from "@/components/BottomNav";
 import VaccinationBadge from "@/components/VaccinationBadge";
 import { formatDate, calculateAge, formatWeight, getVaccinationStatus } from "@/lib/utils";
 import { getTranslations } from "next-intl/server";
@@ -301,7 +300,6 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      <BottomNav />
     </div>
   );
 }

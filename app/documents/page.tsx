@@ -4,7 +4,6 @@ import { Plus, FileText, ExternalLink } from "lucide-react";
 import BackButton from "@/components/BackButton";
 import EmptyState from "@/components/EmptyState";
 import { createClient } from "@/lib/supabase/server";
-import BottomNav from "@/components/BottomNav";
 import { formatDate } from "@/lib/utils";
 import { getTranslations } from "next-intl/server";
 
@@ -132,7 +131,6 @@ export default async function DocumentsPage() {
         )}
       </div>
 
-      <BottomNav />
     </div>
   );
 }

@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getTranslations } from "next-intl/server";
-import BottomNav from "@/components/BottomNav";
 
 export default async function MorePage() {
   const supabase = await createClient();
@@ -166,7 +165,6 @@ export default async function MorePage() {
         </div>
       </div>
 
-      <BottomNav />
     </div>
   );
 }

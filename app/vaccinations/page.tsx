@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Plus, Syringe, Calendar, MapPin, Hash, ChevronRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import BottomNav from "@/components/BottomNav";
 import VaccinationBadge from "@/components/VaccinationBadge";
 import EmptyState from "@/components/EmptyState";
 import { formatDate } from "@/lib/utils";
@@ -103,7 +102,6 @@ export default async function VaccinationsPage() {
         )}
       </div>
 
-      <BottomNav />
     </div>
   );
 }

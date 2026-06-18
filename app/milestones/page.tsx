@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Plus, Trophy } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import BottomNav from "@/components/BottomNav";
 import BackButton from "@/components/BackButton";
 import EmptyState from "@/components/EmptyState";
 import { getTranslations } from "next-intl/server";
@@ -67,7 +66,6 @@ export default async function MilestonesPage() {
         )}
       </div>
 
-      <BottomNav />
     </div>
   );
 }

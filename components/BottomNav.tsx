@@ -7,9 +7,15 @@ import { House, Syringe, Scale, Stethoscope, Ellipsis } from "lucide-react";
 
 const morePaths = ["/more", "/food", "/medications", "/milestones", "/documents", "/profile", "/settings", "/account"];
 
+const excludedPaths = ["/login", "/profile/setup"];
+
 export default function BottomNav() {
   const pathname = usePathname();
   const t = useTranslations("nav");
+
+  if (excludedPaths.some((p) => pathname === p || pathname.startsWith(p + "/"))) {
+    return null;
+  }
 
   const tabs = [
     { href: "/dashboard",    icon: House,        label: t("home") },

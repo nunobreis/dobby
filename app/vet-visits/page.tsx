@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Plus, Stethoscope, Calendar, MapPin, ChevronRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import BottomNav from "@/components/BottomNav";
 import EmptyState from "@/components/EmptyState";
 import { formatDate } from "@/lib/utils";
 import { getTranslations } from "next-intl/server";
@@ -107,7 +106,6 @@ export default async function VetVisitsPage() {
         )}
       </div>
 
-      <BottomNav />
     </div>
   );
 }

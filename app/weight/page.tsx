@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Plus, Scale } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import BottomNav from "@/components/BottomNav";
 import WeightChart from "@/components/WeightChart";
 import EmptyState from "@/components/EmptyState";
 import { formatDate, formatWeight } from "@/lib/utils";
@@ -95,7 +94,6 @@ export default async function WeightPage() {
         </div>
       </div>
 
-      <BottomNav />
     </div>
   );
 }
