@@ -24,7 +24,7 @@ export default async function VaccinationBadge({ nextDueDate, status }: Props) {
   const { bg, text } = styles[s];
   const t = await getTranslations("vaccinationBadge");
   return (
-    <span className={`${bg} ${text} text-[12px] font-semibold px-[10px] py-[4px] rounded-badge`}>
+    <span className={`${bg} ${text} text-[12px] font-semibold px-[10px] py-[4px] rounded-badge self-start`}>
       {t(statusKey[s])}
     </span>
   );
