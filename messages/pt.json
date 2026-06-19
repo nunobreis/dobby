@@ -5,7 +5,14 @@
     "weight": "Peso",
     "vetVisits": "Consultas",
     "more": "Mais",
-    "aiVet": "Chat"
+    "aiVet": "Chat",
+    "food": "Alimentação",
+    "medications": "Medicação",
+    "milestones": "Marcos",
+    "documents": "Documentos",
+    "profile": "Perfil",
+    "vet": "Veterinário",
+    "settings": "Definições"
   },
   "dashboard": {
     "greeting": "Olá, {name}",

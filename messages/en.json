@@ -5,7 +5,14 @@
     "weight": "Weight",
     "vetVisits": "Vet Visits",
     "more": "More",
-    "aiVet": "Chat"
+    "aiVet": "Chat",
+    "food": "Food",
+    "medications": "Medications",
+    "milestones": "Milestones",
+    "documents": "Documents",
+    "profile": "Profile",
+    "vet": "Vet",
+    "settings": "Settings"
   },
   "dashboard": {
     "greeting": "Hello, {name}",

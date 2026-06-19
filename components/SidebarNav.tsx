@@ -3,29 +3,35 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { House, Syringe, Scale, MessageCircle, Ellipsis } from "lucide-react";
-
-const morePaths = ["/more", "/food", "/medications", "/milestones", "/documents", "/profile", "/settings", "/account", "/vet-visits", "/ai-vet"];
+import {
+  House, Syringe, Scale, UtensilsCrossed, Pill, Trophy,
+  FileText, PawPrint, Stethoscope, CalendarDays, MessageCircle, Settings,
+} from "lucide-react";
 
 export default function SidebarNav() {
   const pathname = usePathname();
   const t = useTranslations("nav");
 
   const tabs = [
-    { href: "/dashboard",    icon: House,       label: t("home") },
-    { href: "/vaccinations", icon: Syringe,     label: t("vaccinations") },
-    { href: "/weight",       icon: Scale,       label: t("weight") },
-    { href: "/ai-vet",       icon: MessageCircle, label: t("aiVet") },
-    { href: "/more",         icon: Ellipsis,    label: t("more") },
+    { href: "/dashboard",    icon: House,           label: t("home") },
+    { href: "/vaccinations", icon: Syringe,         label: t("vaccinations") },
+    { href: "/weight",       icon: Scale,           label: t("weight") },
+    { href: "/food",         icon: UtensilsCrossed, label: t("food") },
+    { href: "/medications",  icon: Pill,            label: t("medications") },
+    { href: "/milestones",   icon: Trophy,          label: t("milestones") },
+    { href: "/documents",    icon: FileText,        label: t("documents") },
+    { href: "/profile",      icon: PawPrint,        label: t("profile") },
+    { href: "/vet",          icon: Stethoscope,     label: t("vet") },
+    { href: "/vet-visits",   icon: CalendarDays,    label: t("vetVisits") },
+    { href: "/ai-vet",       icon: MessageCircle,   label: t("aiVet") },
+    { href: "/settings",     icon: Settings,        label: t("settings") },
   ];
 
   return (
     <nav className="flex flex-col gap-1 px-3 pt-4">
       {tabs.map(({ href, icon: Icon, label }) => {
         const active =
-          href === "/more"
-            ? morePaths.some((p) => pathname === p || pathname.startsWith(p + "/"))
-            : pathname === href || (href !== "/dashboard" && pathname.startsWith(href));
+          pathname === href || (href !== "/dashboard" && pathname.startsWith(href));
         return (
           <Link
             key={href}
