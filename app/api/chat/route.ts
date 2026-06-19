@@ -1,6 +1,6 @@
 import { streamText, convertToModelMessages } from "ai";
 import type { UIMessage } from "ai";
-import { google } from "@ai-sdk/google";
+import { anthropic } from "@ai-sdk/anthropic";
 import { createClient } from "@/lib/supabase/server";
 
 export interface DogContext {
@@ -60,7 +60,7 @@ Always respond in ${language}.`;
   const modelMessages = await convertToModelMessages(messages);
 
   const result = streamText({
-    model: google("gemini-2.0-flash"),
+    model: anthropic("claude-haiku-4-5-20251001"),
     system: systemPrompt,
     messages: modelMessages,
   });

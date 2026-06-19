@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^3.0.85",
     "@ai-sdk/google": "^3.0.83",
     "@ai-sdk/react": "^3.0.210",
     "@supabase/ssr": "^0.12.0",
