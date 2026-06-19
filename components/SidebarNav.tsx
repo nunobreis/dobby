@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { House, Syringe, Scale, Stethoscope, Ellipsis } from "lucide-react";
+import { House, Syringe, Scale, Bot, Ellipsis } from "lucide-react";
 
-const morePaths = ["/more", "/food", "/medications", "/milestones", "/documents", "/profile", "/settings", "/account"];
+const morePaths = ["/more", "/food", "/medications", "/milestones", "/documents", "/profile", "/settings", "/account", "/vet-visits", "/ai-vet"];
 
 export default function SidebarNav() {
   const pathname = usePathname();
@@ -15,7 +15,7 @@ export default function SidebarNav() {
     { href: "/dashboard",    icon: House,       label: t("home") },
     { href: "/vaccinations", icon: Syringe,     label: t("vaccinations") },
     { href: "/weight",       icon: Scale,       label: t("weight") },
-    { href: "/vet-visits",   icon: Stethoscope, label: t("vetVisits") },
+    { href: "/ai-vet",       icon: Bot,         label: t("aiVet") },
     { href: "/more",         icon: Ellipsis,    label: t("more") },
   ];
 
