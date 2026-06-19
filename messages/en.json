@@ -5,7 +5,7 @@
     "weight": "Weight",
     "vetVisits": "Vet Visits",
     "more": "More",
-    "aiVet": "AI Vet"
+    "aiVet": "Chat"
   },
   "dashboard": {
     "greeting": "Hello, {name}",

@@ -5,7 +5,7 @@
     "weight": "Peso",
     "vetVisits": "Consultas",
     "more": "Mais",
-    "aiVet": "Vet IA"
+    "aiVet": "Chat"
   },
   "dashboard": {
     "greeting": "Olá, {name}",
