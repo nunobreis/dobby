@@ -9,6 +9,8 @@ import {
   ChevronRight,
   Settings,
   Stethoscope,
+  CalendarDays,
+  Bot,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getTranslations } from "next-intl/server";
@@ -80,6 +82,12 @@ export default async function MorePage() {
       label: t("vetLabel"),
       description: t("vetDescription"),
     },
+    {
+      href: "/vet-visits",
+      icon: CalendarDays,
+      label: t("vetVisitsLabel"),
+      description: t("vetVisitsDescription"),
+    },
   ];
 
   return (
@@ -108,6 +116,20 @@ export default async function MorePage() {
             </div>
           </Link>
         </div>
+
+        {/* AI Vet featured card */}
+        <Link href="/ai-vet">
+          <div className="bg-accent rounded-card p-5 flex items-center gap-4 active:opacity-90 transition-opacity">
+            <div className="w-12 h-12 rounded-[14px] bg-white/20 flex items-center justify-center shrink-0">
+              <Bot size={22} className="text-white" />
+            </div>
+            <div className="flex flex-col flex-1 min-w-0">
+              <span className="text-[16px] font-bold text-white">{t("aiVetLabel")}</span>
+              <span className="text-[13px] text-white/70">{t("aiVetDescription")}</span>
+            </div>
+            <ChevronRight size={16} className="text-white/60 shrink-0" />
+          </div>
+        </Link>
 
         {/* Pet sections */}
         <span className="text-[11px] font-bold text-text-secondary tracking-wider px-1 mt-2">
