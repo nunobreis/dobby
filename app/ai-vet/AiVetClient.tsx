@@ -1,21 +1,21 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
-import { DefaultChatTransport, isTextUIPart } from "ai";
+import { DefaultChatTransport, isTextUIPart, isStaticToolUIPart } from "ai";
 import type { UIMessage } from "ai";
 import { useRef, useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { ChevronLeft, Send } from "lucide-react";
-import type { DogContext } from "@/app/api/chat/route";
+import ConfirmationCard from "./ConfirmationCard";
 
 interface Props {
-  context: DogContext;
+  puppyName: string;
   displayName: string;
 }
 
-export default function AiVetClient({ context, displayName }: Props) {
+export default function AiVetClient({ puppyName, displayName }: Props) {
   const router = useRouter();
   const t = useTranslations("aiVet");
   const [inputValue, setInputValue] = useState("");
@@ -27,7 +27,6 @@ export default function AiVetClient({ context, displayName }: Props) {
   const { messages, sendMessage, status, error } = useChat({
     transport: new DefaultChatTransport({
       api: "/api/chat",
-      body: { context },
     }),
   });
 
@@ -38,7 +37,13 @@ export default function AiVetClient({ context, displayName }: Props) {
   }, [messages, isLoading]);
 
   useEffect(() => {
-    if (!initialQuery || hasSentRef.current || status !== "ready" || messages.length > 0) return;
+    if (
+      !initialQuery ||
+      hasSentRef.current ||
+      status !== "ready" ||
+      messages.length > 0
+    )
+      return;
     hasSentRef.current = true;
     sendMessage({ text: initialQuery });
   }, [status]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -57,13 +62,6 @@ export default function AiVetClient({ context, displayName }: Props) {
     }
   };
 
-  const getMessageText = (msg: UIMessage) =>
-    msg.parts
-      .filter(isTextUIPart)
-      .map((p) => p.text)
-      .join("");
-
-  const puppyName = context.puppyName;
   const capabilities = [
     t("cap1"),
     t("cap2"),
@@ -127,39 +125,75 @@ export default function AiVetClient({ context, displayName }: Props) {
             </p>
 
             {/* Messages */}
-            {messages.map((msg) => {
-              const text = getMessageText(msg);
-              if (!text) return null;
-              const isUser = msg.role === "user";
-              return (
-                <div
-                  key={msg.id}
-                  className={`flex ${isUser ? "justify-end" : "justify-start"}`}
-                >
-                  <div
-                    className={`max-w-[80%] px-4 py-3 text-[14px] leading-relaxed ${
-                      isUser
-                        ? "bg-accent text-white rounded-[18px_18px_4px_18px] whitespace-pre-wrap"
-                        : "bg-white text-text-primary rounded-[18px_18px_18px_4px]"
-                    }`}
-                  >
-                    {isUser ? text : (
-                      <ReactMarkdown
-                        components={{
-                          p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
-                          strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
-                          ul: ({ children }) => <ul className="list-disc pl-4 mb-2 space-y-1">{children}</ul>,
-                          ol: ({ children }) => <ol className="list-decimal pl-4 mb-2 space-y-1">{children}</ol>,
-                          li: ({ children }) => <li>{children}</li>,
-                        }}
+            {messages.map((msg: UIMessage) => (
+              <div key={msg.id} className="flex flex-col gap-2">
+                {msg.parts.map((part, i) => {
+                  if (isTextUIPart(part) && part.text) {
+                    const isUser = msg.role === "user";
+                    return (
+                      <div
+                        key={i}
+                        className={`flex ${isUser ? "justify-end" : "justify-start"}`}
                       >
-                        {text}
-                      </ReactMarkdown>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
+                        <div
+                          className={`max-w-[80%] px-4 py-3 text-[14px] leading-relaxed ${
+                            isUser
+                              ? "bg-accent text-white rounded-[18px_18px_4px_18px] whitespace-pre-wrap"
+                              : "bg-white text-text-primary rounded-[18px_18px_18px_4px]"
+                          }`}
+                        >
+                          {isUser ? (
+                            part.text
+                          ) : (
+                            <ReactMarkdown
+                              components={{
+                                p: ({ children }) => (
+                                  <p className="mb-2 last:mb-0">{children}</p>
+                                ),
+                                strong: ({ children }) => (
+                                  <strong className="font-semibold">
+                                    {children}
+                                  </strong>
+                                ),
+                                ul: ({ children }) => (
+                                  <ul className="list-disc pl-4 mb-2 space-y-1">
+                                    {children}
+                                  </ul>
+                                ),
+                                ol: ({ children }) => (
+                                  <ol className="list-decimal pl-4 mb-2 space-y-1">
+                                    {children}
+                                  </ol>
+                                ),
+                                li: ({ children }) => <li>{children}</li>,
+                              }}
+                            >
+                              {part.text}
+                            </ReactMarkdown>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  if (
+                    isStaticToolUIPart(part) &&
+                    part.state === "output-available"
+                  ) {
+                    return (
+                      <div key={i} className="flex justify-start">
+                        <ConfirmationCard
+                          toolType={part.type}
+                          args={part.input as Record<string, unknown>}
+                        />
+                      </div>
+                    );
+                  }
+
+                  return null;
+                })}
+              </div>
+            ))}
 
             {/* Typing indicator */}
             {isLoading && (
