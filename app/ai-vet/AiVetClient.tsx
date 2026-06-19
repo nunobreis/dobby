@@ -4,6 +4,7 @@ import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, isTextUIPart } from "ai";
 import type { UIMessage } from "ai";
 import { useRef, useEffect, useState } from "react";
+import ReactMarkdown from "react-markdown";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { ChevronLeft, Send } from "lucide-react";
@@ -127,13 +128,25 @@ export default function AiVetClient({ context, displayName }: Props) {
                   className={`flex ${isUser ? "justify-end" : "justify-start"}`}
                 >
                   <div
-                    className={`max-w-[80%] px-4 py-3 text-[14px] leading-relaxed whitespace-pre-wrap ${
+                    className={`max-w-[80%] px-4 py-3 text-[14px] leading-relaxed ${
                       isUser
-                        ? "bg-accent text-white rounded-[18px_18px_4px_18px]"
+                        ? "bg-accent text-white rounded-[18px_18px_4px_18px] whitespace-pre-wrap"
                         : "bg-white text-text-primary rounded-[18px_18px_18px_4px]"
                     }`}
                   >
-                    {text}
+                    {isUser ? text : (
+                      <ReactMarkdown
+                        components={{
+                          p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+                          strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                          ul: ({ children }) => <ul className="list-disc pl-4 mb-2 space-y-1">{children}</ul>,
+                          ol: ({ children }) => <ol className="list-decimal pl-4 mb-2 space-y-1">{children}</ol>,
+                          li: ({ children }) => <li>{children}</li>,
+                        }}
+                      >
+                        {text}
+                      </ReactMarkdown>
+                    )}
                   </div>
                 </div>
               );
