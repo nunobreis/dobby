@@ -4,7 +4,8 @@
     "vaccinations": "Vacinas",
     "weight": "Peso",
     "vetVisits": "Consultas",
-    "more": "Mais"
+    "more": "Mais",
+    "aiVet": "Vet IA"
   },
   "dashboard": {
     "greeting": "Olá, {name}",
@@ -322,6 +323,8 @@
   "more": {
     "title": "Mais",
     "sectionApp": "App",
+    "aiVetLabel": "Veterinário IA",
+    "aiVetDescription": "Pergunta ao Dobby sobre a saúde do teu cão",
     "foodLabel": "Alimentação",
     "foodDescription": "Comida atual e histórico de refeições",
     "medicationsLabel": "Medicamentos",
@@ -334,6 +337,8 @@
     "profileDescription": "Detalhes do {name} e membros da família",
     "vetLabel": "Veterinário",
     "vetDescription": "Clínica, médico e contactos",
+    "vetVisitsLabel": "Consultas Veterinárias",
+    "vetVisitsDescription": "Consultas e histórico de visitas",
     "settingsLabel": "Definições",
     "settingsDescription": "Idioma e preferências"
   },
@@ -391,6 +396,23 @@
     "upToDate": "Em dia",
     "dueSoon": "Em breve",
     "overdue": "Em atraso"
+  },
+  "aiVet": {
+    "title": "Veterinário IA",
+    "disclaimerText": "Não sou um veterinário profissional e não posso fornecer diagnósticos oficiais. Para problemas de saúde graves, consulte um médico veterinário qualificado.",
+    "welcomeHeading": "Olá {name}!",
+    "welcomeIntro": "Sou o Dobby, o teu veterinário virtual. Aqui estão algumas coisas em que te posso ajudar:",
+    "cap1": "Calendários e lembretes de vacinação",
+    "cap2": "Conselhos sobre nutrição e dieta",
+    "cap3": "Orientação sobre peso e crescimento",
+    "cap4": "Perguntas sobre medicação",
+    "cap5": "Saúde geral e comportamento",
+    "cap6": "Dicas de cuidados para cachorros",
+    "inputPlaceholder": "Pergunta-me qualquer coisa sobre o {name}…",
+    "thinking": "O Dobby está a pensar…",
+    "errorMessage": "Ocorreu um erro. Por favor, tenta novamente.",
+    "you": "Tu",
+    "send": "Enviar"
   },
   "account": {
     "title": "A Minha Conta",

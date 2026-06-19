@@ -4,7 +4,8 @@
     "vaccinations": "Vaccinations",
     "weight": "Weight",
     "vetVisits": "Vet Visits",
-    "more": "More"
+    "more": "More",
+    "aiVet": "AI Vet"
   },
   "dashboard": {
     "greeting": "Hello, {name}",
@@ -322,6 +323,8 @@
   "more": {
     "title": "More",
     "sectionApp": "App",
+    "aiVetLabel": "AI Vet",
+    "aiVetDescription": "Ask Dobby anything about your dog's health",
     "foodLabel": "Food & Diet",
     "foodDescription": "Current food and feeding history",
     "medicationsLabel": "Medications",
@@ -334,6 +337,8 @@
     "profileDescription": "{name}'s details and household members",
     "vetLabel": "Vet",
     "vetDescription": "Clinic, surgeon and contact details",
+    "vetVisitsLabel": "Vet Visits",
+    "vetVisitsDescription": "Appointments and visit history",
     "settingsLabel": "Settings",
     "settingsDescription": "Language & preferences"
   },
@@ -391,6 +396,23 @@
     "upToDate": "Up to date",
     "dueSoon": "Due soon",
     "overdue": "Overdue"
+  },
+  "aiVet": {
+    "title": "AI Vet",
+    "disclaimerText": "I'm not a professional vet and cannot provide official diagnoses. For serious health concerns, please consult a qualified veterinarian.",
+    "welcomeHeading": "Hey {name}!",
+    "welcomeIntro": "I'm Dobby, your AI vet. Here are some things I can help you with:",
+    "cap1": "Vaccination schedules and reminders",
+    "cap2": "Nutrition and diet advice",
+    "cap3": "Weight and growth guidance",
+    "cap4": "Medication questions",
+    "cap5": "General health and behaviour",
+    "cap6": "Puppy care tips",
+    "inputPlaceholder": "Ask me anything about {name}…",
+    "thinking": "Dobby is thinking…",
+    "errorMessage": "Something went wrong. Please try again.",
+    "you": "You",
+    "send": "Send"
   },
   "account": {
     "title": "My Account",
