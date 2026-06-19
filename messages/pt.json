@@ -38,7 +38,10 @@
     "foodTypeDry": "Seco",
     "foodTypeWet": "Húmido",
     "foodTypeRaw": "Cru",
-    "foodTypeMixed": "Misto"
+    "foodTypeMixed": "Misto",
+    "chatPromptTitle": "Gostarias de me perguntar algo?",
+    "chatPromptPlaceholder": "O que gostarias de saber sobre o teu cão?",
+    "chatPromptButton": "Perguntar"
   },
   "vaccinations": {
     "title": "Vacinas",

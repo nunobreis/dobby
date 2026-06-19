@@ -6,6 +6,7 @@ import VaccinationBadge from "@/components/VaccinationBadge";
 import { formatDate, calculateAge, formatWeight, getVaccinationStatus } from "@/lib/utils";
 import { getTranslations } from "next-intl/server";
 import MilestoneCards from "./MilestoneCards";
+import DashboardChatPrompt from "./DashboardChatPrompt";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -112,7 +113,9 @@ export default async function DashboardPage() {
         </Link>
       </div>
 
-      <div className="px-5 flex flex-col gap-5">
+      <div className="px-5 pt-3 flex flex-col gap-5">
+        <DashboardChatPrompt />
+
         {/* Hero card */}
         <div className="bg-white rounded-card p-5 flex flex-col gap-2.5">
           <div className="flex flex-wrap gap-1.5">

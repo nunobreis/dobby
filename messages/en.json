@@ -38,7 +38,10 @@
     "foodTypeDry": "Dry",
     "foodTypeWet": "Wet",
     "foodTypeRaw": "Raw",
-    "foodTypeMixed": "Mixed"
+    "foodTypeMixed": "Mixed",
+    "chatPromptTitle": "Would you like to ask me something?",
+    "chatPromptPlaceholder": "What would you like to know about your dog?",
+    "chatPromptButton": "Ask"
   },
   "vaccinations": {
     "title": "Vaccinations",

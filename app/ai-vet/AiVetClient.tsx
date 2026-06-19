@@ -5,7 +5,7 @@ import { DefaultChatTransport, isTextUIPart } from "ai";
 import type { UIMessage } from "ai";
 import { useRef, useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { ChevronLeft, Send } from "lucide-react";
 import type { DogContext } from "@/app/api/chat/route";
@@ -20,6 +20,9 @@ export default function AiVetClient({ context, displayName }: Props) {
   const t = useTranslations("aiVet");
   const [inputValue, setInputValue] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
+  const searchParams = useSearchParams();
+  const initialQuery = searchParams.get("q");
+  const hasSentRef = useRef(false);
 
   const { messages, sendMessage, status, error } = useChat({
     transport: new DefaultChatTransport({
@@ -33,6 +36,12 @@ export default function AiVetClient({ context, displayName }: Props) {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isLoading]);
+
+  useEffect(() => {
+    if (!initialQuery || hasSentRef.current || status !== "ready" || messages.length > 0) return;
+    hasSentRef.current = true;
+    sendMessage({ text: initialQuery });
+  }, [status]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSend = () => {
     const text = inputValue.trim();
