@@ -1,4 +1,4 @@
-import { streamText, convertToModelMessages, tool, jsonSchema } from "ai";
+import { streamText, convertToModelMessages, tool, jsonSchema, stepCountIs } from "ai";
 import type { UIMessage } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
 import { createClient } from "@/lib/supabase/server";
@@ -169,12 +169,29 @@ Always respond in ${language}.`;
     model: anthropic("claude-haiku-4-5-20251001"),
     system: systemPrompt,
     messages: modelMessages,
-    maxSteps: 2,
+    stopWhen: stepCountIs(2),
     tools: {
-      addVaccination: tool({
+      addVaccination: tool<
+        {
+          vaccine_name: string;
+          date_given: string;
+          next_due_date?: string;
+          vet_clinic?: string;
+          batch_number?: string;
+          notes?: string;
+        },
+        {
+          vaccine_name: string;
+          date_given: string;
+          next_due_date?: string;
+          vet_clinic?: string;
+          batch_number?: string;
+          notes?: string;
+        }
+      >({
         description:
           "Propose adding a vaccination record when the user wants to log one.",
-        parameters: jsonSchema<{
+        inputSchema: jsonSchema<{
           vaccine_name: string;
           date_given: string;
           next_due_date?: string;
@@ -199,12 +216,29 @@ Always respond in ${language}.`;
           },
           required: ["vaccine_name", "date_given"],
         }),
-        execute: async (args) => args,
+        execute: async (input) => input,
       }),
-      addVetVisit: tool({
+      addVetVisit: tool<
+        {
+          date: string;
+          reason: string;
+          vet_clinic?: string;
+          outcome?: string;
+          cost?: number;
+          notes?: string;
+        },
+        {
+          date: string;
+          reason: string;
+          vet_clinic?: string;
+          outcome?: string;
+          cost?: number;
+          notes?: string;
+        }
+      >({
         description:
           "Propose adding a vet visit record when the user wants to log one.",
-        parameters: jsonSchema<{
+        inputSchema: jsonSchema<{
           date: string;
           reason: string;
           vet_clinic?: string;
@@ -223,12 +257,23 @@ Always respond in ${language}.`;
           },
           required: ["date", "reason"],
         }),
-        execute: async (args) => args,
+        execute: async (input) => input,
       }),
-      addWeightEntry: tool({
+      addWeightEntry: tool<
+        {
+          date: string;
+          weight_kg: number;
+          notes?: string;
+        },
+        {
+          date: string;
+          weight_kg: number;
+          notes?: string;
+        }
+      >({
         description:
           "Propose adding a weight entry when the user wants to log a weight measurement.",
-        parameters: jsonSchema<{
+        inputSchema: jsonSchema<{
           date: string;
           weight_kg: number;
           notes?: string;
@@ -244,12 +289,33 @@ Always respond in ${language}.`;
           },
           required: ["date", "weight_kg"],
         }),
-        execute: async (args) => args,
+        execute: async (input) => input,
       }),
-      addMedication: tool({
+      addMedication: tool<
+        {
+          name: string;
+          start_date: string;
+          medication_type?: "deworming" | "flea_tick" | "antibiotic" | "other";
+          dosage?: string;
+          frequency?: string;
+          end_date?: string;
+          prescribed_by?: string;
+          notes?: string;
+        },
+        {
+          name: string;
+          start_date: string;
+          medication_type?: "deworming" | "flea_tick" | "antibiotic" | "other";
+          dosage?: string;
+          frequency?: string;
+          end_date?: string;
+          prescribed_by?: string;
+          notes?: string;
+        }
+      >({
         description:
           "Propose adding a medication record when the user wants to log one.",
-        parameters: jsonSchema<{
+        inputSchema: jsonSchema<{
           name: string;
           start_date: string;
           medication_type?: "deworming" | "flea_tick" | "antibiotic" | "other";
@@ -288,7 +354,7 @@ Always respond in ${language}.`;
           },
           required: ["name", "start_date"],
         }),
-        execute: async (args) => args,
+        execute: async (input) => input,
       }),
     },
   });
