@@ -55,6 +55,7 @@ const TOOL_META: Record<string, { title: string; href: string }> = {
 
 export default function ConfirmationCard({ toolType, args }: Props) {
   const [cardState, setCardState] = useState<CardState>("idle");
+  const [errorMessage, setErrorMessage] = useState<string>("");
   const [dismissed, setDismissed] = useState(false);
 
   const toolName = toolType.replace(/^tool-/, "");
@@ -85,7 +86,8 @@ export default function ConfirmationCard({ toolType, args }: Props) {
       }
       if ("error" in result) throw new Error(result.error);
       setCardState("saved");
-    } catch {
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : "Something went wrong");
       setCardState("error");
     }
   };
@@ -106,7 +108,13 @@ export default function ConfirmationCard({ toolType, args }: Props) {
             </span>
             <span className="text-text-primary font-medium">
               {DATE_FIELDS.has(key)
-                ? formatDate(String(value))
+                ? (() => {
+                    try {
+                      return formatDate(String(value));
+                    } catch {
+                      return String(value);
+                    }
+                  })()
                 : String(value)}
             </span>
           </div>
@@ -124,7 +132,7 @@ export default function ConfirmationCard({ toolType, args }: Props) {
       ) : cardState === "error" ? (
         <>
           <p className="text-[12px] text-red-500">
-            Something went wrong. Please try again.
+            {errorMessage || "Something went wrong. Please try again."}
           </p>
           <div className="flex gap-2 items-center">
             <button
