@@ -81,7 +81,7 @@ export default function AiVetClient({ context, displayName }: Props) {
       </div>
 
       {/* Scrollable content */}
-      <div className="pt-14 pb-36 lg:pb-28 px-4">
+      <div className="pt-14 pb-52 lg:pb-28 px-4">
         {messages.length === 0 ? (
           <div className="pt-6 flex flex-col gap-4">
             {/* Disclaimer banner */}
@@ -162,7 +162,7 @@ export default function AiVetClient({ context, displayName }: Props) {
       </div>
 
       {/* Fixed input bar */}
-      <div className="fixed bottom-0 left-0 right-0 lg:left-[220px] bg-white border-t border-[#F0F0F0] px-4 py-3">
+      <div className="fixed bottom-24 lg:bottom-0 left-0 right-0 lg:left-[220px] bg-white border-t border-[#F0F0F0] px-4 py-3">
         <div className="flex items-end gap-3">
           <textarea
             value={inputValue}
