@@ -431,7 +431,8 @@
     "errorMessage": "Something went wrong. Please try again.",
     "you": "You",
     "send": "Send",
-    "newChat": "New chat"
+    "newChat": "New chat",
+    "attachedPhoto": "Attached photo"
   },
   "account": {
     "title": "My Account",

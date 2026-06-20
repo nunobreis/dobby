@@ -308,11 +308,12 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
 
                   if (part.type === "file" && msg.role === "user") {
                     const url = "url" in part ? (part.url as string) : "";
+                    if (!url) return null;
                     return (
                       <div key={i} className="flex justify-end">
                         <img
                           src={url}
-                          alt="Attached photo"
+                          alt={t("attachedPhoto")}
                           className="max-w-[80%] max-h-48 rounded-[18px_18px_4px_18px] object-cover"
                         />
                       </div>

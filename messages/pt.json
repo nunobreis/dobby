@@ -431,7 +431,8 @@
     "errorMessage": "Ocorreu um erro. Por favor, tenta novamente.",
     "you": "Tu",
     "send": "Enviar",
-    "newChat": "Nova conversa"
+    "newChat": "Nova conversa",
+    "attachedPhoto": "Foto anexada"
   },
   "account": {
     "title": "A Minha Conta",
