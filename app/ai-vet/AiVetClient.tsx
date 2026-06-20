@@ -153,17 +153,31 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
     }
   };
 
-  const handleSend = () => {
+  const handleSend = async () => {
     const text = inputValue.trim();
-    if (!text || isLoading) return;
+    if ((!text && !pendingImage) || isLoading) return;
+
+    let files: Array<{ type: "file"; mediaType: string; url: string }> | undefined;
+
+    if (pendingImage) {
+      const dataUrl = await fileToBase64DataUrl(pendingImage.file);
+      files = [{ type: "file", mediaType: "image/jpeg", url: dataUrl }];
+      URL.revokeObjectURL(pendingImage.previewUrl);
+      setPendingImage(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+
     setInputValue("");
-    sendMessage({ text });
+    sendMessage({
+      text,
+      ...(files ? { files } : {}),
+    });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      handleSend();
+      void handleSend();
     }
   };
 
@@ -386,7 +400,7 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
             style={{ minHeight: "48px" }}
           />
           <button
-            onClick={handleSend}
+            onClick={() => void handleSend()}
             disabled={(!inputValue.trim() && !pendingImage) || isLoading}
             className="w-11 h-11 rounded-full bg-accent flex items-center justify-center disabled:opacity-40 transition-opacity shrink-0"
           >
