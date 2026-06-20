@@ -8,55 +8,10 @@ import ReactMarkdown from "react-markdown";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { ChevronLeft, Mic, Paperclip, Send, SquarePen, StopCircle, X } from "lucide-react";
-import imageCompression from "browser-image-compression";
-import { toast } from "sonner";
+import { useChatInput, fileToBase64DataUrl, PENDING_IMAGE_KEY } from "@/lib/hooks/useChatInput";
 import ConfirmationCard from "./ConfirmationCard";
 
 const CHAT_STORAGE_KEY = "dobby-ai-vet-messages";
-
-function isHeicFile(file: File): boolean {
-  return (
-    file.type === "image/heic" ||
-    file.type === "image/heif" ||
-    file.name.toLowerCase().endsWith(".heic") ||
-    file.name.toLowerCase().endsWith(".heif")
-  );
-}
-
-async function processImageFile(file: File): Promise<File> {
-  let workingFile = file;
-
-  if (isHeicFile(file)) {
-    try {
-      const heic2any = (await import("heic2any")).default;
-      const converted = await heic2any({ blob: file, toType: "image/jpeg", quality: 0.9 });
-      const blob = Array.isArray(converted) ? converted[0] : converted;
-      workingFile = new File(
-        [blob],
-        file.name.replace(/\.heic$/i, ".jpg").replace(/\.heif$/i, ".jpg"),
-        { type: "image/jpeg" }
-      );
-    } catch {
-      // fall back to original
-    }
-  }
-
-  const compressed = await imageCompression(workingFile, {
-    maxSizeMB: 1,
-    maxWidthOrHeight: 1920,
-    useWebWorker: true,
-  });
-  return compressed as File;
-}
-
-async function fileToBase64DataUrl(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
 
 interface Props {
   puppyName: string;
@@ -66,23 +21,16 @@ interface Props {
 export default function AiVetClient({ puppyName, displayName }: Props) {
   const router = useRouter();
   const t = useTranslations("aiVet");
-  const [inputValue, setInputValue] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q");
   const hasSentRef = useRef(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [pendingImage, setPendingImage] = useState<{
-    file: File;
-    previewUrl: string;
-  } | null>(null);
-  const [processingImage, setProcessingImage] = useState(false);
-  const [recordingState, setRecordingState] = useState<"idle" | "recording" | "transcribing">("idle");
-  const [recordingSeconds, setRecordingSeconds] = useState(0);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const mimeTypeRef = useRef<string>("");
+
+  const ci = useChatInput({
+    micError: t("micError"),
+    transcribeError: t("transcribeError"),
+    imageError: t("imageError"),
+  });
 
   const [storedMessages] = useState<UIMessage[]>(() => {
     if (typeof window === "undefined") return [];
@@ -95,13 +43,28 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
   });
 
   const { messages, sendMessage, status, error, setMessages } = useChat({
-    transport: new DefaultChatTransport({
-      api: "/api/chat",
-    }),
+    transport: new DefaultChatTransport({ api: "/api/chat" }),
     messages: storedMessages,
   });
 
   const isLoading = status === "submitted" || status === "streaming";
+
+  // Restore image forwarded from the dashboard prompt
+  useEffect(() => {
+    const stored = sessionStorage.getItem(PENDING_IMAGE_KEY);
+    if (!stored) return;
+    sessionStorage.removeItem(PENDING_IMAGE_KEY);
+    try {
+      const { dataUrl, mimeType } = JSON.parse(stored) as { dataUrl: string; mimeType: string };
+      fetch(dataUrl)
+        .then((r) => r.blob())
+        .then((blob) => {
+          const file = new File([blob], "image.jpg", { type: mimeType });
+          ci.setPendingImage({ file, previewUrl: dataUrl });
+        })
+        .catch(() => {});
+    } catch {}
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -119,115 +82,10 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
   }, [messages]);
 
   useEffect(() => {
-    if (
-      !initialQuery ||
-      hasSentRef.current ||
-      status !== "ready" ||
-      messages.length > 0
-    )
-      return;
+    if (!initialQuery || hasSentRef.current || status !== "ready" || messages.length > 0) return;
     hasSentRef.current = true;
     sendMessage({ text: initialQuery });
   }, [status]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-      if (mediaRecorderRef.current) {
-        mediaRecorderRef.current.stream.getTracks().forEach((track) => track.stop());
-      }
-    };
-  }, []);
-
-  function formatSeconds(s: number) {
-    return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
-  }
-
-  function getSupportedMimeType(): string {
-    if (typeof MediaRecorder === "undefined") return "";
-    const candidates = ["audio/webm", "audio/mp4", "audio/ogg"];
-    return candidates.find((type) => MediaRecorder.isTypeSupported(type)) ?? "";
-  }
-
-  function getFileExtension(mimeType: string): string {
-    if (mimeType.includes("mp4")) return "mp4";
-    if (mimeType.includes("ogg")) return "ogg";
-    return "webm";
-  }
-
-  const startRecording = async () => {
-    if (typeof MediaRecorder === "undefined" || !navigator.mediaDevices) {
-      toast.error(t("micError"));
-      return;
-    }
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mimeType = getSupportedMimeType();
-      mimeTypeRef.current = mimeType;
-      const mediaRecorder = mimeType
-        ? new MediaRecorder(stream, { mimeType })
-        : new MediaRecorder(stream);
-      mediaRecorderRef.current = mediaRecorder;
-      audioChunksRef.current = [];
-
-      mediaRecorder.ondataavailable = (e) => {
-        if (e.data.size > 0) audioChunksRef.current.push(e.data);
-      };
-
-      mediaRecorder.start();
-      setRecordingState("recording");
-      setRecordingSeconds(0);
-      timerRef.current = setInterval(() => {
-        setRecordingSeconds((s) => s + 1);
-      }, 1000);
-    } catch {
-      toast.error(t("micError"));
-    }
-  };
-
-  const stopRecording = () => {
-    const mediaRecorder = mediaRecorderRef.current;
-    if (!mediaRecorder) return;
-    if (timerRef.current) clearInterval(timerRef.current);
-    setRecordingState("transcribing");
-
-    mediaRecorder.onstop = async () => {
-      const mimeType = mimeTypeRef.current || "audio/webm";
-      const ext = getFileExtension(mimeType);
-      const audioBlob = new Blob(audioChunksRef.current, { type: mimeType });
-      mediaRecorder.stream.getTracks().forEach((track) => track.stop());
-      try {
-        const formData = new FormData();
-        formData.append("audio", audioBlob, `recording.${ext}`);
-        const res = await fetch("/api/transcribe", { method: "POST", body: formData });
-        const { transcript } = (await res.json()) as { transcript: string };
-        setInputValue(transcript);
-      } catch {
-        toast.error(t("transcribeError"));
-      } finally {
-        setRecordingState("idle");
-        setRecordingSeconds(0);
-        mediaRecorderRef.current = null;
-        audioChunksRef.current = [];
-      }
-    };
-
-    mediaRecorder.stop();
-  };
-
-  const cancelRecording = () => {
-    const mediaRecorder = mediaRecorderRef.current;
-    if (mediaRecorder) {
-      mediaRecorder.onstop = null;
-      mediaRecorder.stream.getTracks().forEach((track) => track.stop());
-      if (mediaRecorder.state !== "inactive") mediaRecorder.stop();
-      mediaRecorderRef.current = null;
-    }
-    if (timerRef.current) clearInterval(timerRef.current);
-    audioChunksRef.current = [];
-    setRecordingState("idle");
-    setRecordingSeconds(0);
-  };
 
   const handleNewChat = () => {
     try {
@@ -236,51 +94,22 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
     setMessages([]);
   };
 
-  const handleClearImage = () => {
-    if (pendingImage) {
-      URL.revokeObjectURL(pendingImage.previewUrl);
-    }
-    setPendingImage(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
-  };
-
-  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setProcessingImage(true);
-    try {
-      const processed = await processImageFile(file);
-      setPendingImage({
-        file: processed,
-        previewUrl: URL.createObjectURL(processed),
-      });
-    } catch {
-      toast.error(t("imageError"));
-    } finally {
-      setProcessingImage(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
-    }
-  };
-
   const handleSend = async () => {
-    const text = inputValue.trim();
-    if ((!text && !pendingImage) || isLoading) return;
+    const text = ci.inputValue.trim();
+    if ((!text && !ci.pendingImage) || isLoading) return;
 
     let files: Array<{ type: "file"; mediaType: string; url: string }> | undefined;
 
-    if (pendingImage) {
-      const dataUrl = await fileToBase64DataUrl(pendingImage.file);
-      files = [{ type: "file", mediaType: pendingImage.file.type || "image/jpeg", url: dataUrl }];
-      URL.revokeObjectURL(pendingImage.previewUrl);
-      setPendingImage(null);
-      if (fileInputRef.current) fileInputRef.current.value = "";
+    if (ci.pendingImage) {
+      const dataUrl = await fileToBase64DataUrl(ci.pendingImage.file);
+      files = [{ type: "file", mediaType: ci.pendingImage.file.type || "image/jpeg", url: dataUrl }];
+      URL.revokeObjectURL(ci.pendingImage.previewUrl);
+      ci.setPendingImage(null);
+      if (ci.fileInputRef.current) ci.fileInputRef.current.value = "";
     }
 
-    setInputValue("");
-    sendMessage({
-      text,
-      ...(files ? { files } : {}),
-    });
+    ci.setInputValue("");
+    sendMessage({ text, ...(files ? { files } : {}) });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -290,14 +119,7 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
     }
   };
 
-  const capabilities = [
-    t("cap1"),
-    t("cap2"),
-    t("cap3"),
-    t("cap4"),
-    t("cap5"),
-    t("cap6"),
-  ];
+  const capabilities = [t("cap1"), t("cap2"), t("cap3"), t("cap4"), t("cap5"), t("cap6")];
 
   return (
     <div className="min-h-screen bg-background">
@@ -310,9 +132,7 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
           >
             <ChevronLeft size={22} className="text-text-primary" />
           </button>
-          <span className="text-[17px] font-semibold text-text-primary">
-            {t("title")}
-          </span>
+          <span className="text-[17px] font-semibold text-text-primary">{t("title")}</span>
           <button
             onClick={handleNewChat}
             className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-[#F5F5F5] transition-colors"
@@ -327,21 +147,14 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
       <div className="pt-14 pb-52 lg:pb-28 px-4">
         {messages.length === 0 ? (
           <div className="pt-6 flex flex-col gap-4">
-            {/* Disclaimer banner */}
             <div className="bg-[#FFF8E7] rounded-card p-4">
-              <p className="text-[12px] text-[#92720C] leading-relaxed">
-                {t("disclaimerText")}
-              </p>
+              <p className="text-[12px] text-[#92720C] leading-relaxed">{t("disclaimerText")}</p>
             </div>
-
-            {/* Welcome card */}
             <div className="bg-white rounded-card p-5 flex flex-col gap-3">
               <p className="text-[18px] font-bold text-text-primary">
                 {t("welcomeHeading", { name: displayName })}
               </p>
-              <p className="text-[14px] text-text-secondary">
-                {t("welcomeIntro")}
-              </p>
+              <p className="text-[14px] text-text-secondary">{t("welcomeIntro")}</p>
               <ul className="flex flex-col gap-2 mt-1">
                 {capabilities.map((cap) => (
                   <li key={cap} className="flex items-start gap-2">
@@ -354,22 +167,17 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
           </div>
         ) : (
           <div className="pt-4 flex flex-col gap-3">
-            {/* Compact disclaimer */}
             <p className="text-[11px] text-text-secondary text-center px-6 leading-relaxed">
               {t("disclaimerText")}
             </p>
 
-            {/* Messages */}
             {messages.map((msg: UIMessage) => (
               <div key={msg.id} className="flex flex-col gap-2">
                 {msg.parts.map((part, i) => {
                   if (isTextUIPart(part) && part.text) {
                     const isUser = msg.role === "user";
                     return (
-                      <div
-                        key={i}
-                        className={`flex ${isUser ? "justify-end" : "justify-start"}`}
-                      >
+                      <div key={i} className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
                         <div
                           className={`max-w-[80%] px-4 py-3 text-[14px] leading-relaxed ${
                             isUser
@@ -382,24 +190,10 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
                           ) : (
                             <ReactMarkdown
                               components={{
-                                p: ({ children }) => (
-                                  <p className="mb-2 last:mb-0">{children}</p>
-                                ),
-                                strong: ({ children }) => (
-                                  <strong className="font-semibold">
-                                    {children}
-                                  </strong>
-                                ),
-                                ul: ({ children }) => (
-                                  <ul className="list-disc pl-4 mb-2 space-y-1">
-                                    {children}
-                                  </ul>
-                                ),
-                                ol: ({ children }) => (
-                                  <ol className="list-decimal pl-4 mb-2 space-y-1">
-                                    {children}
-                                  </ol>
-                                ),
+                                p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+                                strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                                ul: ({ children }) => <ul className="list-disc pl-4 mb-2 space-y-1">{children}</ul>,
+                                ol: ({ children }) => <ol className="list-decimal pl-4 mb-2 space-y-1">{children}</ol>,
                                 li: ({ children }) => <li>{children}</li>,
                               }}
                             >
@@ -425,10 +219,7 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
                     );
                   }
 
-                  if (
-                    isStaticToolUIPart(part) &&
-                    part.state === "output-available"
-                  ) {
+                  if (isStaticToolUIPart(part) && part.state === "output-available") {
                     return (
                       <div key={i} className="flex justify-start">
                         <ConfirmationCard
@@ -444,7 +235,6 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
               </div>
             ))}
 
-            {/* Typing indicator */}
             {isLoading && (
               <div className="flex justify-start">
                 <div className="bg-white px-4 py-3 rounded-[18px_18px_18px_4px] flex items-center gap-1">
@@ -456,9 +246,7 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
             )}
 
             {error && (
-              <p className="text-[12px] text-red-500 text-center px-4">
-                {t("errorMessage")}
-              </p>
+              <p className="text-[12px] text-red-500 text-center px-4">{t("errorMessage")}</p>
             )}
 
             <div ref={bottomRef} />
@@ -469,17 +257,17 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
       {/* Fixed input bar */}
       <div className="fixed bottom-24 lg:bottom-0 left-0 right-0 lg:left-[220px] bg-white border-t border-[#F0F0F0] px-4 py-3">
         {/* Pending image preview */}
-        {pendingImage && (
+        {ci.pendingImage && (
           <div className="mb-2 flex items-center gap-2">
             <div className="relative w-14 h-14 shrink-0">
               <img
-                src={pendingImage.previewUrl}
+                src={ci.pendingImage.previewUrl}
                 alt={t("attachmentPreview")}
                 className="w-14 h-14 rounded-[10px] object-cover"
               />
               <button
                 type="button"
-                onClick={handleClearImage}
+                onClick={ci.handleClearImage}
                 className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-[#1A1A1A] rounded-full flex items-center justify-center"
               >
                 <X size={11} className="text-white" />
@@ -489,17 +277,17 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
         )}
 
         {/* Recording / transcribing pill */}
-        {recordingState !== "idle" && (
+        {ci.recordingState !== "idle" && (
           <div className="mb-2">
-            {recordingState === "recording" ? (
+            {ci.recordingState === "recording" ? (
               <div className="inline-flex items-center gap-2 bg-[#FEE2E2] rounded-pill px-3 py-1.5">
                 <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse shrink-0" />
                 <span className="text-[13px] font-medium text-red-700 tabular-nums">
-                  {formatSeconds(recordingSeconds)}
+                  {ci.formatSeconds(ci.recordingSeconds)}
                 </span>
                 <button
                   type="button"
-                  onClick={cancelRecording}
+                  onClick={ci.cancelRecording}
                   aria-label={t("cancelRecording")}
                   className="w-5 h-5 bg-red-400 rounded-full flex items-center justify-center ml-1"
                 >
@@ -516,58 +304,56 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
         )}
 
         <div className="flex items-end gap-3">
-          {/* Attachment button */}
           <button
             type="button"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={isLoading || processingImage || recordingState !== "idle"}
+            onClick={() => ci.fileInputRef.current?.click()}
+            disabled={isLoading || ci.processingImage || ci.recordingState !== "idle"}
             className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#F5F5F5] transition-colors disabled:opacity-40 shrink-0"
           >
-            {processingImage ? (
+            {ci.processingImage ? (
               <div className="w-5 h-5 rounded-full border-2 border-accent/20 border-t-accent animate-spin" />
             ) : (
               <Paperclip size={20} className="text-text-secondary" />
             )}
           </button>
 
-          {/* Hidden file input */}
           <input
-            ref={fileInputRef}
+            ref={ci.fileInputRef}
             type="file"
             accept="image/*"
-            onChange={handleFileSelect}
+            onChange={ci.handleFileSelect}
             className="hidden"
           />
 
           <textarea
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
+            value={ci.inputValue}
+            onChange={(e) => ci.setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder={t("inputPlaceholder", { name: puppyName })}
             rows={1}
-            disabled={isLoading || recordingState !== "idle"}
+            disabled={isLoading || ci.recordingState !== "idle"}
             className="flex-1 bg-[#EBEBEB] rounded-input px-4 py-3 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40 resize-none max-h-32 disabled:opacity-50 leading-snug"
             style={{ minHeight: "48px" }}
           />
 
           {/* Right slot: mic → stop → spinner → send */}
-          {recordingState === "recording" ? (
+          {ci.recordingState === "recording" ? (
             <button
               type="button"
-              onClick={stopRecording}
+              onClick={ci.stopRecording}
               aria-label={t("stopRecording")}
               className="w-11 h-11 rounded-full bg-red-500 flex items-center justify-center shrink-0"
             >
               <StopCircle size={18} className="text-white" />
             </button>
-          ) : recordingState === "transcribing" ? (
+          ) : ci.recordingState === "transcribing" ? (
             <div className="w-11 h-11 rounded-full bg-accent/20 flex items-center justify-center shrink-0">
               <div className="w-5 h-5 rounded-full border-2 border-accent/30 border-t-accent animate-spin" />
             </div>
-          ) : inputValue.trim() || pendingImage ? (
+          ) : ci.inputValue.trim() || ci.pendingImage ? (
             <button
               onClick={() => void handleSend()}
-              disabled={isLoading || processingImage}
+              disabled={isLoading || ci.processingImage}
               className="w-11 h-11 rounded-full bg-accent flex items-center justify-center disabled:opacity-40 transition-opacity shrink-0"
             >
               <Send size={18} className="text-white" />
@@ -575,8 +361,8 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
           ) : (
             <button
               type="button"
-              onClick={() => void startRecording()}
-              disabled={isLoading || processingImage}
+              onClick={() => void ci.startRecording()}
+              disabled={isLoading || ci.processingImage}
               aria-label={t("startRecording")}
               className="w-11 h-11 rounded-full bg-accent flex items-center justify-center disabled:opacity-40 transition-opacity shrink-0"
             >
