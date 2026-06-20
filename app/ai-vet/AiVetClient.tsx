@@ -25,6 +25,7 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q");
   const hasSentRef = useRef(false);
+  const hasSentSessionRef = useRef(false);
 
   const ci = useChatInput({
     micError: t("micError"),
@@ -49,22 +50,22 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
 
   const isLoading = status === "submitted" || status === "streaming";
 
-  // Restore image forwarded from the dashboard prompt
+  // Read image + text forwarded from the dashboard prompt
+  const [sessionSend, setSessionSend] = useState<{
+    text: string;
+    dataUrl: string;
+    mimeType: string;
+  } | null>(null);
+
   useEffect(() => {
     const stored = sessionStorage.getItem(PENDING_IMAGE_KEY);
     if (!stored) return;
     sessionStorage.removeItem(PENDING_IMAGE_KEY);
     try {
-      const { dataUrl, mimeType } = JSON.parse(stored) as { dataUrl: string; mimeType: string };
-      fetch(dataUrl)
-        .then((r) => r.blob())
-        .then((blob) => {
-          const file = new File([blob], "image.jpg", { type: mimeType });
-          ci.setPendingImage({ file, previewUrl: dataUrl });
-        })
-        .catch(() => {});
+      const parsed = JSON.parse(stored) as { dataUrl: string; mimeType: string; text?: string };
+      setSessionSend({ text: parsed.text ?? "", dataUrl: parsed.dataUrl, mimeType: parsed.mimeType });
     } catch {}
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -81,11 +82,23 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
     } catch {}
   }, [messages]);
 
+  // Auto-send plain text from ?q= param (e.g. dashboard prompt text-only)
   useEffect(() => {
-    if (!initialQuery || hasSentRef.current || status !== "ready" || messages.length > 0) return;
+    if (!initialQuery || hasSentRef.current || status !== "ready") return;
     hasSentRef.current = true;
     sendMessage({ text: initialQuery });
   }, [status]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Auto-send image (+ optional text) forwarded from the dashboard prompt
+  useEffect(() => {
+    if (!sessionSend || hasSentSessionRef.current || status !== "ready") return;
+    hasSentSessionRef.current = true;
+    const { text, dataUrl, mimeType } = sessionSend;
+    const files: Array<{ type: "file"; mediaType: string; url: string }> = [
+      { type: "file", mediaType: mimeType, url: dataUrl },
+    ];
+    sendMessage({ text, files });
+  }, [status, sessionSend]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleNewChat = () => {
     try {

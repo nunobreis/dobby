@@ -28,13 +28,13 @@ export default function DashboardChatPrompt() {
         const dataUrl = await fileToBase64DataUrl(ci.pendingImage.file);
         sessionStorage.setItem(
           PENDING_IMAGE_KEY,
-          JSON.stringify({ dataUrl, mimeType: ci.pendingImage.file.type || "image/jpeg" })
+          JSON.stringify({ dataUrl, mimeType: ci.pendingImage.file.type || "image/jpeg", text })
         );
       } catch {}
+      router.push("/ai-vet");
+    } else {
+      router.push(`/ai-vet?q=${encodeURIComponent(text)}`);
     }
-
-    const url = text ? `/ai-vet?q=${encodeURIComponent(text)}` : "/ai-vet";
-    router.push(url);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
