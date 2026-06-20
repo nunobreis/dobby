@@ -8,6 +8,8 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { useLocale } from "next-intl";
+import { pt } from "date-fns/locale";
 import { formatDateShort } from "@/lib/utils";
 
 interface Entry {
@@ -16,8 +18,11 @@ interface Entry {
 }
 
 export default function WeightChart({ entries }: { entries: Entry[] }) {
+  const locale = useLocale();
+  const dateFnsLocale = locale === "pt" ? pt : undefined;
+
   const data = entries.map((e) => ({
-    date: formatDateShort(e.date),
+    date: formatDateShort(e.date, dateFnsLocale),
     weight: e.weight_kg,
   }));
 
