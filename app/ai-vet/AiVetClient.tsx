@@ -82,6 +82,7 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const mimeTypeRef = useRef<string>("");
 
   const [storedMessages] = useState<UIMessage[]>(() => {
     if (typeof window === "undefined") return [];
@@ -142,10 +143,30 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
     return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
   }
 
+  function getSupportedMimeType(): string {
+    if (typeof MediaRecorder === "undefined") return "";
+    const candidates = ["audio/webm", "audio/mp4", "audio/ogg"];
+    return candidates.find((type) => MediaRecorder.isTypeSupported(type)) ?? "";
+  }
+
+  function getFileExtension(mimeType: string): string {
+    if (mimeType.includes("mp4")) return "mp4";
+    if (mimeType.includes("ogg")) return "ogg";
+    return "webm";
+  }
+
   const startRecording = async () => {
+    if (typeof MediaRecorder === "undefined" || !navigator.mediaDevices) {
+      toast.error(t("micError"));
+      return;
+    }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream);
+      const mimeType = getSupportedMimeType();
+      mimeTypeRef.current = mimeType;
+      const mediaRecorder = mimeType
+        ? new MediaRecorder(stream, { mimeType })
+        : new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = [];
 
@@ -171,11 +192,13 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
     setRecordingState("transcribing");
 
     mediaRecorder.onstop = async () => {
-      const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+      const mimeType = mimeTypeRef.current || "audio/webm";
+      const ext = getFileExtension(mimeType);
+      const audioBlob = new Blob(audioChunksRef.current, { type: mimeType });
       mediaRecorder.stream.getTracks().forEach((track) => track.stop());
       try {
         const formData = new FormData();
-        formData.append("audio", audioBlob, "recording.webm");
+        formData.append("audio", audioBlob, `recording.${ext}`);
         const res = await fetch("/api/transcribe", { method: "POST", body: formData });
         const { transcript } = (await res.json()) as { transcript: string };
         setInputValue(transcript);
