@@ -507,21 +507,6 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
             )}
           </button>
 
-          {/* Mic / stop button */}
-          <button
-            type="button"
-            onClick={recordingState === "recording" ? stopRecording : startRecording}
-            disabled={isLoading || processingImage || recordingState === "transcribing"}
-            aria-label={recordingState === "recording" ? t("stopRecording") : t("startRecording")}
-            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#F5F5F5] transition-colors disabled:opacity-40 shrink-0"
-          >
-            {recordingState === "recording" ? (
-              <StopCircle size={20} className="text-red-500" />
-            ) : (
-              <Mic size={20} className="text-text-secondary" />
-            )}
-          </button>
-
           {/* Hidden file input */}
           <input
             ref={fileInputRef}
@@ -541,13 +526,40 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
             className="flex-1 bg-[#EBEBEB] rounded-input px-4 py-3 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40 resize-none max-h-32 disabled:opacity-50 leading-snug"
             style={{ minHeight: "48px" }}
           />
-          <button
-            onClick={() => void handleSend()}
-            disabled={(!inputValue.trim() && !pendingImage) || isLoading || processingImage || recordingState !== "idle"}
-            className="w-11 h-11 rounded-full bg-accent flex items-center justify-center disabled:opacity-40 transition-opacity shrink-0"
-          >
-            <Send size={18} className="text-white" />
-          </button>
+
+          {/* Right slot: mic → stop → spinner → send */}
+          {recordingState === "recording" ? (
+            <button
+              type="button"
+              onClick={stopRecording}
+              aria-label={t("stopRecording")}
+              className="w-11 h-11 rounded-full bg-red-500 flex items-center justify-center shrink-0"
+            >
+              <StopCircle size={18} className="text-white" />
+            </button>
+          ) : recordingState === "transcribing" ? (
+            <div className="w-11 h-11 rounded-full bg-accent/20 flex items-center justify-center shrink-0">
+              <div className="w-5 h-5 rounded-full border-2 border-accent/30 border-t-accent animate-spin" />
+            </div>
+          ) : inputValue.trim() || pendingImage ? (
+            <button
+              onClick={() => void handleSend()}
+              disabled={isLoading || processingImage}
+              className="w-11 h-11 rounded-full bg-accent flex items-center justify-center disabled:opacity-40 transition-opacity shrink-0"
+            >
+              <Send size={18} className="text-white" />
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => void startRecording()}
+              disabled={isLoading || processingImage}
+              aria-label={t("startRecording")}
+              className="w-11 h-11 rounded-full bg-accent flex items-center justify-center disabled:opacity-40 transition-opacity shrink-0"
+            >
+              <Mic size={18} className="text-white" />
+            </button>
+          )}
         </div>
       </div>
     </div>
