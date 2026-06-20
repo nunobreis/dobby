@@ -91,7 +91,15 @@
     "errorInvalid": "Introduz uma data e peso válidos.",
     "saveButton": "Guardar peso",
     "saving": "A guardar…",
-    "toastSuccess": "Peso registado!"
+    "toastSuccess": "Peso registado!",
+    "editTitle": "Editar Peso",
+    "saveChangesButton": "Guardar alterações",
+    "toastUpdated": "Peso atualizado!",
+    "deleteButton": "Eliminar registo de peso",
+    "deleteConfirmTitle": "Eliminar este registo de peso?",
+    "deleteConfirmMessage": "Esta ação não pode ser desfeita.",
+    "cancelButton": "Cancelar",
+    "toastDeleted": "Registo de peso eliminado."
   },
   "vetVisits": {
     "title": "Consultas Veterinárias",

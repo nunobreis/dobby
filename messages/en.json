@@ -91,7 +91,15 @@
     "errorInvalid": "Please enter a valid date and weight.",
     "saveButton": "Save weight",
     "saving": "Saving…",
-    "toastSuccess": "Weight logged!"
+    "toastSuccess": "Weight logged!",
+    "editTitle": "Edit Weight",
+    "saveChangesButton": "Save changes",
+    "toastUpdated": "Weight updated!",
+    "deleteButton": "Delete weight entry",
+    "deleteConfirmTitle": "Delete this weight entry?",
+    "deleteConfirmMessage": "This can't be undone.",
+    "cancelButton": "Cancel",
+    "toastDeleted": "Weight entry deleted."
   },
   "vetVisits": {
     "title": "Vet Visits",

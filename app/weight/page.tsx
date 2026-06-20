@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Plus, Scale } from "lucide-react";
+import { Plus, Scale, ChevronRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import WeightChart from "@/components/WeightChart";
 import EmptyState from "@/components/EmptyState";
@@ -65,22 +65,22 @@ export default async function WeightPage() {
         <div className="flex flex-col gap-3">
           {entriesDesc.length > 0 ? (
             entriesDesc.map((e) => (
-              <div
-                key={e.id}
-                className="bg-white rounded-card p-4 flex items-center justify-between"
-              >
-                <div className="flex flex-col gap-0.5">
-                  <span className="text-[22px] font-bold text-text-primary leading-none">
-                    {formatWeight(e.weight_kg)}
-                  </span>
-                  <span className="text-[13px] text-text-secondary mt-1">
-                    {formatDate(e.date)}
-                  </span>
-                  {e.notes && (
-                    <span className="text-[13px] text-text-secondary italic">{e.notes}</span>
-                  )}
+              <Link key={e.id} href={`/weight/${e.id}/edit`}>
+                <div className="bg-white rounded-card p-4 flex items-center justify-between active:bg-[#F5F5F5] transition-colors">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-[22px] font-bold text-text-primary leading-none">
+                      {formatWeight(e.weight_kg)}
+                    </span>
+                    <span className="text-[13px] text-text-secondary mt-1">
+                      {formatDate(e.date)}
+                    </span>
+                    {e.notes && (
+                      <span className="text-[13px] text-text-secondary italic">{e.notes}</span>
+                    )}
+                  </div>
+                  <ChevronRight size={16} className="text-[#AEAEAE]" />
                 </div>
-              </div>
+              </Link>
             ))
           ) : (
             <EmptyState
