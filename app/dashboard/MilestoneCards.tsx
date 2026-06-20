@@ -33,7 +33,9 @@ export default function MilestoneCards({ milestones }: { milestones: Milestone[]
             )}
             <div className="p-3.5 flex flex-col gap-1">
               <span className="text-[14px] font-bold text-text-primary">{m.title}</span>
-              <span className="text-[12px] text-text-secondary">{formatDate(m.date)}</span>
+              <span className="inline-flex items-center px-3 py-1 rounded-badge bg-lavender text-accent text-[11px] font-semibold self-start">
+                {formatDate(m.date)}
+              </span>
             </div>
           </button>
         ))}
