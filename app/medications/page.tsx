@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Plus, Pill } from "lucide-react";
+import { Plus, Pill, ChevronRight } from "lucide-react";
 import BackButton from "@/components/BackButton";
 import EmptyState from "@/components/EmptyState";
 import { createClient } from "@/lib/supabase/server";
@@ -90,13 +90,14 @@ export default async function MedicationsPage() {
                   {t("active")}
                 </span>
                 {active.map((m) => (
-                  <MedicationCard
-                    key={m.id}
-                    medication={m}
-                    typeLabel={typeLabel}
-                    ongoingLabel={ongoingLabel}
-                    prescribedByLabel={prescribedByLabel}
-                  />
+                  <Link key={m.id} href={`/medications/${m.id}/edit`}>
+                    <MedicationCard
+                      medication={m}
+                      typeLabel={typeLabel}
+                      ongoingLabel={ongoingLabel}
+                      prescribedByLabel={prescribedByLabel}
+                    />
+                  </Link>
                 ))}
               </div>
             )}
@@ -107,13 +108,14 @@ export default async function MedicationsPage() {
                   {t("past")}
                 </span>
                 {past.map((m) => (
-                  <MedicationCard
-                    key={m.id}
-                    medication={m}
-                    typeLabel={typeLabel}
-                    ongoingLabel={ongoingLabel}
-                    prescribedByLabel={prescribedByLabel}
-                  />
+                  <Link key={m.id} href={`/medications/${m.id}/edit`}>
+                    <MedicationCard
+                      medication={m}
+                      typeLabel={typeLabel}
+                      ongoingLabel={ongoingLabel}
+                      prescribedByLabel={prescribedByLabel}
+                    />
+                  </Link>
                 ))}
               </div>
             )}
@@ -147,14 +149,17 @@ function MedicationCard({
   prescribedByLabel: (name: string) => string;
 }) {
   return (
-    <div className="bg-white rounded-card p-4 flex flex-col gap-2">
+    <div className="bg-white rounded-card p-4 flex flex-col gap-2 active:bg-[#F5F5F5] transition-colors">
       <div className="flex items-start justify-between gap-2">
         <span className="text-[16px] font-bold text-text-primary">{medication.name}</span>
-        {medication.medication_type && (
-          <span className="bg-lavender text-text-primary text-[12px] font-medium px-3 py-1 rounded-badge shrink-0">
-            {typeLabel(medication.medication_type)}
-          </span>
-        )}
+        <div className="flex items-center gap-2 shrink-0">
+          {medication.medication_type && (
+            <span className="bg-lavender text-text-primary text-[12px] font-medium px-3 py-1 rounded-badge">
+              {typeLabel(medication.medication_type)}
+            </span>
+          )}
+          <ChevronRight size={16} className="text-[#AEAEAE]" />
+        </div>
       </div>
       {medication.dosage && (
         <span className="text-[13px] text-text-secondary">{medication.dosage}</span>

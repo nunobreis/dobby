@@ -219,7 +219,15 @@
     "errorEndDate": "End date must be after the start date.",
     "saveButton": "Save medication",
     "saving": "Saving…",
-    "toastSuccess": "Medication saved!"
+    "toastSuccess": "Medication saved!",
+    "editTitle": "Edit Medication",
+    "saveChangesButton": "Save changes",
+    "toastUpdated": "Medication updated!",
+    "deleteButton": "Delete medication",
+    "deleteConfirmTitle": "Delete this medication?",
+    "deleteConfirmMessage": "This can't be undone.",
+    "cancelButton": "Cancel",
+    "toastDeleted": "Medication deleted."
   },
   "milestones": {
     "title": "Milestones",

@@ -219,7 +219,15 @@
     "errorEndDate": "A data de fim deve ser posterior à data de início.",
     "saveButton": "Guardar medicamento",
     "saving": "A guardar…",
-    "toastSuccess": "Medicamento guardado!"
+    "toastSuccess": "Medicamento guardado!",
+    "editTitle": "Editar Medicamento",
+    "saveChangesButton": "Guardar alterações",
+    "toastUpdated": "Medicamento atualizado!",
+    "deleteButton": "Eliminar medicamento",
+    "deleteConfirmTitle": "Eliminar este medicamento?",
+    "deleteConfirmMessage": "Esta ação não pode ser desfeita.",
+    "cancelButton": "Cancelar",
+    "toastDeleted": "Medicamento eliminado."
   },
   "milestones": {
     "title": "Marcos",
