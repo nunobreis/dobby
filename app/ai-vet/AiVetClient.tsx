@@ -7,10 +7,55 @@ import { useRef, useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { ChevronLeft, Send, SquarePen } from "lucide-react";
+import { ChevronLeft, Paperclip, Send, SquarePen, X } from "lucide-react";
+import imageCompression from "browser-image-compression";
 import ConfirmationCard from "./ConfirmationCard";
 
 const CHAT_STORAGE_KEY = "dobby-ai-vet-messages";
+
+function isHeicFile(file: File): boolean {
+  return (
+    file.type === "image/heic" ||
+    file.type === "image/heif" ||
+    file.name.toLowerCase().endsWith(".heic") ||
+    file.name.toLowerCase().endsWith(".heif")
+  );
+}
+
+async function processImageFile(file: File): Promise<File> {
+  let workingFile = file;
+
+  if (isHeicFile(file)) {
+    try {
+      const heic2any = (await import("heic2any")).default;
+      const converted = await heic2any({ blob: file, toType: "image/jpeg", quality: 0.9 });
+      const blob = Array.isArray(converted) ? converted[0] : converted;
+      workingFile = new File(
+        [blob],
+        file.name.replace(/\.heic$/i, ".jpg").replace(/\.heif$/i, ".jpg"),
+        { type: "image/jpeg" }
+      );
+    } catch {
+      // fall back to original
+    }
+  }
+
+  const compressed = await imageCompression(workingFile, {
+    maxSizeMB: 1,
+    maxWidthOrHeight: 1920,
+    useWebWorker: true,
+  });
+  return compressed as File;
+}
+
+async function fileToBase64DataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 
 interface Props {
   puppyName: string;
@@ -25,6 +70,12 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q");
   const hasSentRef = useRef(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [pendingImage, setPendingImage] = useState<{
+    file: File;
+    previewUrl: string;
+  } | null>(null);
+  const [processingImage, setProcessingImage] = useState(false);
 
   const [storedMessages] = useState<UIMessage[]>(() => {
     if (typeof window === "undefined") return [];
@@ -73,6 +124,32 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
       localStorage.removeItem(CHAT_STORAGE_KEY);
     } catch {}
     setMessages([]);
+  };
+
+  const handleClearImage = () => {
+    if (pendingImage) {
+      URL.revokeObjectURL(pendingImage.previewUrl);
+    }
+    setPendingImage(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setProcessingImage(true);
+    try {
+      const processed = await processImageFile(file);
+      setPendingImage({
+        file: processed,
+        previewUrl: URL.createObjectURL(processed),
+      });
+    } catch {
+      // silently ignore — user can retry
+    } finally {
+      setProcessingImage(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
   };
 
   const handleSend = () => {
