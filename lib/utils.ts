@@ -2,9 +2,9 @@ import { format, differenceInMonths, differenceInYears, parseISO } from "date-fn
 import type { Locale } from "date-fns";
 import type { VaccinationStatus } from "./types";
 
-export function formatDate(date: string | Date): string {
+export function formatDate(date: string | Date, locale?: Locale): string {
   const d = typeof date === "string" ? parseISO(date) : date;
-  return format(d, "d MMM yyyy");
+  return format(d, "d MMM yyyy", { locale });
 }
 
 export function formatDateShort(date: string | Date, locale?: Locale): string {

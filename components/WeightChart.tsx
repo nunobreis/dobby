@@ -8,9 +8,9 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { pt } from "date-fns/locale";
-import { formatDateShort } from "@/lib/utils";
+import { formatDate, formatDateShort } from "@/lib/utils";
 
 interface Entry {
   date: string;
@@ -19,10 +19,12 @@ interface Entry {
 
 export default function WeightChart({ entries }: { entries: Entry[] }) {
   const locale = useLocale();
+  const t = useTranslations("weight");
   const dateFnsLocale = locale === "pt" ? pt : undefined;
 
   const data = entries.map((e) => ({
     date: formatDateShort(e.date, dateFnsLocale),
+    rawDate: e.date,
     weight: e.weight_kg,
   }));
 
@@ -51,7 +53,11 @@ export default function WeightChart({ entries }: { entries: Entry[] }) {
             borderRadius: 12,
             fontSize: 13,
           }}
-          formatter={(value) => [`${value} kg`, "Weight"]}
+          formatter={(value) => [`${value} kg`, t("title")]}
+          labelFormatter={(_, payload) => {
+            const raw = payload?.[0]?.payload?.rawDate;
+            return raw ? formatDate(raw, dateFnsLocale) : "";
+          }}
         />
         <Line
           type="monotone"
