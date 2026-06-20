@@ -434,7 +434,14 @@
     "newChat": "New chat",
     "attachedPhoto": "Attached photo",
     "imageError": "Could not process image. Please try again.",
-    "attachmentPreview": "Attachment preview"
+    "attachmentPreview": "Attachment preview",
+    "startRecording": "Start voice message",
+    "stopRecording": "Stop recording",
+    "cancelRecording": "Cancel recording",
+    "recording": "Recording",
+    "transcribing": "Transcribing…",
+    "micError": "Could not access microphone. Please check permissions.",
+    "transcribeError": "Could not transcribe audio. Please try again."
   },
   "account": {
     "title": "My Account",

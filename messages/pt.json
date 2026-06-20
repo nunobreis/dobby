@@ -434,7 +434,14 @@
     "newChat": "Nova conversa",
     "attachedPhoto": "Foto anexada",
     "imageError": "Não foi possível processar a imagem. Por favor, tente novamente.",
-    "attachmentPreview": "Pré-visualização do anexo"
+    "attachmentPreview": "Pré-visualização do anexo",
+    "startRecording": "Iniciar mensagem de voz",
+    "stopRecording": "Parar gravação",
+    "cancelRecording": "Cancelar gravação",
+    "recording": "A gravar",
+    "transcribing": "A transcrever…",
+    "micError": "Não foi possível aceder ao microfone. Verifica as permissões.",
+    "transcribeError": "Não foi possível transcrever o áudio. Por favor, tenta novamente."
   },
   "account": {
     "title": "A Minha Conta",

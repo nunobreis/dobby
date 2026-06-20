@@ -7,7 +7,7 @@ import { useRef, useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { ChevronLeft, Paperclip, Send, SquarePen, X } from "lucide-react";
+import { ChevronLeft, Mic, Paperclip, Send, SquarePen, StopCircle, X } from "lucide-react";
 import imageCompression from "browser-image-compression";
 import { toast } from "sonner";
 import ConfirmationCard from "./ConfirmationCard";
@@ -77,6 +77,11 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
     previewUrl: string;
   } | null>(null);
   const [processingImage, setProcessingImage] = useState(false);
+  const [recordingState, setRecordingState] = useState<"idle" | "recording" | "transcribing">("idle");
+  const [recordingSeconds, setRecordingSeconds] = useState(0);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const [storedMessages] = useState<UIMessage[]>(() => {
     if (typeof window === "undefined") return [];
@@ -123,6 +128,83 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
     hasSentRef.current = true;
     sendMessage({ text: initialQuery });
   }, [status]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      if (mediaRecorderRef.current) {
+        mediaRecorderRef.current.stream.getTracks().forEach((track) => track.stop());
+      }
+    };
+  }, []);
+
+  function formatSeconds(s: number) {
+    return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+  }
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) audioChunksRef.current.push(e.data);
+      };
+
+      mediaRecorder.start();
+      setRecordingState("recording");
+      setRecordingSeconds(0);
+      timerRef.current = setInterval(() => {
+        setRecordingSeconds((s) => s + 1);
+      }, 1000);
+    } catch {
+      toast.error(t("micError"));
+    }
+  };
+
+  const stopRecording = () => {
+    const mediaRecorder = mediaRecorderRef.current;
+    if (!mediaRecorder) return;
+    if (timerRef.current) clearInterval(timerRef.current);
+    setRecordingState("transcribing");
+
+    mediaRecorder.onstop = async () => {
+      const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+      mediaRecorder.stream.getTracks().forEach((track) => track.stop());
+      try {
+        const formData = new FormData();
+        formData.append("audio", audioBlob, "recording.webm");
+        const res = await fetch("/api/transcribe", { method: "POST", body: formData });
+        const { transcript } = (await res.json()) as { transcript: string };
+        setInputValue(transcript);
+      } catch {
+        toast.error(t("transcribeError"));
+      } finally {
+        setRecordingState("idle");
+        setRecordingSeconds(0);
+        mediaRecorderRef.current = null;
+        audioChunksRef.current = [];
+      }
+    };
+
+    mediaRecorder.stop();
+  };
+
+  const cancelRecording = () => {
+    const mediaRecorder = mediaRecorderRef.current;
+    if (mediaRecorder) {
+      mediaRecorder.onstop = null;
+      mediaRecorder.stream.getTracks().forEach((track) => track.stop());
+      if (mediaRecorder.state !== "inactive") mediaRecorder.stop();
+      mediaRecorderRef.current = null;
+    }
+    if (timerRef.current) clearInterval(timerRef.current);
+    audioChunksRef.current = [];
+    setRecordingState("idle");
+    setRecordingSeconds(0);
+  };
 
   const handleNewChat = () => {
     try {
@@ -383,18 +465,60 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
           </div>
         )}
 
+        {/* Recording / transcribing pill */}
+        {recordingState !== "idle" && (
+          <div className="mb-2">
+            {recordingState === "recording" ? (
+              <div className="inline-flex items-center gap-2 bg-[#FEE2E2] rounded-pill px-3 py-1.5">
+                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse shrink-0" />
+                <span className="text-[13px] font-medium text-red-700 tabular-nums">
+                  {formatSeconds(recordingSeconds)}
+                </span>
+                <button
+                  type="button"
+                  onClick={cancelRecording}
+                  aria-label={t("cancelRecording")}
+                  className="w-5 h-5 bg-red-400 rounded-full flex items-center justify-center ml-1"
+                >
+                  <X size={11} className="text-white" />
+                </button>
+              </div>
+            ) : (
+              <div className="inline-flex items-center gap-2 bg-[#EBEBEB] rounded-pill px-3 py-1.5">
+                <div className="w-4 h-4 rounded-full border-2 border-text-secondary/30 border-t-text-secondary animate-spin shrink-0" />
+                <span className="text-[13px] text-text-secondary">{t("transcribing")}</span>
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="flex items-end gap-3">
           {/* Attachment button */}
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            disabled={isLoading || processingImage}
+            disabled={isLoading || processingImage || recordingState !== "idle"}
             className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#F5F5F5] transition-colors disabled:opacity-40 shrink-0"
           >
             {processingImage ? (
               <div className="w-5 h-5 rounded-full border-2 border-accent/20 border-t-accent animate-spin" />
             ) : (
               <Paperclip size={20} className="text-text-secondary" />
+            )}
+          </button>
+
+          {/* Mic / stop button */}
+          <button
+            type="button"
+            onClick={recordingState === "recording" ? stopRecording : startRecording}
+            disabled={isLoading || processingImage || recordingState === "transcribing"}
+            aria-label={recordingState === "recording" ? t("stopRecording") : t("startRecording")}
+            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#F5F5F5] transition-colors disabled:opacity-40 shrink-0"
+          >
+            {recordingState === "recording" ? (
+              <StopCircle size={20} className="text-red-500" />
+            ) : (
+              <Mic size={20} className="text-text-secondary" />
             )}
           </button>
 
@@ -413,13 +537,13 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
             onKeyDown={handleKeyDown}
             placeholder={t("inputPlaceholder", { name: puppyName })}
             rows={1}
-            disabled={isLoading}
+            disabled={isLoading || recordingState !== "idle"}
             className="flex-1 bg-[#EBEBEB] rounded-input px-4 py-3 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40 resize-none max-h-32 disabled:opacity-50 leading-snug"
             style={{ minHeight: "48px" }}
           />
           <button
             onClick={() => void handleSend()}
-            disabled={(!inputValue.trim() && !pendingImage) || isLoading || processingImage}
+            disabled={(!inputValue.trim() && !pendingImage) || isLoading || processingImage || recordingState !== "idle"}
             className="w-11 h-11 rounded-full bg-accent flex items-center justify-center disabled:opacity-40 transition-opacity shrink-0"
           >
             <Send size={18} className="text-white" />
