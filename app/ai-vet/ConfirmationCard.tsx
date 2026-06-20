@@ -110,10 +110,12 @@ export default function ConfirmationCard({ toolType, args }: Props) {
         result = await updateAiWeightEntry(
           args as Parameters<typeof updateAiWeightEntry>[0]
         );
-      } else {
+      } else if (toolName === "updateMedication") {
         result = await updateAiMedication(
           args as Parameters<typeof updateAiMedication>[0]
         );
+      } else {
+        return;
       }
       if ("error" in result) throw new Error(result.error);
       setCardState("saved");

@@ -106,21 +106,22 @@ export async function POST(req: Request) {
       : "No weight entries recorded.";
 
   const today = new Date().toISOString().split("T")[0];
-  const activeMeds =
-    medications?.filter((m) => !m.end_date || m.end_date >= today) ?? [];
   const medList =
-    activeMeds.length > 0
-      ? activeMeds
-          .map(
-            (m) =>
+    medications && medications.length > 0
+      ? medications
+          .map((m) => {
+            const ended = m.end_date && m.end_date < today;
+            return (
               `- [id:${m.id}] ${m.name}` +
               (m.medication_type ? ` (${m.medication_type})` : "") +
               (m.dosage ? `: ${m.dosage}` : "") +
               (m.frequency ? `, ${m.frequency}` : "") +
-              (m.start_date ? `, since ${m.start_date}` : "")
-          )
+              (m.start_date ? `, since ${m.start_date}` : "") +
+              (ended ? ` [ended ${m.end_date}]` : "")
+            );
+          })
           .join("\n")
-      : "No active medications.";
+      : "No medications recorded.";
 
   const food =
     foodEntries && foodEntries.length > 0
@@ -158,7 +159,7 @@ ${vetVisitList}
 Weight history (last ${weightEntries?.length ?? 0} entries):
 ${weightList}
 
-Active medications:
+Medications:
 ${medList}
 
 Always respond in ${language}.`;
