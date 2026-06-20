@@ -9,6 +9,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { ChevronLeft, Paperclip, Send, SquarePen, X } from "lucide-react";
 import imageCompression from "browser-image-compression";
+import { toast } from "sonner";
 import ConfirmationCard from "./ConfirmationCard";
 
 const CHAT_STORAGE_KEY = "dobby-ai-vet-messages";
@@ -145,7 +146,7 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
         previewUrl: URL.createObjectURL(processed),
       });
     } catch {
-      // silently ignore — user can retry
+      toast.error("Could not process image. Please try again.");
     } finally {
       setProcessingImage(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
