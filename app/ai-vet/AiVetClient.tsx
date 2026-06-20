@@ -331,7 +331,50 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
 
       {/* Fixed input bar */}
       <div className="fixed bottom-24 lg:bottom-0 left-0 right-0 lg:left-[220px] bg-white border-t border-[#F0F0F0] px-4 py-3">
+        {/* Pending image preview */}
+        {pendingImage && (
+          <div className="mb-2 flex items-center gap-2">
+            <div className="relative w-14 h-14 shrink-0">
+              <img
+                src={pendingImage.previewUrl}
+                alt="Attachment preview"
+                className="w-14 h-14 rounded-[10px] object-cover"
+              />
+              <button
+                type="button"
+                onClick={handleClearImage}
+                className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-[#1A1A1A] rounded-full flex items-center justify-center"
+              >
+                <X size={11} className="text-white" />
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="flex items-end gap-3">
+          {/* Attachment button */}
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isLoading || processingImage}
+            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#F5F5F5] transition-colors disabled:opacity-40 shrink-0"
+          >
+            {processingImage ? (
+              <div className="w-5 h-5 rounded-full border-2 border-accent/20 border-t-accent animate-spin" />
+            ) : (
+              <Paperclip size={20} className="text-text-secondary" />
+            )}
+          </button>
+
+          {/* Hidden file input */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleFileSelect}
+            className="hidden"
+          />
+
           <textarea
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
@@ -344,7 +387,7 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
           />
           <button
             onClick={handleSend}
-            disabled={!inputValue.trim() || isLoading}
+            disabled={(!inputValue.trim() && !pendingImage) || isLoading}
             className="w-11 h-11 rounded-full bg-accent flex items-center justify-center disabled:opacity-40 transition-opacity shrink-0"
           >
             <Send size={18} className="text-white" />
