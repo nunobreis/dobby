@@ -104,7 +104,11 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
   useEffect(() => {
     if (messages.length === 0) return;
     try {
-      localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
+      const toSave = messages.map((msg) => ({
+        ...msg,
+        parts: msg.parts.filter((p) => p.type !== "file"),
+      }));
+      localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(toSave));
     } catch {}
   }, [messages]);
 
@@ -298,6 +302,19 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
                             </ReactMarkdown>
                           )}
                         </div>
+                      </div>
+                    );
+                  }
+
+                  if (part.type === "file" && msg.role === "user") {
+                    const url = "url" in part ? (part.url as string) : "";
+                    return (
+                      <div key={i} className="flex justify-end">
+                        <img
+                          src={url}
+                          alt="Attached photo"
+                          className="max-w-[80%] max-h-48 rounded-[18px_18px_4px_18px] object-cover"
+                        />
                       </div>
                     );
                   }
