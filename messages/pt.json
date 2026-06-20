@@ -426,11 +426,12 @@
     "cap4": "Perguntas sobre medicação",
     "cap5": "Saúde geral e comportamento",
     "cap6": "Dicas de cuidados para cachorros",
-    "inputPlaceholder": "Pergunta-me qualquer coisa sobre o {name}…",
+    "inputPlaceholder": "Pergunta algo sobre o {name}…",
     "thinking": "O Dobby está a pensar…",
     "errorMessage": "Ocorreu um erro. Por favor, tenta novamente.",
     "you": "Tu",
-    "send": "Enviar"
+    "send": "Enviar",
+    "newChat": "Nova conversa"
   },
   "account": {
     "title": "A Minha Conta",

@@ -7,8 +7,10 @@ import { useRef, useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { ChevronLeft, Send } from "lucide-react";
+import { ChevronLeft, Send, SquarePen } from "lucide-react";
 import ConfirmationCard from "./ConfirmationCard";
+
+const CHAT_STORAGE_KEY = "dobby-ai-vet-messages";
 
 interface Props {
   puppyName: string;
@@ -24,10 +26,21 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
   const initialQuery = searchParams.get("q");
   const hasSentRef = useRef(false);
 
-  const { messages, sendMessage, status, error } = useChat({
+  const [storedMessages] = useState<UIMessage[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      const raw = localStorage.getItem(CHAT_STORAGE_KEY);
+      return raw ? (JSON.parse(raw) as UIMessage[]) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const { messages, sendMessage, status, error, setMessages } = useChat({
     transport: new DefaultChatTransport({
       api: "/api/chat",
     }),
+    messages: storedMessages,
   });
 
   const isLoading = status === "submitted" || status === "streaming";
@@ -35,6 +48,13 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isLoading]);
+
+  useEffect(() => {
+    if (messages.length === 0) return;
+    try {
+      localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
+    } catch {}
+  }, [messages]);
 
   useEffect(() => {
     if (
@@ -47,6 +67,13 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
     hasSentRef.current = true;
     sendMessage({ text: initialQuery });
   }, [status]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleNewChat = () => {
+    try {
+      localStorage.removeItem(CHAT_STORAGE_KEY);
+    } catch {}
+    setMessages([]);
+  };
 
   const handleSend = () => {
     const text = inputValue.trim();
@@ -75,7 +102,7 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
     <div className="min-h-screen bg-background">
       {/* Fixed header */}
       <div className="fixed top-0 left-0 right-0 lg:left-[220px] z-40 bg-white border-b border-[#F0F0F0]">
-        <div className="flex items-center gap-3 px-4 h-14">
+        <div className="flex items-center justify-between px-4 h-14">
           <button
             onClick={() => router.back()}
             className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-[#F5F5F5] transition-colors"
@@ -85,6 +112,13 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
           <span className="text-[17px] font-semibold text-text-primary">
             {t("title")}
           </span>
+          <button
+            onClick={handleNewChat}
+            className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-[#F5F5F5] transition-colors"
+            title={t("newChat")}
+          >
+            <SquarePen size={20} className="text-text-primary" />
+          </button>
         </div>
       </div>
 

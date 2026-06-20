@@ -430,7 +430,8 @@
     "thinking": "Dobby is thinking…",
     "errorMessage": "Something went wrong. Please try again.",
     "you": "You",
-    "send": "Send"
+    "send": "Send",
+    "newChat": "New chat"
   },
   "account": {
     "title": "My Account",
