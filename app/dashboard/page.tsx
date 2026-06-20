@@ -114,7 +114,7 @@ export default async function DashboardPage() {
       </div>
 
       <div className="px-5 pt-3 flex flex-col gap-5">
-        <DashboardChatPrompt />
+        <DashboardChatPrompt puppyName={puppy?.name ?? "Dobby"} />
 
         {/* Hero card */}
         <div className="bg-white rounded-card p-5 flex flex-col gap-2.5">

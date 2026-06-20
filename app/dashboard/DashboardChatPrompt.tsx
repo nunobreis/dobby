@@ -6,7 +6,7 @@ import { Mic, Paperclip, Send, StopCircle, X } from "lucide-react";
 import { useState } from "react";
 import { useChatInput, fileToBase64DataUrl, PENDING_IMAGE_KEY } from "@/lib/hooks/useChatInput";
 
-export default function DashboardChatPrompt() {
+export default function DashboardChatPrompt({ puppyName }: { puppyName: string }) {
   const t = useTranslations("dashboard");
   const tAiVet = useTranslations("aiVet");
   const router = useRouter();
@@ -121,7 +121,7 @@ export default function DashboardChatPrompt() {
           value={ci.inputValue}
           onChange={(e) => ci.setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={t("chatPromptPlaceholder")}
+          placeholder={tAiVet("inputPlaceholder", { name: puppyName })}
           rows={1}
           disabled={ci.recordingState !== "idle"}
           className="flex-1 bg-[#EBEBEB] rounded-input px-4 py-3 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40 resize-none max-h-32 disabled:opacity-50 leading-snug"
