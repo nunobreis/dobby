@@ -150,7 +150,7 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
         previewUrl: URL.createObjectURL(processed),
       });
     } catch {
-      toast.error("Could not process image. Please try again.");
+      toast.error(t("imageError"));
     } finally {
       setProcessingImage(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -165,7 +165,7 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
 
     if (pendingImage) {
       const dataUrl = await fileToBase64DataUrl(pendingImage.file);
-      files = [{ type: "file", mediaType: "image/jpeg", url: dataUrl }];
+      files = [{ type: "file", mediaType: pendingImage.file.type || "image/jpeg", url: dataUrl }];
       URL.revokeObjectURL(pendingImage.previewUrl);
       setPendingImage(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -369,7 +369,7 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
             <div className="relative w-14 h-14 shrink-0">
               <img
                 src={pendingImage.previewUrl}
-                alt="Attachment preview"
+                alt={t("attachmentPreview")}
                 className="w-14 h-14 rounded-[10px] object-cover"
               />
               <button
@@ -419,7 +419,7 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
           />
           <button
             onClick={() => void handleSend()}
-            disabled={(!inputValue.trim() && !pendingImage) || isLoading}
+            disabled={(!inputValue.trim() && !pendingImage) || isLoading || processingImage}
             className="w-11 h-11 rounded-full bg-accent flex items-center justify-center disabled:opacity-40 transition-opacity shrink-0"
           >
             <Send size={18} className="text-white" />

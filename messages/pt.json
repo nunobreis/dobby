@@ -432,7 +432,9 @@
     "you": "Tu",
     "send": "Enviar",
     "newChat": "Nova conversa",
-    "attachedPhoto": "Foto anexada"
+    "attachedPhoto": "Foto anexada",
+    "imageError": "Não foi possível processar a imagem. Por favor, tente novamente.",
+    "attachmentPreview": "Pré-visualização do anexo"
   },
   "account": {
     "title": "A Minha Conta",

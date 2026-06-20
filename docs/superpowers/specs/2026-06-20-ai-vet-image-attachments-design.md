@@ -54,10 +54,8 @@ On file select:
 
 ```typescript
 sendMessage({
-  text: inputValue.trim(),
-  experimental_attachments: [
-    { contentType: "image/jpeg", url: base64DataUrl }
-  ]
+  text,
+  files: [{ type: "file", mediaType: file.type || "image/jpeg", url: base64DataUrl }],
 });
 ```
 
