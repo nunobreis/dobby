@@ -126,7 +126,7 @@ export default function MilestoneTimeline({ milestones }: { milestones: Mileston
                 onClick={() => openMilestone(m)}
                 className="flex-1 bg-white rounded-card p-4 flex flex-col gap-2 text-left"
               >
-                <span className="inline-flex items-center px-3 py-1 rounded-badge bg-lavender text-accent text-[11px] font-semibold self-start">
+                <span className="inline-flex items-center px-3 py-1 rounded-badge bg-lavender text-[#5B21B6] text-[11px] font-semibold self-start">
                   {formatDate(m.date)}
                 </span>
                 <span className="text-[15px] font-bold text-text-primary">{m.title}</span>
@@ -169,7 +169,7 @@ export default function MilestoneTimeline({ milestones }: { milestones: Mileston
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex flex-col gap-0.5">
                       <h2 className="text-[18px] font-bold text-text-primary">{selected.title}</h2>
-                      <span className="text-[13px] text-text-secondary">{formatDate(selected.date)}</span>
+                      <span className="inline-flex items-center px-3 py-1 rounded-badge bg-lavender text-[#5B21B6] text-[11px] font-semibold self-start">{formatDate(selected.date)}</span>
                     </div>
                     <button
                       onClick={closeModal}
