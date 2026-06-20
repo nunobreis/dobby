@@ -8,6 +8,10 @@ import {
   saveAiVetVisit,
   saveAiWeightEntry,
   saveAiMedication,
+  updateAiVaccination,
+  updateAiVetVisit,
+  updateAiWeightEntry,
+  updateAiMedication,
 } from "@/lib/actions/ai-records";
 
 interface Props {
@@ -46,11 +50,22 @@ const DATE_FIELDS = new Set([
   "end_date",
 ]);
 
+const ID_FIELDS = new Set([
+  "vaccination_id",
+  "vet_visit_id",
+  "weight_entry_id",
+  "medication_id",
+]);
+
 const TOOL_META: Record<string, { title: string; href: string }> = {
-  addVaccination: { title: "Add Vaccination", href: "/vaccinations" },
-  addVetVisit: { title: "Add Vet Visit", href: "/vet-visits" },
-  addWeightEntry: { title: "Add Weight Entry", href: "/weight" },
-  addMedication: { title: "Add Medication", href: "/medications" },
+  addVaccination:    { title: "Add Vaccination",    href: "/vaccinations" },
+  addVetVisit:       { title: "Add Vet Visit",       href: "/vet-visits" },
+  addWeightEntry:    { title: "Add Weight Entry",    href: "/weight" },
+  addMedication:     { title: "Add Medication",      href: "/medications" },
+  updateVaccination: { title: "Update Vaccination",  href: "/vaccinations" },
+  updateVetVisit:    { title: "Update Vet Visit",    href: "/vet-visits" },
+  updateWeightEntry: { title: "Update Weight Entry", href: "/weight" },
+  updateMedication:  { title: "Update Medication",   href: "/medications" },
 };
 
 export default function ConfirmationCard({ toolType, args }: Props) {
@@ -79,9 +94,25 @@ export default function ConfirmationCard({ toolType, args }: Props) {
         result = await saveAiWeightEntry(
           args as Parameters<typeof saveAiWeightEntry>[0]
         );
-      } else {
+      } else if (toolName === "addMedication") {
         result = await saveAiMedication(
           args as Parameters<typeof saveAiMedication>[0]
+        );
+      } else if (toolName === "updateVaccination") {
+        result = await updateAiVaccination(
+          args as Parameters<typeof updateAiVaccination>[0]
+        );
+      } else if (toolName === "updateVetVisit") {
+        result = await updateAiVetVisit(
+          args as Parameters<typeof updateAiVetVisit>[0]
+        );
+      } else if (toolName === "updateWeightEntry") {
+        result = await updateAiWeightEntry(
+          args as Parameters<typeof updateAiWeightEntry>[0]
+        );
+      } else {
+        result = await updateAiMedication(
+          args as Parameters<typeof updateAiMedication>[0]
         );
       }
       if ("error" in result) throw new Error(result.error);
@@ -93,7 +124,7 @@ export default function ConfirmationCard({ toolType, args }: Props) {
   };
 
   const displayFields = Object.entries(args).filter(
-    ([, v]) => v !== undefined && v !== null
+    ([key, v]) => v !== undefined && v !== null && !ID_FIELDS.has(key)
   );
 
   return (
