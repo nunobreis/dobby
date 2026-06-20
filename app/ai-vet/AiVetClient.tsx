@@ -169,7 +169,7 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
 
     setInputValue("");
     sendMessage({
-      text,
+      text: text || "",
       ...(files ? { files } : {}),
     });
   };
