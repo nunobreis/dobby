@@ -31,7 +31,7 @@ export default function SidebarNav() {
     <nav className="flex flex-col gap-1 px-3 pt-4">
       {tabs.map(({ href, icon: Icon, label }) => {
         const active =
-          pathname === href || (href !== "/dashboard" && pathname.startsWith(href));
+          pathname === href || (href !== "/dashboard" && pathname.startsWith(href + "/"));
         return (
           <Link
             key={href}

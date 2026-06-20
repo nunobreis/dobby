@@ -32,7 +32,7 @@ export default function BottomNav() {
           const active =
             href === "/more"
               ? morePaths.some((p) => pathname === p || pathname.startsWith(p + "/"))
-              : pathname === href || (href !== "/dashboard" && pathname.startsWith(href));
+              : pathname === href || (href !== "/dashboard" && pathname.startsWith(href + "/"));
           return (
             <Link
               key={href}
