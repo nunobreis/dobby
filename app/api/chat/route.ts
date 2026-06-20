@@ -141,7 +141,7 @@ Your rules:
 - You are NOT a real veterinarian. For serious or urgent health concerns, always recommend consulting a qualified vet in person.
 - Be warm, friendly, and concise.
 - When the user asks to add a vaccination, vet visit, weight entry, or medication: call the appropriate tool immediately — do not confirm in text first.
-- If the user asks to edit an existing record, explain that editing via chat is not yet supported and suggest using the app directly.
+- When the user asks to edit or update an existing record, use the appropriate updateVaccination, updateVetVisit, updateWeightEntry, or updateMedication tool, providing the full updated record including all current field values plus the requested change. Call the tool immediately — do not confirm in text first.
 
 ${puppyName}'s profile:
 - Breed: ${breed}
@@ -353,6 +353,186 @@ Always respond in ${language}.`;
             notes: { type: "string", description: "Any additional notes" },
           },
           required: ["name", "start_date"],
+        }),
+        execute: async (input) => input,
+      }),
+      updateVaccination: tool<
+        {
+          vaccination_id: string;
+          vaccine_name: string;
+          date_given: string;
+          next_due_date?: string;
+          vet_clinic?: string;
+          batch_number?: string;
+          notes?: string;
+        },
+        {
+          vaccination_id: string;
+          vaccine_name: string;
+          date_given: string;
+          next_due_date?: string;
+          vet_clinic?: string;
+          batch_number?: string;
+          notes?: string;
+        }
+      >({
+        description:
+          "Propose updating an existing vaccination record. Use when the user asks to edit or change a vaccination.",
+        inputSchema: jsonSchema<{
+          vaccination_id: string;
+          vaccine_name: string;
+          date_given: string;
+          next_due_date?: string;
+          vet_clinic?: string;
+          batch_number?: string;
+          notes?: string;
+        }>({
+          type: "object",
+          properties: {
+            vaccination_id: { type: "string", description: "ID of the vaccination to update (from the record list)" },
+            vaccine_name: { type: "string", description: "Name of the vaccine" },
+            date_given: { type: "string", description: "Date given in YYYY-MM-DD format" },
+            next_due_date: { type: "string", description: "Next due date in YYYY-MM-DD format" },
+            vet_clinic: { type: "string", description: "Name of the vet clinic" },
+            batch_number: { type: "string", description: "Batch or lot number" },
+            notes: { type: "string", description: "Any additional notes" },
+          },
+          required: ["vaccination_id", "vaccine_name", "date_given"],
+        }),
+        execute: async (input) => input,
+      }),
+      updateVetVisit: tool<
+        {
+          vet_visit_id: string;
+          date: string;
+          reason: string;
+          vet_clinic?: string;
+          outcome?: string;
+          cost?: number;
+          notes?: string;
+        },
+        {
+          vet_visit_id: string;
+          date: string;
+          reason: string;
+          vet_clinic?: string;
+          outcome?: string;
+          cost?: number;
+          notes?: string;
+        }
+      >({
+        description:
+          "Propose updating an existing vet visit record. Use when the user asks to edit or change a vet visit.",
+        inputSchema: jsonSchema<{
+          vet_visit_id: string;
+          date: string;
+          reason: string;
+          vet_clinic?: string;
+          outcome?: string;
+          cost?: number;
+          notes?: string;
+        }>({
+          type: "object",
+          properties: {
+            vet_visit_id: { type: "string", description: "ID of the vet visit to update (from the record list)" },
+            date: { type: "string", description: "Date of visit in YYYY-MM-DD format" },
+            reason: { type: "string", description: "Reason for the visit" },
+            vet_clinic: { type: "string", description: "Name of the vet clinic" },
+            outcome: { type: "string", description: "Outcome or diagnosis" },
+            cost: { type: "number", description: "Cost of the visit" },
+            notes: { type: "string", description: "Any additional notes" },
+          },
+          required: ["vet_visit_id", "date", "reason"],
+        }),
+        execute: async (input) => input,
+      }),
+      updateWeightEntry: tool<
+        {
+          weight_entry_id: string;
+          date: string;
+          weight_kg: number;
+          notes?: string;
+        },
+        {
+          weight_entry_id: string;
+          date: string;
+          weight_kg: number;
+          notes?: string;
+        }
+      >({
+        description:
+          "Propose updating an existing weight entry. Use when the user asks to edit or change a weight measurement.",
+        inputSchema: jsonSchema<{
+          weight_entry_id: string;
+          date: string;
+          weight_kg: number;
+          notes?: string;
+        }>({
+          type: "object",
+          properties: {
+            weight_entry_id: { type: "string", description: "ID of the weight entry to update (from the record list)" },
+            date: { type: "string", description: "Date of measurement in YYYY-MM-DD format" },
+            weight_kg: { type: "number", description: "Weight in kilograms" },
+            notes: { type: "string", description: "Any additional notes" },
+          },
+          required: ["weight_entry_id", "date", "weight_kg"],
+        }),
+        execute: async (input) => input,
+      }),
+      updateMedication: tool<
+        {
+          medication_id: string;
+          name: string;
+          start_date: string;
+          medication_type?: "deworming" | "flea_tick" | "antibiotic" | "other";
+          dosage?: string;
+          frequency?: string;
+          end_date?: string;
+          prescribed_by?: string;
+          notes?: string;
+        },
+        {
+          medication_id: string;
+          name: string;
+          start_date: string;
+          medication_type?: "deworming" | "flea_tick" | "antibiotic" | "other";
+          dosage?: string;
+          frequency?: string;
+          end_date?: string;
+          prescribed_by?: string;
+          notes?: string;
+        }
+      >({
+        description:
+          "Propose updating an existing medication record. Use when the user asks to edit or change a medication.",
+        inputSchema: jsonSchema<{
+          medication_id: string;
+          name: string;
+          start_date: string;
+          medication_type?: "deworming" | "flea_tick" | "antibiotic" | "other";
+          dosage?: string;
+          frequency?: string;
+          end_date?: string;
+          prescribed_by?: string;
+          notes?: string;
+        }>({
+          type: "object",
+          properties: {
+            medication_id: { type: "string", description: "ID of the medication to update (from the record list)" },
+            name: { type: "string", description: "Name of the medication" },
+            start_date: { type: "string", description: "Start date in YYYY-MM-DD format" },
+            medication_type: {
+              type: "string",
+              enum: ["deworming", "flea_tick", "antibiotic", "other"],
+              description: "Type of medication",
+            },
+            dosage: { type: "string", description: "Dosage information" },
+            frequency: { type: "string", description: "How often to give the medication" },
+            end_date: { type: "string", description: "End date in YYYY-MM-DD format if applicable" },
+            prescribed_by: { type: "string", description: "Name of the prescribing vet" },
+            notes: { type: "string", description: "Any additional notes" },
+          },
+          required: ["medication_id", "name", "start_date"],
         }),
         execute: async (input) => input,
       }),
