@@ -51,7 +51,7 @@ export async function POST(req: Request) {
       .order("date", { ascending: false }),
     supabase
       .from("weight_entries")
-      .select("date, weight_kg")
+      .select("id, date, weight_kg")
       .eq("puppy_id", puppyId)
       .order("date", { ascending: false })
       .limit(20),
@@ -101,7 +101,7 @@ export async function POST(req: Request) {
   const weightList =
     weightEntries && weightEntries.length > 0
       ? weightEntries
-          .map((w) => `- ${w.date}: ${formatWeight(w.weight_kg)}`)
+          .map((w) => `- [id:${w.id}] ${w.date}: ${formatWeight(w.weight_kg)}`)
           .join("\n")
       : "No weight entries recorded.";
 
