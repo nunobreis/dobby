@@ -8,7 +8,7 @@ export function formatDate(date: string | Date): string {
 
 export function formatDateShort(date: string | Date): string {
   const d = typeof date === "string" ? parseISO(date) : date;
-  return format(d, "dd/MM/yyyy");
+  return format(d, "d MMM");
 }
 
 export function calculateAge(dateOfBirth: string | Date): string {

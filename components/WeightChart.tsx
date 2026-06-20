@@ -21,6 +21,8 @@ export default function WeightChart({ entries }: { entries: Entry[] }) {
     weight: e.weight_kg,
   }));
 
+  const tickInterval = entries.length > 6 ? Math.ceil(entries.length / 5) - 1 : 0;
+
   return (
     <ResponsiveContainer width="100%" height={200}>
       <LineChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: -16 }}>
@@ -29,6 +31,7 @@ export default function WeightChart({ entries }: { entries: Entry[] }) {
           tick={{ fontSize: 11, fill: "#7A7A7A" }}
           tickLine={false}
           axisLine={false}
+          interval={tickInterval}
         />
         <YAxis
           tick={{ fontSize: 11, fill: "#7A7A7A" }}
