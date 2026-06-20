@@ -40,16 +40,23 @@ export default async function MilestonesPage() {
 
   return (
     <div className="min-h-screen bg-background pb-32 lg:pb-10">
-      <div className="px-5 pt-10 pb-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
+      <div className="px-5 pt-10 pb-4">
+        <div className="flex items-center justify-between mb-1 lg:hidden">
           <BackButton />
-          <h1 className="text-[28px] font-bold text-text-primary">{t("title")}</h1>
+          <Link href="/milestones/new">
+            <div className="w-11 h-11 rounded-full bg-accent flex items-center justify-center">
+              <Plus size={20} className="text-white" />
+            </div>
+          </Link>
         </div>
-        <Link href="/milestones/new">
-          <div className="w-11 h-11 rounded-full bg-accent flex items-center justify-center">
-            <Plus size={20} className="text-white" />
-          </div>
-        </Link>
+        <div className="flex items-center justify-between">
+          <h1 className="text-[28px] font-bold text-text-primary">{t("title")}</h1>
+          <Link href="/milestones/new" className="hidden lg:flex">
+            <div className="w-11 h-11 rounded-full bg-accent flex items-center justify-center">
+              <Plus size={20} className="text-white" />
+            </div>
+          </Link>
+        </div>
       </div>
 
       <div className="px-5 max-w-xl lg:max-w-2xl lg:mx-auto">

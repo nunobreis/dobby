@@ -98,10 +98,8 @@ export default function AccountClient({ user }: { user: User }) {
 
   return (
     <div className="min-h-screen bg-background px-5 py-8 pb-32 lg:pb-10">
-      <div className="flex items-center gap-2 mb-8">
-        <BackButton />
-        <h1 className="text-[32px] font-bold text-text-primary">{t("title")}</h1>
-      </div>
+      <BackButton className="mb-2" />
+      <h1 className="text-[32px] font-bold text-text-primary mb-8">{t("title")}</h1>
 
       {/* Avatar */}
       <div className="flex flex-col items-center gap-2 mb-8">

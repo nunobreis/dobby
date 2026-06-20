@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Plus, Stethoscope, Calendar, MapPin, ChevronRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import BackButton from "@/components/BackButton";
 import EmptyState from "@/components/EmptyState";
 import { formatDate } from "@/lib/utils";
 import { getTranslations } from "next-intl/server";
@@ -57,13 +58,23 @@ export default async function VetVisitsPage() {
 
   return (
     <div className="min-h-screen bg-background pb-32 lg:pb-10">
-      <div className="px-5 pt-10 pb-4 flex items-center justify-between">
-        <h1 className="text-[28px] font-bold text-text-primary">{t("title")}</h1>
-        <Link href="/vet-visits/new">
-          <div className="w-11 h-11 rounded-full bg-accent flex items-center justify-center">
-            <Plus size={20} className="text-white" />
-          </div>
-        </Link>
+      <div className="px-5 pt-10 pb-4">
+        <div className="flex items-center justify-between mb-1 lg:hidden">
+          <BackButton />
+          <Link href="/vet-visits/new">
+            <div className="w-11 h-11 rounded-full bg-accent flex items-center justify-center">
+              <Plus size={20} className="text-white" />
+            </div>
+          </Link>
+        </div>
+        <div className="flex items-center justify-between">
+          <h1 className="text-[28px] font-bold text-text-primary">{t("title")}</h1>
+          <Link href="/vet-visits/new" className="hidden lg:flex">
+            <div className="w-11 h-11 rounded-full bg-accent flex items-center justify-center">
+              <Plus size={20} className="text-white" />
+            </div>
+          </Link>
+        </div>
       </div>
 
       <div className="px-5 flex flex-col gap-5">

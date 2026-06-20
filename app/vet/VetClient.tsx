@@ -73,30 +73,32 @@ export default function VetClient({ puppy }: Props) {
 
   return (
     <div className="min-h-screen bg-background px-5 py-8 pb-24">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-2">
-          {!editing && (
-            <button onClick={() => router.back()}>
-              <ChevronLeft size={26} className="text-text-primary" />
-            </button>
-          )}
-          <h1 className="text-[32px] font-bold text-text-primary">{t("title")}</h1>
-        </div>
+      <div className="flex items-center justify-between mb-1 lg:hidden">
+        {!editing ? (
+          <button onClick={() => router.back()} className="min-w-[44px] min-h-[44px] flex items-center justify-start">
+            <ChevronLeft size={26} className="text-text-primary" />
+          </button>
+        ) : <div />}
         <div className="flex items-center gap-4">
           {editing && (
-            <button
-              onClick={cancelEditing}
-              disabled={saving}
-              className="text-text-secondary text-[15px] font-semibold disabled:opacity-50"
-            >
+            <button onClick={cancelEditing} disabled={saving} className="text-text-secondary text-[15px] font-semibold disabled:opacity-50">
               {t("cancel")}
             </button>
           )}
-          <button
-            onClick={() => (editing ? saveVet() : setEditing(true))}
-            disabled={saving}
-            className="text-accent text-[15px] font-semibold disabled:opacity-50"
-          >
+          <button onClick={() => (editing ? saveVet() : setEditing(true))} disabled={saving} className="text-accent text-[15px] font-semibold disabled:opacity-50">
+            {saving ? t("saving") : editing ? t("save") : t("edit")}
+          </button>
+        </div>
+      </div>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-[32px] font-bold text-text-primary">{t("title")}</h1>
+        <div className="hidden lg:flex items-center gap-4">
+          {editing && (
+            <button onClick={cancelEditing} disabled={saving} className="text-text-secondary text-[15px] font-semibold disabled:opacity-50">
+              {t("cancel")}
+            </button>
+          )}
+          <button onClick={() => (editing ? saveVet() : setEditing(true))} disabled={saving} className="text-accent text-[15px] font-semibold disabled:opacity-50">
             {saving ? t("saving") : editing ? t("save") : t("edit")}
           </button>
         </div>
