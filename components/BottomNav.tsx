@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { House, Syringe, Scale, MessageCircle, Ellipsis } from "lucide-react";
 
-const morePaths = ["/more", "/food", "/medications", "/milestones", "/documents", "/profile", "/settings", "/account", "/vet-visits"];
+const morePaths = ["/more", "/food", "/medications", "/milestones", "/documents", "/profile", "/settings", "/account", "/vet-visits", "/notifications"];
 
 const excludedPaths = ["/login", "/profile/setup"];
 

@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
   House, Syringe, Scale, UtensilsCrossed, Pill, Trophy,
-  FileText, PawPrint, Stethoscope, CalendarDays, MessageCircle, Settings,
+  FileText, PawPrint, Stethoscope, CalendarDays, MessageCircle, Settings, Bell,
 } from "lucide-react";
 
 export default function SidebarNav() {
@@ -24,6 +24,7 @@ export default function SidebarNav() {
     { href: "/vet",          icon: Stethoscope,     label: t("vet") },
     { href: "/vet-visits",   icon: CalendarDays,    label: t("vetVisits") },
     { href: "/ai-vet",       icon: MessageCircle,   label: t("aiVet") },
+    { href: "/notifications", icon: Bell,           label: t("notifications") },
     { href: "/settings",     icon: Settings,        label: t("settings") },
   ];
 
