@@ -12,7 +12,22 @@
     "documents": "Documentos",
     "profile": "Perfil",
     "vet": "Veterinário",
-    "settings": "Definições"
+    "settings": "Definições",
+    "notifications": "Notificações"
+  },
+  "notifications": {
+    "title": "Notificações",
+    "markAllRead": "Marcar tudo como lido",
+    "unread": "Não lidas",
+    "earlier": "Anteriores",
+    "empty": "Sem notificações",
+    "enablePush": "Ativar notificações push",
+    "enablePushDesc": "Recebe lembretes sobre as consultas do Dobby",
+    "pushBlocked": "Notificações bloqueadas — atualiza as definições do navegador para as ativar",
+    "vetVisitTomorrow": "Consulta veterinária amanhã",
+    "vetVisitInDays": "Consulta veterinária em {days} dias",
+    "vaccinationTomorrow": "Vacinação amanhã",
+    "vaccinationInDays": "Vacinação em {days} dias"
   },
   "dashboard": {
     "greeting": "Olá, {name}",

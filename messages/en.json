@@ -12,7 +12,22 @@
     "documents": "Documents",
     "profile": "Profile",
     "vet": "Vet",
-    "settings": "Settings"
+    "settings": "Settings",
+    "notifications": "Notifications"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark all read",
+    "unread": "Unread",
+    "earlier": "Earlier",
+    "empty": "No notifications yet",
+    "enablePush": "Enable push notifications",
+    "enablePushDesc": "Get reminders about Dobby's appointments",
+    "pushBlocked": "Notifications are blocked — update your browser settings to enable them",
+    "vetVisitTomorrow": "Vet visit tomorrow",
+    "vetVisitInDays": "Vet visit in {days} days",
+    "vaccinationTomorrow": "Vaccination due tomorrow",
+    "vaccinationInDays": "Vaccination due in {days} days"
   },
   "dashboard": {
     "greeting": "Hello, {name}",
