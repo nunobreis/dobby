@@ -383,7 +383,9 @@
     "vetVisitsLabel": "Consultas Veterinárias",
     "vetVisitsDescription": "Consultas e histórico de visitas",
     "settingsLabel": "Definições",
-    "settingsDescription": "Idioma e preferências"
+    "settingsDescription": "Idioma e preferências",
+    "howItWorksLabel": "Como funciona",
+    "howItWorksDescription": "Explora as funcionalidades da app"
   },
   "vet": {
     "title": "Veterinário",
@@ -488,5 +490,12 @@
     "toastPasswordSaved": "Palavra-passe atualizada!",
     "failedSave": "Algo correu mal.",
     "signOut": "Terminar sessão"
+  },
+  "onboarding": {
+    "skip": "Saltar",
+    "next": "Próximo",
+    "getStarted": "Começar",
+    "howItWorks": "Como funciona",
+    "howItWorksDescription": "Explora as funcionalidades da app"
   }
 }

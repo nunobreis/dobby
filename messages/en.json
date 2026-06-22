@@ -383,7 +383,9 @@
     "vetVisitsLabel": "Vet Visits",
     "vetVisitsDescription": "Appointments and visit history",
     "settingsLabel": "Settings",
-    "settingsDescription": "Language & preferences"
+    "settingsDescription": "Language & preferences",
+    "howItWorksLabel": "How it works",
+    "howItWorksDescription": "Take a tour of the app"
   },
   "vet": {
     "title": "Vet",
@@ -488,5 +490,12 @@
     "toastPasswordSaved": "Password updated!",
     "failedSave": "Something went wrong.",
     "signOut": "Sign out"
+  },
+  "onboarding": {
+    "skip": "Skip",
+    "next": "Next",
+    "getStarted": "Get started",
+    "howItWorks": "How it works",
+    "howItWorksDescription": "Take a tour of the app"
   }
 }
