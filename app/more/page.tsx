@@ -11,6 +11,7 @@ import {
   Stethoscope,
   CalendarDays,
   Bot,
+  Info,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getTranslations } from "next-intl/server";
@@ -169,7 +170,7 @@ export default async function MorePage() {
         </span>
         <div className="bg-white rounded-card overflow-hidden">
           <Link href="/settings">
-            <div className="flex items-center gap-4 px-4 py-4 active:bg-[#F5F5F5] transition-colors">
+            <div className="flex items-center gap-4 px-4 py-4 border-b border-[#F0F0F0] active:bg-[#F5F5F5] transition-colors">
               <div className="w-10 h-10 rounded-[12px] bg-accent flex items-center justify-center shrink-0">
                 <Settings size={18} className="text-white" />
               </div>
@@ -179,6 +180,22 @@ export default async function MorePage() {
                 </span>
                 <span className="text-[12px] text-text-secondary">
                   {t("settingsDescription")}
+                </span>
+              </div>
+              <ChevronRight size={16} className="text-[#AEAEAE] shrink-0" />
+            </div>
+          </Link>
+          <Link href="/onboarding">
+            <div className="flex items-center gap-4 px-4 py-4 active:bg-[#F5F5F5] transition-colors">
+              <div className="w-10 h-10 rounded-[12px] bg-lavender flex items-center justify-center shrink-0">
+                <Info size={18} className="text-accent" />
+              </div>
+              <div className="flex flex-col flex-1 min-w-0">
+                <span className="text-[15px] font-semibold text-text-primary">
+                  {t("howItWorksLabel")}
+                </span>
+                <span className="text-[12px] text-text-secondary">
+                  {t("howItWorksDescription")}
                 </span>
               </div>
               <ChevronRight size={16} className="text-[#AEAEAE] shrink-0" />
