@@ -70,7 +70,7 @@ Matches the existing app theme exactly:
 
 ### Modified files
 
-- `middleware.ts` — add redirect rule: if user is authenticated + `onboarding_seen` is not `true` in user metadata + destination is `/profile/setup` → redirect to `/onboarding` first. Also add `/onboarding` to the list of routes that don't require `puppy_members` (alongside `/profile/setup`).
+- `middleware.ts` — add redirect rule: if user is authenticated + `onboarding_seen` is not `true` in user metadata + destination is any protected route other than `/onboarding` or `/profile/setup` → redirect to `/onboarding` first. Also add `/onboarding` to the list of routes that don't require `puppy_members` (alongside `/profile/setup`).
 - `app/more/page.tsx` — add "How it works" link that navigates to `/onboarding`
 - `messages/en.json` — add `onboarding` namespace (slide titles + descriptions + button labels)
 - `messages/pt.json` — same keys in Portuguese
@@ -100,21 +100,26 @@ Matches the existing app theme exactly:
 
 ## Translation Keys
 
-New `onboarding` namespace in both message files:
+Slide titles and descriptions are **not** sourced from the message files — they are defined as a client-side constant in `app/onboarding/page.tsx` (keyed by locale) so language switching is instant without a page reload.
 
+The message files only need the UI chrome and the More page link:
+
+**`en.json`**
 ```json
 "onboarding": {
   "skip": "Skip",
   "next": "Next",
   "getStarted": "Get started",
-  "slides": {
-    "welcome": { "title": "Welcome to Dobby", "desc": "Everything you need to look after your dog, in one place." },
-    "health":  { "title": "Health Records",   "desc": "Log vaccinations, track weight, and keep a full history of every vet visit." },
-    "care":    { "title": "Daily Care",        "desc": "Track food, diet changes, and medications — all in one place." },
-    "memories":{ "title": "Memories & Docs",  "desc": "Capture milestones and store important documents like insurance and certificates." },
-    "aivet":   { "title": "AI Vet",            "desc": "Ask questions about your dog's health and get instant answers from our AI vet." }
-  }
+  "howItWorks": "How it works"
 }
 ```
 
-Portuguese equivalent keys added to `pt.json`.
+**`pt.json`**
+```json
+"onboarding": {
+  "skip": "Saltar",
+  "next": "Próximo",
+  "getStarted": "Começar",
+  "howItWorks": "Como funciona"
+}
+```
