@@ -7,7 +7,7 @@ import { useRef, useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { ChevronLeft, Mic, Paperclip, Send, SquarePen, StopCircle, X } from "lucide-react";
+import { ChevronLeft, Mic, Paperclip, Send, StopCircle, X } from "lucide-react";
 import { useChatInput, fileToBase64DataUrl, PENDING_IMAGE_KEY } from "@/lib/hooks/useChatInput";
 import ConfirmationCard from "./ConfirmationCard";
 
@@ -148,10 +148,10 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
           <span className="text-[17px] font-semibold text-text-primary">{t("title")}</span>
           <button
             onClick={handleNewChat}
-            className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-[#F5F5F5] transition-colors"
-            title={t("newChat")}
+            disabled={messages.length === 0}
+            className="text-[14px] font-semibold text-accent disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            <SquarePen size={20} className="text-text-primary" />
+            {t("newChat")}
           </button>
         </div>
       </div>
