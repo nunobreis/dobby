@@ -59,7 +59,16 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (pathname !== "/profile/setup") {
+  // Onboarding gate: redirect unseen users to /onboarding before anything else
+  if (pathname !== "/onboarding" && pathname !== "/profile/setup") {
+    const onboardingSeen = user.user_metadata?.onboarding_seen === true;
+    if (!onboardingSeen) {
+      return NextResponse.redirect(new URL("/onboarding", request.url));
+    }
+  }
+
+  // Membership gate: redirect users with no puppy to profile setup
+  if (pathname !== "/profile/setup" && pathname !== "/onboarding") {
     const { data: membership } = await supabase
       .from("puppy_members")
       .select("puppy_id")
