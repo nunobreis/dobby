@@ -45,7 +45,7 @@ export default function DashboardChatPrompt({ puppyName }: { puppyName: string }
   };
 
   return (
-    <div className="bg-white rounded-card p-4 flex flex-col gap-3">
+    <div className="bg-white rounded-card p-3 flex flex-col gap-3">
       <p className="text-[15px] font-semibold text-text-primary">{t("chatPromptTitle")}</p>
 
       {/* Pending image preview */}
@@ -95,12 +95,12 @@ export default function DashboardChatPrompt({ puppyName }: { puppyName: string }
         </div>
       )}
 
-      <div className="flex items-end gap-3">
+      <div className="flex items-center gap-3">
         <button
           type="button"
           onClick={() => ci.fileInputRef.current?.click()}
           disabled={ci.processingImage || ci.recordingState !== "idle"}
-          className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#F5F5F5] transition-colors disabled:opacity-40 shrink-0"
+          className="h-10 flex items-center rounded-full hover:bg-[#F5F5F5] transition-colors disabled:opacity-40 shrink-0"
         >
           {ci.processingImage ? (
             <div className="w-5 h-5 rounded-full border-2 border-accent/20 border-t-accent animate-spin" />
