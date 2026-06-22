@@ -37,6 +37,10 @@ export async function middleware(request: NextRequest) {
     return supabaseResponse;
   }
 
+  if (pathname.startsWith('/api/cron/')) {
+    return supabaseResponse;
+  }
+
   if (pathname === "/login") {
     if (user) {
       const { data: membership } = await supabase
