@@ -7,6 +7,7 @@ import { formatDate, calculateAge, formatWeight, getVaccinationStatus } from "@/
 import { getTranslations } from "next-intl/server";
 import MilestoneCards from "./MilestoneCards";
 import DashboardChatPrompt from "./DashboardChatPrompt";
+import NotificationBell from "@/components/NotificationBell";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -34,6 +35,7 @@ export default async function DashboardPage() {
     { data: weightEntries },
     { data: foodEntries },
     { data: milestones },
+    { count: unreadCount },
   ] = await Promise.all([
     supabase.from("puppies").select("*").eq("id", puppyId).single(),
     supabase.from("vaccinations").select("*").eq("puppy_id", puppyId).order("next_due_date", { ascending: true }),
@@ -41,6 +43,11 @@ export default async function DashboardPage() {
     supabase.from("weight_entries").select("*").eq("puppy_id", puppyId).order("date", { ascending: false }).limit(2),
     supabase.from("food_entries").select("*").eq("puppy_id", puppyId).is("end_date", null).order("start_date", { ascending: false }).limit(1),
     supabase.from("milestones").select("*").eq("puppy_id", puppyId).order("date", { ascending: false }).limit(6),
+    supabase
+      .from('notifications')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .eq('read', false),
   ]);
 
   const t = await getTranslations("dashboard");
@@ -102,15 +109,18 @@ export default async function DashboardPage() {
             {puppy?.name ?? "Dobby"} 🐾
           </span>
         </div>
-        <Link href="/profile">
-          <div className="w-[50px] h-[50px] rounded-full bg-lavender overflow-hidden flex items-center justify-center">
-            {puppy?.photo_url ? (
-              <img src={puppy.photo_url} alt={puppy.name} className="w-full h-full object-cover" />
-            ) : (
-              <PawPrint size={20} className="text-accent opacity-70" />
-            )}
-          </div>
-        </Link>
+        <div className="flex items-center gap-2">
+          <NotificationBell unreadCount={unreadCount ?? 0} />
+          <Link href="/profile">
+            <div className="w-[50px] h-[50px] rounded-full bg-lavender overflow-hidden flex items-center justify-center">
+              {puppy?.photo_url ? (
+                <img src={puppy.photo_url} alt={puppy.name} className="w-full h-full object-cover" />
+              ) : (
+                <PawPrint size={20} className="text-accent opacity-70" />
+              )}
+            </div>
+          </Link>
+        </div>
       </div>
 
       <div className="px-5 pt-3 flex flex-col gap-5">
