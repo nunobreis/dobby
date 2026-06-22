@@ -289,3 +289,49 @@ create policy "Members can update documents" on documents
 
 create policy "Members can delete documents" on documents
   for delete using (is_puppy_member(puppy_id));
+
+-- ============================================================
+-- NOTIFICATIONS
+-- ============================================================
+
+create table if not exists notifications (
+  id            uuid primary key default gen_random_uuid(),
+  puppy_id      uuid not null references puppies(id) on delete cascade,
+  user_id       uuid not null references auth.users(id) on delete cascade,
+  type          text not null check (type in ('vet_visit', 'vaccination')),
+  body          text not null,
+  reference_id  uuid,
+  event_date    date not null,
+  days_before   int not null,
+  read          boolean not null default false,
+  push_sent     boolean not null default false,
+  created_at    timestamptz not null default now(),
+  unique (reference_id, user_id, days_before)
+);
+
+alter table notifications enable row level security;
+
+create policy "Users see their own notifications"
+  on notifications for select using (auth.uid() = user_id);
+
+create policy "Users update their own notifications"
+  on notifications for update using (auth.uid() = user_id);
+
+-- ============================================================
+-- PUSH SUBSCRIPTIONS
+-- ============================================================
+
+create table if not exists push_subscriptions (
+  id         uuid primary key default gen_random_uuid(),
+  user_id    uuid not null references auth.users(id) on delete cascade,
+  endpoint   text not null,
+  p256dh     text not null,
+  auth       text not null,
+  created_at timestamptz not null default now(),
+  unique (user_id, endpoint)
+);
+
+alter table push_subscriptions enable row level security;
+
+create policy "Users manage their own subscriptions"
+  on push_subscriptions for all using (auth.uid() = user_id);

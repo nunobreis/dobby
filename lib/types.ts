@@ -124,3 +124,26 @@ export interface Document {
 }
 
 export type VaccinationStatus = "up_to_date" | "due_soon" | "overdue";
+
+export interface Notification {
+  id: string;
+  puppy_id: string;
+  user_id: string;
+  type: 'vet_visit' | 'vaccination';
+  body: string;
+  reference_id: string | null;
+  event_date: string;
+  days_before: number;
+  read: boolean;
+  push_sent: boolean;
+  created_at: string;
+}
+
+export interface AppPushSubscription {
+  id: string;
+  user_id: string;
+  endpoint: string;
+  p256dh: string;
+  auth: string;
+  created_at: string;
+}
