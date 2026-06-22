@@ -43,6 +43,11 @@ export async function middleware(request: NextRequest) {
 
   if (pathname === "/login") {
     if (user) {
+      const onboardingSeen = user.user_metadata?.onboarding_seen === true;
+      if (!onboardingSeen) {
+        return NextResponse.redirect(new URL("/onboarding", request.url));
+      }
+
       const { data: membership } = await supabase
         .from("puppy_members")
         .select("puppy_id")
