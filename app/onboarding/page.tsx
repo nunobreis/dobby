@@ -46,7 +46,7 @@ export default function OnboardingPage() {
 
   async function handleFinish() {
     await markOnboardingSeen();
-    router.push("/profile/setup");
+    router.push("/dashboard");
   }
 
   function handleTouchStart(e: React.TouchEvent) {
