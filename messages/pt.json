@@ -27,7 +27,8 @@
     "vetVisitTomorrow": "Consulta veterinária amanhã",
     "vetVisitInDays": "Consulta veterinária em {days} dias",
     "vaccinationTomorrow": "Vacinação amanhã",
-    "vaccinationInDays": "Vacinação em {days} dias"
+    "vaccinationInDays": "Vacinação em {days} dias",
+    "partnerJoined": "Membro da família entrou!"
   },
   "dashboard": {
     "greeting": "Olá, {name}",
@@ -313,6 +314,7 @@
     "you": "Tu",
     "partner": "Parceiro/a",
     "joined": "Aderiu em {date}",
+    "partnerNamePlaceholder": "Nome do parceiro/a (opcional)",
     "partnerEmailPlaceholder": "Email do parceiro/a",
     "inviteButton": "+ Convidar parceiro/a",
     "inviting": "A enviar…",

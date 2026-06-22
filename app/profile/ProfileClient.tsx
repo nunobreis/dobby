@@ -13,7 +13,9 @@ import { useTranslations } from "next-intl";
 
 interface Member {
   user_id: string;
+  member_name: string | null;
   joined_at: string;
+  email: string;
 }
 
 interface Props {
@@ -70,6 +72,7 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
   const [pendingPhoto, setPendingPhoto] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteName, setInviteName] = useState("");
   const [inviting, setInviting] = useState(false);
   const [inviteMsg, setInviteMsg] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -138,9 +141,10 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
     setInviting(true);
     setInviteMsg(null);
     try {
-      await invitePartner(inviteEmail);
+      await invitePartner(inviteEmail, inviteName);
       setInviteMsg(t("inviteSent", { email: inviteEmail }));
       setInviteEmail("");
+      setInviteName("");
     } catch (err: unknown) {
       setInviteMsg(err instanceof Error ? err.message : "Failed to send invite.");
     } finally {
@@ -373,26 +377,43 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
       <div className="mt-8 bg-white rounded-card p-5 flex flex-col gap-4">
         <h2 className="text-[18px] font-bold text-text-primary">{t("household")}</h2>
 
-        {members.map((m, i) => (
-          <div key={m.user_id} className="flex items-center gap-3">
-            <div
-              className="w-11 h-11 rounded-full flex items-center justify-center"
-              style={{ backgroundColor: AVATAR_COLORS[i % AVATAR_COLORS.length] }}
-            >
-              <UserCircle2 size={22} className="text-text-primary opacity-70" />
+        {members.map((m, i) => {
+          const isCurrentUser = m.user_id === currentUserId;
+          const displayName = isCurrentUser
+            ? t("you")
+            : m.member_name ?? m.email;
+          const showEmail = !isCurrentUser && m.member_name;
+          return (
+            <div key={m.user_id} className="flex items-center gap-3">
+              <div
+                className="w-11 h-11 rounded-full flex items-center justify-center"
+                style={{ backgroundColor: AVATAR_COLORS[i % AVATAR_COLORS.length] }}
+              >
+                <UserCircle2 size={22} className="text-text-primary opacity-70" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[14px] font-semibold text-text-primary">
+                  {displayName}
+                </span>
+                {showEmail && (
+                  <span className="text-[12px] text-text-secondary">{m.email}</span>
+                )}
+                <span className="text-[13px] text-text-secondary">
+                  {t("joined", { date: formatDate(m.joined_at) })}
+                </span>
+              </div>
             </div>
-            <div className="flex flex-col">
-              <span className="text-[14px] font-semibold text-text-primary">
-                {m.user_id === currentUserId ? t("you") : t("partner")}
-              </span>
-              <span className="text-[13px] text-text-secondary">
-                {t("joined", { date: formatDate(m.joined_at) })}
-              </span>
-            </div>
-          </div>
-        ))}
+          );
+        })}
 
         <form onSubmit={handleInvite} className="flex flex-col gap-3 mt-1">
+          <input
+            type="text"
+            value={inviteName}
+            onChange={(e) => setInviteName(e.target.value)}
+            placeholder={t("partnerNamePlaceholder")}
+            className="h-[52px] bg-[#EBEBEB] rounded-input px-4 text-[15px] text-text-primary placeholder:text-[#AEAEAE] outline-none focus:ring-2 focus:ring-accent/40"
+          />
           <input
             type="email"
             value={inviteEmail}

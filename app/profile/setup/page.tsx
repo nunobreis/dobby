@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { PawPrint } from "lucide-react";
 import imageCompression from "browser-image-compression";
 import { createClient } from "@/lib/supabase/client";
+import { notifyPartnerJoined } from "@/app/profile/actions";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { useTranslations } from "next-intl";
 
@@ -34,11 +35,13 @@ export default function ProfileSetupPage() {
       const puppyId = user?.user_metadata?.puppy_id as string | undefined;
 
       if (puppyId && user) {
+        const memberName = (user.user_metadata?.invited_as as string) || null;
         const { error } = await supabase
           .from("puppy_members")
-          .insert({ puppy_id: puppyId, user_id: user.id });
+          .insert({ puppy_id: puppyId, user_id: user.id, member_name: memberName });
 
         if (!error) {
+          await notifyPartnerJoined(puppyId);
           router.push("/dashboard");
           return;
         }

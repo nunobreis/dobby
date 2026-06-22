@@ -1,6 +1,6 @@
 'use client';
 import { useTranslations } from 'next-intl';
-import { Hospital, Syringe } from 'lucide-react';
+import { Hospital, Syringe, Users } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import BackButton from '@/components/BackButton';
 import PushPermissionPrompt from '@/components/PushPermissionPrompt';
@@ -72,8 +72,8 @@ export default function NotificationsClient({ notifications }: Props) {
 function NotificationItem({ notification: n }: { notification: Notification }) {
   const t = useTranslations('notifications');
   const title = getTitle(n.type, n.event_date, t);
-  const Icon = n.type === 'vet_visit' ? Hospital : Syringe;
-  const iconBg = n.type === 'vet_visit' ? 'bg-lavender' : 'bg-pink-100';
+  const Icon = n.type === 'vet_visit' ? Hospital : n.type === 'partner_joined' ? Users : Syringe;
+  const iconBg = n.type === 'vet_visit' ? 'bg-lavender' : n.type === 'partner_joined' ? 'bg-sage-green' : 'bg-pink-100';
 
   return (
     <div className="bg-white rounded-card p-4 flex gap-3 items-start">
@@ -99,11 +99,15 @@ function NotificationItem({ notification: n }: { notification: Notification }) {
 }
 
 function getTitle(
-  type: 'vet_visit' | 'vaccination',
+  type: 'vet_visit' | 'vaccination' | 'partner_joined',
   eventDate: string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   t: (key: string, values?: Record<string, any>) => string
 ): string {
+  if (type === 'partner_joined') {
+    return t('partnerJoined');
+  }
+
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const event = new Date(eventDate + 'T00:00:00');

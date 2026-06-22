@@ -35,6 +35,7 @@ create table puppy_members (
   id uuid primary key default uuid_generate_v4(),
   puppy_id uuid references puppies(id) on delete cascade,
   user_id uuid references auth.users(id) on delete cascade,
+  member_name text,
   joined_at timestamptz default now(),
   unique (puppy_id, user_id)
 );
@@ -179,8 +180,8 @@ create policy "Authenticated users can create puppy" on puppies
 -- ============================================================
 -- POLICIES: puppy_members
 -- ============================================================
-create policy "Users see own memberships" on puppy_members
-  for select using (user_id = auth.uid());
+create policy "Members can view household" on puppy_members
+  for select using (is_puppy_member(puppy_id));
 
 create policy "Authenticated users can join puppy" on puppy_members
   for insert with check (user_id = auth.uid());
@@ -298,11 +299,11 @@ create table if not exists notifications (
   id            uuid primary key default gen_random_uuid(),
   puppy_id      uuid not null references puppies(id) on delete cascade,
   user_id       uuid not null references auth.users(id) on delete cascade,
-  type          text not null check (type in ('vet_visit', 'vaccination')),
+  type          text not null check (type in ('vet_visit', 'vaccination', 'partner_joined')),
   body          text not null,
   reference_id  uuid,
   event_date    date not null,
-  days_before   int not null,
+  days_before   int,
   read          boolean not null default false,
   push_sent     boolean not null default false,
   created_at    timestamptz not null default now(),

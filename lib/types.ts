@@ -26,6 +26,7 @@ export interface PuppyMember {
   id: string;
   puppy_id: string;
   user_id: string;
+  member_name: string | null;
   joined_at: string;
 }
 
@@ -129,11 +130,11 @@ export interface Notification {
   id: string;
   puppy_id: string;
   user_id: string;
-  type: 'vet_visit' | 'vaccination';
+  type: 'vet_visit' | 'vaccination' | 'partner_joined';
   body: string;
   reference_id: string | null;
   event_date: string;
-  days_before: number;
+  days_before: number | null;
   read: boolean;
   push_sent: boolean;
   created_at: string;

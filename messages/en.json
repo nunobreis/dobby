@@ -27,7 +27,8 @@
     "vetVisitTomorrow": "Vet visit tomorrow",
     "vetVisitInDays": "Vet visit in {days} days",
     "vaccinationTomorrow": "Vaccination due tomorrow",
-    "vaccinationInDays": "Vaccination due in {days} days"
+    "vaccinationInDays": "Vaccination due in {days} days",
+    "partnerJoined": "Family member joined!"
   },
   "dashboard": {
     "greeting": "Hello, {name}",
@@ -313,6 +314,7 @@
     "you": "You",
     "partner": "Partner",
     "joined": "Joined {date}",
+    "partnerNamePlaceholder": "Partner's name (optional)",
     "partnerEmailPlaceholder": "Partner's email",
     "inviteButton": "+ Invite partner",
     "inviting": "Sending…",
