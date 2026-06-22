@@ -16,6 +16,7 @@ interface Member {
   member_name: string | null;
   joined_at: string;
   email: string;
+  avatar_url?: string | null;
 }
 
 interface Props {
@@ -386,10 +387,14 @@ export default function ProfileClient({ puppy, members, currentUserId }: Props) 
           return (
             <div key={m.user_id} className="flex items-center gap-3">
               <div
-                className="w-11 h-11 rounded-full flex items-center justify-center"
+                className="w-11 h-11 rounded-full flex items-center justify-center overflow-hidden shrink-0"
                 style={{ backgroundColor: AVATAR_COLORS[i % AVATAR_COLORS.length] }}
               >
-                <UserCircle2 size={22} className="text-text-primary opacity-70" />
+                {m.avatar_url ? (
+                  <img src={m.avatar_url} alt={displayName} className="w-full h-full object-cover" />
+                ) : (
+                  <UserCircle2 size={22} className="text-text-primary opacity-70" />
+                )}
               </div>
               <div className="flex flex-col">
                 <span className="text-[14px] font-semibold text-text-primary">

@@ -38,7 +38,11 @@ export default async function ProfilePage() {
   const enrichedMembers = await Promise.all(
     (members ?? []).map(async (m) => {
       const { data: { user: authUser } } = await admin.auth.admin.getUserById(m.user_id);
-      return { ...m, email: authUser?.email ?? "" };
+      return {
+        ...m,
+        email: authUser?.email ?? "",
+        avatar_url: (authUser?.user_metadata?.avatar_url as string | undefined) ?? null,
+      };
     })
   );
 
