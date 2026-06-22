@@ -3,6 +3,7 @@ import { DM_Sans } from "next/font/google";
 import { Toaster } from "sonner";
 import Sidebar from "@/components/Sidebar";
 import BottomNav from "@/components/BottomNav";
+import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import "./globals.css";
@@ -50,6 +51,7 @@ export default async function RootLayout({
     <html lang={locale}>
       <body className={`${dmSans.variable} font-sans antialiased bg-background`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
+          <ServiceWorkerRegistration />
           <div className="flex min-h-screen">
             <Sidebar />
             <div className="flex-1 min-w-0">
