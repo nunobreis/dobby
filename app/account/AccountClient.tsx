@@ -38,7 +38,7 @@ export default function AccountClient({ user }: { user: User }) {
 
   async function handleSignOut() {
     await supabase.auth.signOut();
-    router.push("/login");
+    window.location.href = "/login";
   }
 
   async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
