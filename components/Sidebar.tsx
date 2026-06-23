@@ -32,10 +32,9 @@ export default async function Sidebar() {
       </Link>
 
       {/* Nav items */}
-      <SidebarNav />
-
-      {/* Spacer */}
-      <div className="flex-1" />
+      <div className="flex-1 overflow-y-auto min-h-0">
+        <SidebarNav />
+      </div>
 
       {/* User row */}
       <Link
