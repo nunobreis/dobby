@@ -48,6 +48,28 @@ export default function LoginPage() {
     }
   }
 
+  async function handleMagicLink() {
+    if (!email) {
+      setError(t("enterEmail"));
+      return;
+    }
+    setError(null);
+    setMessage(null);
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: window.location.origin + "/auth/callback" },
+      });
+      if (error) throw error;
+      setMessage(t("magicLinkSent"));
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -139,7 +161,7 @@ export default function LoginPage() {
       </form>
 
       {mode === "signin" && (
-        <div className="flex justify-center mt-4">
+        <div className="flex flex-col items-center gap-3 mt-4">
           <button
             type="button"
             onClick={handleForgotPassword}
@@ -147,6 +169,19 @@ export default function LoginPage() {
             className="text-sm text-text-secondary disabled:opacity-60"
           >
             {t("forgotPassword")}
+          </button>
+          <div className="flex items-center gap-3 w-full">
+            <div className="flex-1 h-px bg-[#DEDEDE]" />
+            <span className="text-xs text-text-secondary">{t("or")}</span>
+            <div className="flex-1 h-px bg-[#DEDEDE]" />
+          </div>
+          <button
+            type="button"
+            onClick={handleMagicLink}
+            disabled={loading}
+            className="text-sm font-medium text-accent disabled:opacity-60"
+          >
+            {t("magicLink")}
           </button>
         </div>
       )}

@@ -435,7 +435,10 @@
     "confirmEmail": "Verifica o teu email para confirmar a conta e depois entra.",
     "forgotPassword": "Esqueceste-te da palavra-passe?",
     "resetSent": "Verifica o teu email para redefinir a palavra-passe.",
-    "enterEmail": "Introduz primeiro o teu endereço de email."
+    "enterEmail": "Introduz primeiro o teu endereço de email.",
+    "or": "ou",
+    "magicLink": "Enviar-me um link de acesso",
+    "magicLinkSent": "Verifica a caixa de entrada — enviámos-te um link de acesso."
   },
   "vaccinationBadge": {
     "upToDate": "Em dia",
