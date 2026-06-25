@@ -10,6 +10,10 @@ import { useTranslations } from "next-intl";
 import { ChevronLeft, Mic, Paperclip, Send, StopCircle, X } from "lucide-react";
 import { useChatInput, fileToBase64DataUrl, PENDING_IMAGE_KEY } from "@/lib/hooks/useChatInput";
 import ConfirmationCard from "./ConfirmationCard";
+import { DEMO_ECOMMERCE } from '@/lib/demo/config';
+import { parseProductSignal } from '@/lib/demo/parse-product-signal';
+import { PRODUCTS_BY_CATEGORY } from '@/lib/demo/products';
+import ProductCard from '@/components/demo/ProductCard';
 
 const CHAT_STORAGE_KEY = "dobby-ai-vet-messages";
 
@@ -189,29 +193,36 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
                 {msg.parts.map((part, i) => {
                   if (isTextUIPart(part) && part.text) {
                     const isUser = msg.role === "user";
+
+                    if (isUser) {
+                      return (
+                        <div key={i} className="flex justify-end">
+                          <div className="max-w-[80%] px-4 py-3 text-[14px] leading-relaxed bg-accent text-white rounded-[18px_18px_4px_18px] whitespace-pre-wrap">
+                            {part.text}
+                          </div>
+                        </div>
+                      );
+                    }
+
+                    const { cleanText, category } = parseProductSignal(part.text);
+                    const recommendedProducts = DEMO_ECOMMERCE && category ? PRODUCTS_BY_CATEGORY[category] : [];
+
                     return (
-                      <div key={i} className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
-                        <div
-                          className={`max-w-[80%] px-4 py-3 text-[14px] leading-relaxed ${
-                            isUser
-                              ? "bg-accent text-white rounded-[18px_18px_4px_18px] whitespace-pre-wrap"
-                              : "bg-white text-text-primary rounded-[18px_18px_18px_4px]"
-                          }`}
-                        >
-                          {isUser ? (
-                            part.text
-                          ) : (
-                            <ReactMarkdown
-                              components={{
-                                p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
-                                strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
-                                ul: ({ children }) => <ul className="list-disc pl-4 mb-2 space-y-1">{children}</ul>,
-                                ol: ({ children }) => <ol className="list-decimal pl-4 mb-2 space-y-1">{children}</ol>,
-                                li: ({ children }) => <li>{children}</li>,
-                              }}
-                            >
-                              {part.text}
-                            </ReactMarkdown>
+                      <div key={i} className="flex justify-start">
+                        <div className="max-w-[80%] px-4 py-3 text-[14px] leading-relaxed bg-white text-text-primary rounded-[18px_18px_18px_4px]">
+                          <ReactMarkdown
+                            components={{
+                              p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+                              strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                              ul: ({ children }) => <ul className="list-disc pl-4 mb-2 space-y-1">{children}</ul>,
+                              ol: ({ children }) => <ol className="list-decimal pl-4 mb-2 space-y-1">{children}</ol>,
+                              li: ({ children }) => <li>{children}</li>,
+                            }}
+                          >
+                            {cleanText}
+                          </ReactMarkdown>
+                          {recommendedProducts.length > 0 && (
+                            <ProductCard products={recommendedProducts} puppyName={puppyName} />
                           )}
                         </div>
                       </div>
