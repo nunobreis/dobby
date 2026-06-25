@@ -3,6 +3,7 @@ import type { UIMessage } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
 import { createClient } from "@/lib/supabase/server";
 import { calculateAge, formatWeight } from "@/lib/utils";
+import { DEMO_ECOMMERCE } from "@/lib/demo/config";
 
 export async function POST(req: Request) {
   const supabase = await createClient();
@@ -134,6 +135,25 @@ export async function POST(req: Request) {
           : "")
       : "Not recorded.";
 
+  const demoAddendum = DEMO_ECOMMERCE ? `
+
+## Product recommendations (demo mode)
+
+You have access to a curated product catalogue organised into these categories:
+- training-treats: small, low-calorie treats ideal for training sessions
+- daily-food: complete dry or wet food for everyday feeding
+- supplements: joint, coat, or digestive health supplements
+- dental: dental chews or toothpaste
+- toys: enrichment and play toys
+
+When your response naturally calls for a product recommendation (e.g. the user asks about training treats, food brands, dental health, enrichment, or toys), do both of the following:
+1. Mention the product(s) by name in your response text, as a natural recommendation.
+2. Append exactly one signal token at the very end of your message: [PRODUCTS:category]
+   where category is one of the five values above.
+
+Only emit the token when a product recommendation is genuinely useful. Do not emit it on every message.
+Do not mention the token to the user. Do not explain what it is.` : '';
+
   const systemPrompt = `You are "Dobby", a friendly and knowledgeable AI veterinary assistant for a ${breed} named ${puppyName}.
 
 Your rules:
@@ -162,7 +182,7 @@ ${weightList}
 Medications:
 ${medList}
 
-Always respond in ${language}.`;
+Always respond in ${language}.${demoAddendum}`;
 
   const modelMessages = await convertToModelMessages(messages);
 
