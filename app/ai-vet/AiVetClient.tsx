@@ -205,7 +205,7 @@ export default function AiVetClient({ puppyName, displayName }: Props) {
                     }
 
                     const { cleanText, category } = parseProductSignal(part.text);
-                    const recommendedProducts = DEMO_ECOMMERCE && category ? PRODUCTS_BY_CATEGORY[category] : [];
+                    const recommendedProducts = DEMO_ECOMMERCE && category ? (PRODUCTS_BY_CATEGORY[category] ?? []) : [];
 
                     return (
                       <div key={i} className="flex justify-start">
